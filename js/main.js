@@ -19,9 +19,13 @@ function toggleMenu() {
   if (!navLinks) return;
 
   navLinks.classList.toggle('open');
+  const isOpen = navLinks.classList.contains('open');
+
+  // Lock body scroll when menu is open
+  document.body.style.overflow = isOpen ? 'hidden' : '';
 
   const spans = hamburger.querySelectorAll('span');
-  if (navLinks.classList.contains('open')) {
+  if (isOpen) {
     spans[0].style.transform = 'translateY(7px) rotate(45deg)';
     spans[1].style.opacity = '0';
     spans[2].style.transform = 'translateY(-7px) rotate(-45deg)';
@@ -34,7 +38,15 @@ function toggleMenu() {
 
 function closeMenu() {
   const navLinks = document.getElementById('navLinks');
+  const hamburger = document.getElementById('hamburger');
   if (navLinks) navLinks.classList.remove('open');
+  document.body.style.overflow = '';
+  if (hamburger) {
+    const spans = hamburger.querySelectorAll('span');
+    spans[0].style.transform = '';
+    spans[1].style.opacity = '1';
+    spans[2].style.transform = '';
+  }
 }
 
 // Close menu when clicking a link inside it
@@ -42,6 +54,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const navLinks = document.querySelectorAll('.nav-links a');
   navLinks.forEach(link => {
     link.addEventListener('click', closeMenu);
+  });
+
+  // Close menu when pressing Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeMenu();
   });
 });
 
