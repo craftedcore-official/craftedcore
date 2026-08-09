@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CraftedCore — Premium Custom Products</title>
+  <meta name="description" content="CraftedCore — Premium custom products including t-shirts, mugs, bottles, wallets, keychains, lockets, and posters. Crafted just for you." />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar" id="navbar">
+    <a href="index.html" class="logo-link">
+      <img src="images/logo.png" alt="CraftedCore" class="logo-img" />
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <a href="index.html" class="active" id="close-menu-overlay" onclick="closeMenu()"></a>
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="products.html">Products</a></li>
+      <li><a href="contact.html">Order Now</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="https://wa.me/919913846454?text=Hi%20CraftedCore!%20I%20want%20to%20place%20a%20custom%20order." target="_blank" class="btn btn-primary" id="nav-whatsapp-btn">
+        <svg class="social-svg" viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12.012 2c-5.506 0-9.989 4.478-9.989 9.984 0 1.758.459 3.474 1.33 4.982L2 22l5.176-1.348a9.982 9.982 0 004.836 1.251h.004c5.506 0 9.989-4.478 9.989-9.984 0-2.668-1.039-5.176-2.927-7.063C17.189 3.039 14.68 2 12.012 2zm.004 16.326h-.003a8.31 8.31 0 01-4.238-1.163l-.304-.18-3.149.821.838-3.067-.198-.314a8.275 8.275 0 01-1.272-4.437c0-4.577 3.724-8.301 8.306-8.301 2.217 0 4.301.865 5.869 2.434a8.261 8.261 0 012.43 5.867c0 4.578-3.725 8.302-8.279 8.302zm4.551-6.216c-.249-.125-1.477-.729-1.706-.812-.228-.083-.395-.125-.561.125-.166.249-.644.812-.789.978-.145.166-.291.187-.54.062a6.837 6.837 0 01-2.008-1.238 7.55 7.55 0 01-1.39-1.73c-.145-.249-.016-.384.109-.508.113-.112.249-.291.374-.436.125-.145.166-.249.249-.415.083-.166.042-.312-.021-.436-.062-.125-.561-1.352-.769-1.85-.202-.486-.407-.42-.561-.428l-.478-.009c-.166 0-.436.062-.664.312-.228.249-.873.852-.873 2.079 0 1.226.893 2.41 1.018 2.577.125.166 1.757 2.684 4.257 3.764.595.257 1.06.41 1.422.525.597.19 1.14.163 1.57.099.479-.071 1.477-.603 1.684-1.184.208-.582.208-1.08.145-1.184-.063-.104-.229-.166-.478-.291z"/></svg>
+        WhatsApp Us
+      </a>
+      <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero" id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-content">
+      <div class="hero-text">
+        <div class="hero-badge">
+          <span></span> Premium Custom Merchandise
+        </div>
+        <h1 class="hero-title">
+          Wear Your Story,<br />
+          <span class="gold-text">Crafted Just For You</span>
+        </h1>
+        <p class="hero-desc">
+          From custom t-shirts and mugs to wallets, keychains, and posters — we bring your imagination to life with premium quality and unmatched craftsmanship.
+        </p>
+        <div class="hero-actions">
+          <a href="products.html" class="btn btn-primary" id="hero-explore-btn">✨ Explore Products</a>
+          <a href="https://wa.me/919913846454?text=Hi%20CraftedCore!%20I%20want%20to%20know%20more%20about%20your%20custom%20products." target="_blank" class="btn btn-outline" id="hero-chat-btn">💬 Chat With Us</a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <div class="stat-number">500+</div>
+            <div class="stat-label">Happy Customers</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">7+</div>
+            <div class="stat-label">Product Types</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">100%</div>
+            <div class="stat-label">Custom Made</div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-glow"></div>
+        <div class="hero-image-wrap animate-float">
+          <img src="images/hero_banner.jpg" alt="CraftedCore Premium Custom Products" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FEATURED PRODUCTS ===== -->
+  <section class="products-section" id="featured">
+    <div class="container">
+      <div class="section-header fade-in">
+        <span class="section-label">Featured</span>
+        <h2 class="section-title">Best <span>Sellers</span></h2>
+        <p class="section-subtitle">Our most loved custom products — ordered by hundreds of happy customers</p>
+      </div>
+      <div class="product-grid">
+
+        <!-- T-Shirt -->
+        <div class="product-card fade-in" id="prod-tshirt">
+          <div class="product-image-wrap">
+            <span class="product-badge">🔥 Top Seller</span>
+            <img src="images/product_tshirt.jpg" alt="Custom T-Shirt" />
+            <div class="product-overlay">
+              <a href="https://wa.me/919913846454?text=Hi%20CraftedCore!%20I%20want%20to%20order%20a%20Custom%20T-Shirt.%20Please%20guide%20me." target="_blank" class="btn btn-whatsapp" style="width:100%;justify-content:center;">💬 Order on WhatsApp</a>
+            </div>
+          </div>
+          <div class="product-info">
+            <div class="product-category">T-Shirts</div>
+            <div class="product-name">Custom Printed T-Shirt</div>
+            <div class="product-desc">Your design, your story. 100% premium cotton with vibrant print.</div>
+            <div class="product-footer">
+              <div class="product-price"><span class="from">From </span>₹399</div>
+              <a href="https://wa.me/919913846454?text=Hi%20CraftedCore!%20I%20want%20to%20order%20a%20Custom%20T-Shirt." target="_blank" class="order-btn" id="order-tshirt">💬 Order</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mug -->
+        <div class="product-card fade-in" id="prod-mug">
+          <div class="product-image-wrap">
+            <span class="product-badge">🎁 Gift Idea</span>
+            <img src="images/mug_black.png" alt="Custom Mug" />
+            <div class="product-overlay">
+              <a href="https://wa.me/919913846454?text=Hi%20CraftedCore!%20I%20want%20to%20order%20a%20Custom%20Mug.%20Please%20guide%20me." target="_blank" class="btn btn-whatsapp" style="width:100%;justify-content:center;">💬 Order on WhatsApp</a>
+            </div>
+          </div>
+          <div class="product-info">
+            <div class="product-category">Mugs</div>
+            <div class="product-name">Custom Ceramic Mug</div>
+            <div class="product-desc">Perfect for birthdays & anniversaries. Custom name, photo & colors available.</div>
+            <div class="product-footer">
+              <div class="product-price"><span class="from">From </span>₹299</div>
+              <a href="https://wa.me/919913846454?text=Hi%20CraftedCore!%20I%20want%20to%20order%20a%20Custom%20Mug." target="_blank" class="order-btn" id="order-mug">💬 Order</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottle -->
+        <div class="product-card fade-in" id="prod-bottle">
+          <div class="product-image-wrap">
+            <span class="product-badge">⚡ Trending</span>
+            <img src="images/bottle_1.webp" alt="Custom Bottle" />
+            <div class="product-overlay">
+              <a href="https://wa.me/919913846454?text=Hi%20CraftedCore!%20I%20want%20to%20order%20a%20Custom%20Bottle.%20Please%20guide%20me." target="_blank" class="btn btn-whatsapp" style="width:100%;justify-content:center;">💬 Order on WhatsApp</a>
+            </div>
+          </div>
+          <div class="product-info">
+            <div class="product-category">Bottles</div>
+            <div class="product-name">Custom Insulated Bottle</div>
+            <div class="product-desc">Premium stainless steel bottle with custom engraved name & design.</div>
+            <div class="product-footer">
+              <div class="product-price"><span class="from">From </span>₹499</div>
+              <a href="https://wa.me/919913846454?text=Hi%20CraftedCore!%20I%20want%20to%20order%20a%20Custom%20Bottle." target="_blank" class="order-btn" id="order-bottle">💬 Order</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Locket -->
+        <div class="product-card fade-in" id="prod-locket">
+          <div class="product-image-wrap">
+            <span class="product-badge">✨ Engraved</span>
+            <img src="images/locket_bar.webp" alt="Custom Locket" />
+            <div class="product-overlay">
+              <a href="https://wa.me/919913846454?text=Hi%20CraftedCore!%20I%20want%20to%20order%20a%20Custom%20Locket.%20Please%20guide%20me." target="_blank" class="btn btn-whatsapp" style="width:100%;justify-content:center;">💬 Order on WhatsApp</a>
+            </div>
+          </div>
+          <div class="product-info">
+            <div class="product-category">Lockets</div>
+            <div class="product-name">Custom 4D Bar Pendant</div>
+            <div class="product-desc">Personalized 4D bar locket engraved with names on all 4 sides.</div>
+            <div class="product-footer">
+              <div class="product-price"><span class="from">From </span>₹299</div>
+              <a href="https://wa.me/919913846454?text=Hi%20CraftedCore!%20I%20want%20to%20order%20a%20Custom%20Locket." target="_blank" class="order-btn" id="order-locket">💬 Order</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Wallet -->
+        <div class="product-card fade-in" id="prod-wallet">
+          <div class="product-image-wrap">
+            <span class="product-badge">💎 Premium</span>
+            <img src="images/wallet_combo.jpg" alt="Custom Wallet" />
+            <div class="product-overlay">
+              <a href="https://wa.me/919913846454?text=Hi%20CraftedCore!%20I%20want%20to%20order%20a%20Custom%20Wallet.%20Please%20guide%20me." target="_blank" class="btn btn-whatsapp" style="width:100%;justify-content:center;">💬 Order on WhatsApp</a>
+            </div>
+          </div>
+          <div class="product-info">
+            <div class="product-category">Wallets</div>
+            <div class="product-name">Custom Leather Wallet Combo</div>
+            <div class="product-desc">Genuine leather wallet with personalized name & charm engraving.</div>
+            <div class="product-footer">
+              <div class="product-price"><span class="from">From </span>₹499</div>
+              <a href="https://wa.me/919913846454?text=Hi%20CraftedCore!%20I%20want%20to%20order%20a%20Custom%20Wallet." target="_blank" class="order-btn" id="order-wallet">💬 Order</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Keychain -->
+        <div class="product-card fade-in" id="prod-keychain">
+          <div class="product-image-wrap" style="background: #1a1a1a; display:flex; align-items:center; justify-content:center;">
+            <span class="product-badge">🔑 Popular</span>
+            <div style="font-size: 8rem; text-align:center; padding: 2rem;">🔑</div>
+            <div class="product-overlay">
+              <a href="https://wa.me/919913846454?text=Hi%20CraftedCore!%20I%20want%20to%20order%20a%20Custom%20Keychain.%20Please%20guide%20me." target="_blank" class="btn btn-whatsapp" style="width:100%;justify-content:center;">💬 Order on WhatsApp</a>
+            </div>
+          </div>
+          <div class="product-info">
+            <div class="product-category">Keychains</div>
+            <div class="product-name">Custom Metal Keychain</div>
+            <div class="product-desc">Personalized keychains with name, photo, or custom design engraved.</div>
+            <div class="product-footer">
+              <div class="product-price"><span class="from">From </span>₹99</div>
+              <a href="https://wa.me/919913846454?text=Hi%20CraftedCore!%20I%20want%20to%20order%20a%20Custom%20Keychain." target="_blank" class="order-btn" id="order-keychain">💬 Order</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div style="text-align:center; margin-top: 3rem;">
+        <a href="products.html" class="btn btn-outline" id="view-all-btn">View All Products →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CATEGORIES ===== -->
+  <section class="categories" id="categories">
+    <div class="container">
+      <div class="section-header fade-in">
+        <span class="section-label">Browse</span>
+        <h2 class="section-title">Shop by <span>Category</span></h2>
+        <p class="section-subtitle">Discover our wide range of customizable products</p>
+      </div>
+      <div class="category-grid">
+        <a href="products.html?category=tshirts" class="category-card fade-in" id="cat-tshirts">
+          <div class="category-icon">👕</div>
+          <div class="category-name">T-Shirts</div>
+          <div class="category-count">Custom Prints</div>
+        </a>
+        <a href="products.html?category=mugs" class="category-card fade-in" id="cat-mugs">
+          <div class="category-icon">☕</div>
+          <div class="category-name">Mugs</div>
+          <div class="category-count">Perfect Gifts</div>
+        </a>
+        <a href="products.html?category=bottles" class="category-card fade-in" id="cat-bottles">
+          <div class="category-icon">🧴</div>
+          <div class="category-name">Bottles</div>
+          <div class="category-count">Trending 2025</div>
+        </a>
+        <a href="products.html?category=wallets" class="category-card fade-in" id="cat-wallets">
+          <div class="category-icon">👜</div>
+          <div class="category-name">Wallets</div>
+          <div class="category-count">Premium Leather</div>
+        </a>
+        <a href="products.html?category=keychains" class="category-card fade-in" id="cat-keychains">
+          <div class="category-icon">🔑</div>
+          <div class="category-name">Keychains</div>
+          <div class="category-count">Best Sellers</div>
+        </a>
+        <a href="products.html?category=lockets" class="category-card fade-in" id="cat-lockets">
+          <div class="category-icon">📿</div>
+          <div class="category-name">Lockets</div>
+          <div class="category-count">Emotional Gifts</div>
+        </a>
+        <a href="products.html?category=posters" class="category-card fade-in" id="cat-posters">
+          <div class="category-icon">🖼️</div>
+          <div class="category-name">Posters</div>
+          <div class="category-count">Wall Art</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== USP SECTION ===== -->
+  <section class="usp-section" id="why-us">
+    <div class="container">
+      <div class="section-header fade-in">
+        <span class="section-label">Why CraftedCore</span>
+        <h2 class="section-title">What Makes Us <span>Different</span></h2>
+        <p class="section-subtitle">Premium quality. Personal touch. Every single time.</p>
+      </div>
+      <div class="usp-grid">
+        <div class="usp-card fade-in">
+          <span class="usp-icon">🎨</span>
+          <div class="usp-title">100% Custom Designs</div>
+          <div class="usp-desc">Your design, your vision. We bring exactly what you imagine to life.</div>
+        </div>
+        <div class="usp-card fade-in">
+          <span class="usp-icon">⚡</span>
+          <div class="usp-title">Fast Delivery</div>
+          <div class="usp-desc">Quick turnaround times. Your custom product delivered to your doorstep.</div>
+        </div>
+        <div class="usp-card fade-in">
+          <span class="usp-icon">💎</span>
+          <div class="usp-title">Premium Quality</div>
+          <div class="usp-desc">We use only the best materials. Long-lasting prints and premium finishes.</div>
+        </div>
+        <div class="usp-card fade-in">
+          <span class="usp-icon">💬</span>
+          <div class="usp-title">WhatsApp Support</div>
+          <div class="usp-desc">Direct contact. Easy ordering. Real-time updates on your order status.</div>
+        </div>
+        <div class="usp-card fade-in">
+          <span class="usp-icon">🎁</span>
+          <div class="usp-title">Perfect for Gifts</div>
+          <div class="usp-desc">Surprise your loved ones with a truly personal and memorable gift.</div>
+        </div>
+        <div class="usp-card fade-in">
+          <span class="usp-icon">💰</span>
+          <div class="usp-title">Best Prices</div>
+          <div class="usp-desc">Premium quality at affordable prices. No compromise on either end.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TESTIMONIALS ===== -->
+  <section class="testimonials" id="testimonials">
+    <div class="container">
+      <div class="section-header fade-in">
+        <span class="section-label">Reviews</span>
+        <h2 class="section-title">Happy <span>Customers</span></h2>
+        <p class="section-subtitle">What people say about CraftedCore</p>
+      </div>
+      <div class="testimonial-grid">
+        <div class="testimonial-card fade-in">
+          <div class="stars">★★★★★</div>
+          <p class="testimonial-text">"Ordered a custom t-shirt for my brother's birthday and he absolutely loved it! The print quality was amazing and delivery was super fast. Will definitely order again!"</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">R</div>
+            <div>
+              <div class="author-name">Rahul Sharma</div>
+              <div class="author-location">Mumbai, Maharashtra</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card fade-in">
+          <div class="stars">★★★★★</div>
+          <p class="testimonial-text">"Got a custom mug with our couple photo for our anniversary. CraftedCore made it exactly how I wanted. The quality was better than expected. Highly recommend!"</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">P</div>
+            <div>
+              <div class="author-name">Priya Patel</div>
+              <div class="author-location">Surat, Gujarat</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card fade-in">
+          <div class="stars">★★★★★</div>
+          <p class="testimonial-text">"Best custom merchandise store I've found! Ordered keychains for my whole friend group. Affordable prices and top-notch quality. Will be ordering again soon!"</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">A</div>
+            <div>
+              <div class="author-name">Arjun Singh</div>
+              <div class="author-location">Jaipur, Rajasthan</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CTA SECTION ===== -->
+  <section class="cta-section" id="cta">
+    <div class="container">
+      <div class="cta-box fade-in">
+        <span class="section-label">Get Started</span>
+        <h2 class="cta-title">Ready to Create Something <span style="color:var(--gold)">Amazing?</span></h2>
+        <p class="cta-desc">Message us on WhatsApp with your idea — we'll handle the rest and make it perfect for you.</p>
+        <a href="https://wa.me/919913846454?text=Hi%20CraftedCore!%20I%20want%20to%20place%20a%20custom%20order.%20Please%20guide%20me." target="_blank" class="btn btn-whatsapp" id="cta-whatsapp-btn">
+          💬 Start Your Order on WhatsApp
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer id="footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="logo-link">
+          <img src="images/logo.png" alt="CraftedCore" class="logo-img footer-logo" />
+        </a>
+        <p>Premium custom merchandise crafted with passion. Your imagination, our craftsmanship — brought together for something truly special.</p>
+        <div class="footer-social">
+          <a href="https://wa.me/919913846454" target="_blank" class="social-btn wa-btn" id="footer-wa" title="WhatsApp">
+            <svg class="social-svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12.012 2c-5.506 0-9.989 4.478-9.989 9.984 0 1.758.459 3.474 1.33 4.982L2 22l5.176-1.348a9.982 9.982 0 004.836 1.251h.004c5.506 0 9.989-4.478 9.989-9.984 0-2.668-1.039-5.176-2.927-7.063C17.189 3.039 14.68 2 12.012 2zm.004 16.326h-.003a8.31 8.31 0 01-4.238-1.163l-.304-.18-3.149.821.838-3.067-.198-.314a8.275 8.275 0 01-1.272-4.437c0-4.577 3.724-8.301 8.306-8.301 2.217 0 4.301.865 5.869 2.434a8.261 8.261 0 012.43 5.867c0 4.578-3.725 8.302-8.279 8.302zm4.551-6.216c-.249-.125-1.477-.729-1.706-.812-.228-.083-.395-.125-.561.125-.166.249-.644.812-.789.978-.145.166-.291.187-.54.062a6.837 6.837 0 01-2.008-1.238 7.55 7.55 0 01-1.39-1.73c-.145-.249-.016-.384.109-.508.113-.112.249-.291.374-.436.125-.145.166-.249.249-.415.083-.166.042-.312-.021-.436-.062-.125-.561-1.352-.769-1.85-.202-.486-.407-.42-.561-.428l-.478-.009c-.166 0-.436.062-.664.312-.228.249-.873.852-.873 2.079 0 1.226.893 2.41 1.018 2.577.125.166 1.757 2.684 4.257 3.764.595.257 1.06.41 1.422.525.597.19 1.14.163 1.57.099.479-.071 1.477-.603 1.684-1.184.208-.582.208-1.08.145-1.184-.063-.104-.229-.166-.478-.291z"/></svg>
+          </a>
+          <a href="https://www.instagram.com/crafted_core_/" target="_blank" class="social-btn ig-btn" id="footer-ig" title="Instagram @crafted_core_">
+            <svg class="social-svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Products</h4>
+        <ul>
+          <li><a href="products.html?category=tshirts">T-Shirts</a></li>
+          <li><a href="products.html?category=mugs">Mugs</a></li>
+          <li><a href="products.html?category=bottles">Bottles</a></li>
+          <li><a href="products.html?category=wallets">Wallets</a></li>
+          <li><a href="products.html?category=keychains">Keychains</a></li>
+          <li><a href="products.html?category=lockets">Lockets</a></li>
+          <li><a href="products.html?category=posters">Posters</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="products.html">All Products</a></li>
+          <li><a href="contact.html">Order Now</a></li>
+          <li><a href="#why-us">Why Us</a></li>
+          <li><a href="#testimonials">Reviews</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="https://wa.me/919913846454" target="_blank">📱 +91 99138 46454</a></li>
+          <li><a href="https://www.instagram.com/crafted_core_/" target="_blank">📸 @crafted_core_</a></li>
+          <li><a href="contact.html">📩 Send Message</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 CraftedCore. All rights reserved.</p>
+      <p>Made with ❤️ for custom lovers</p>
+    </div>
+  </footer>
+
+  <!-- Floating WhatsApp Button (Mobile Only) -->
+  <a href="https://wa.me/919913846454?text=Hi%20CraftedCore!%20I%20want%20to%20place%20a%20custom%20order." target="_blank" class="wa-float" id="wa-float-btn" title="Order on WhatsApp">
+    <svg class="social-svg" viewBox="0 0 24 24" width="28" height="28" fill="#fff"><path d="M12.012 2c-5.506 0-9.989 4.478-9.989 9.984 0 1.758.459 3.474 1.33 4.982L2 22l5.176-1.348a9.982 9.982 0 004.836 1.251h.004c5.506 0 9.989-4.478 9.989-9.984 0-2.668-1.039-5.176-2.927-7.063C17.189 3.039 14.68 2 12.012 2zm.004 16.326h-.003a8.31 8.31 0 01-4.238-1.163l-.304-.18-3.149.821.838-3.067-.198-.314a8.275 8.275 0 01-1.272-4.437c0-4.577 3.724-8.301 8.306-8.301 2.217 0 4.301.865 5.869 2.434a8.261 8.261 0 012.43 5.867c0 4.578-3.725 8.302-8.279 8.302zm4.551-6.216c-.249-.125-1.477-.729-1.706-.812-.228-.083-.395-.125-.561.125-.166.249-.644.812-.789.978-.145.166-.291.187-.54.062a6.837 6.837 0 01-2.008-1.238 7.55 7.55 0 01-1.39-1.73c-.145-.249-.016-.384.109-.508.113-.112.249-.291.374-.436.125-.145.166-.249.249-.415.083-.166.042-.312-.021-.436-.062-.125-.561-1.352-.769-1.85-.202-.486-.407-.42-.561-.428l-.478-.009c-.166 0-.436.062-.664.312-.228.249-.873.852-.873 2.079 0 1.226.893 2.41 1.018 2.577.125.166 1.757 2.684 4.257 3.764.595.257 1.06.41 1.422.525.597.19 1.14.163 1.57.099.479-.071 1.477-.603 1.684-1.184.208-.582.208-1.08.145-1.184-.063-.104-.229-.166-.478-.291z"/></svg>
+  </a>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
