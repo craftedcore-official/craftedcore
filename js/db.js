@@ -5,15 +5,15 @@
 
 const DB_CONFIG = {
   supabase: {
-    url: 'YOUR_SUPABASE_URL',         // e.g. https://xxxx.supabase.co
-    anonKey: 'YOUR_SUPABASE_ANON_KEY' // from Supabase dashboard
+    url: 'https://zlqiyxhesmrfszmjazsr.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpscWl5eGhlc21yZnN6bWphenNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYzNDMxNjYsImV4cCI6MjEwMTkxOTE2Nn0.fQel-qiQSpJqe4ed_eb_HVYVi7VtJht7d_TxND_gq9g'
   },
   cloudinary: {
-    cloudName: 'YOUR_CLOUD_NAME',     // e.g. craftedcore
-    uploadPreset: 'craftedcore_unsigned' // unsigned upload preset
+    cloudName: 'q93whfml',
+    uploadPreset: 'craftedcore_unsigned'
   },
   admin: {
-    password: 'craftedcore2024'       // change this to your password
+    password: 'craftedcore2024'
   }
 };
 
