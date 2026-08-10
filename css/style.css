@@ -1157,10 +1157,9 @@ footer {
   .btn-outline:hover { transform: none; }
   .usp-card:hover { transform: none; }
 
-  /* Product overlay ALWAYS visible on touch — critical for usability */
+  /* Product overlay — HIDDEN on touch so images are visible */
   .product-overlay {
-    opacity: 1 !important;
-    background: linear-gradient(to top, rgba(10,10,12,0.92) 0%, transparent 55%);
+    display: none !important;
   }
 
   /* Active state feedback for touch (replaces hover) */
