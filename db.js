@@ -1,0 +1,248 @@
+// CraftedCore — js/db.js v3
+// ============================================================
+
+const DB_CONFIG = {
+  supabase: {
+    url: 'https://zlqiyxhesmrfszmjazsr.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpscWl5eGhlc21yZnN6bWphenNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYzNDMxNjYsImV4cCI6MjEwMTkxOTE2Nn0.fQel-qiQSpJqe4ed_eb_HVYVi7VtJht7d_TxND_gq9g'
+  },
+  cloudinary: {
+    cloudName: 'q93whfml',
+    uploadPreset: 'craftedcore_unsigned'
+  },
+  admin: { password: 'craftedcore2024' }
+};
+
+// ── Key Getters (localStorage override → hardcoded fallback) ──
+function getSupabaseUrl() {
+  const s = localStorage.getItem('cc_cfg_url');
+  let u = (s && s.trim().length > 10) ? s.trim() : DB_CONFIG.supabase.url;
+  return u.replace(/\/rest\/v1\/?$/, '').replace(/\/$/, '').trim();
+}
+function getSupabaseKey() {
+  const s = localStorage.getItem('cc_cfg_key');
+  return (s && s.trim().length > 20) ? s.trim() : DB_CONFIG.supabase.anonKey;
+}
+function getCloudName() {
+  const s = localStorage.getItem('cc_cfg_cloud');
+  return (s && s.trim().length > 2) ? s.trim() : DB_CONFIG.cloudinary.cloudName;
+}
+function getUploadPreset() {
+  const s = localStorage.getItem('cc_cfg_preset');
+  return (s && s.trim().length > 2) ? s.trim() : DB_CONFIG.cloudinary.uploadPreset;
+}
+
+// ── Core DB Fetch ─────────────────────────────────────────────
+async function dbFetch(endpoint, opts = {}) {
+  const BASE = getSupabaseUrl();
+  const KEY  = getSupabaseKey();
+  const method = opts.method || 'GET';
+  const prefer = opts.prefer || (method === 'DELETE' ? '' : 'return=representation');
+  const hdrs = { 'apikey': KEY, 'Authorization': `Bearer ${KEY}`, 'Content-Type': 'application/json' };
+  if (prefer) hdrs['Prefer'] = prefer;
+  const fetchOpts = { method, headers: hdrs };
+  if (opts.body) fetchOpts.body = opts.body;
+  const res = await fetch(`${BASE}/rest/v1/${endpoint}`, fetchOpts);
+  if (!res.ok) throw new Error(`HTTP ${res.status}: ${(await res.text()).slice(0, 300)}`);
+  if (method === 'DELETE' || res.status === 204) return null;
+  return res.json();
+}
+
+// ── Cache ─────────────────────────────────────────────────────
+const CACHE_TTL = 30 * 60 * 1000;
+function cacheSet(k, d) { try { localStorage.setItem(k, JSON.stringify({ d, t: Date.now() })); } catch(e) {} }
+function cacheGet(k) {
+  try {
+    const r = localStorage.getItem(k); if (!r) return null;
+    const { d, t } = JSON.parse(r);
+    if (Date.now() - t > CACHE_TTL) { localStorage.removeItem(k); return null; }
+    return d;
+  } catch(e) { return null; }
+}
+function cacheClear() {
+  ['cc_products', 'cc_categories', 'cc_settings'].forEach(k => { try { localStorage.removeItem(k); } catch(e) {} });
+}
+
+// ── Products API ──────────────────────────────────────────────
+const Products = {
+  async getAll() {
+    const c = cacheGet('cc_products'); if (c) return c;
+    const d = await dbFetch('products?select=*&order=created_at.desc');
+    cacheSet('cc_products', d); return d || [];
+  },
+  async getFeatured()  { return (await this.getAll()).filter(p => p.is_featured); },
+  async create(p)      { cacheClear(); return dbFetch('products',              { method: 'POST',  body: JSON.stringify(p) }); },
+  async update(id, u)  { cacheClear(); return dbFetch(`products?id=eq.${id}`, { method: 'PATCH', body: JSON.stringify(u) }); },
+  async delete(id)     { cacheClear(); return dbFetch(`products?id=eq.${id}`, { method: 'DELETE' }); }
+};
+
+// ── Categories API ────────────────────────────────────────────
+const Categories = {
+  async getAll() {
+    const c = cacheGet('cc_categories'); if (c) return c;
+    const d = await dbFetch('categories?select=*&order=sort_order.asc,name.asc');
+    cacheSet('cc_categories', d); return d || [];
+  },
+  async create(c)      { cacheClear(); return dbFetch('categories',              { method: 'POST',  body: JSON.stringify(c) }); },
+  async update(id, u)  { cacheClear(); return dbFetch(`categories?id=eq.${id}`, { method: 'PATCH', body: JSON.stringify(u) }); },
+  async delete(id)     { cacheClear(); return dbFetch(`categories?id=eq.${id}`, { method: 'DELETE' }); }
+};
+
+// ── Orders API ────────────────────────────────────────────────
+const Orders = {
+  async getAll() {
+    try {
+      const d = await dbFetch('orders?select=*&order=created_at.desc');
+      return d || [];
+    } catch(e) { return []; }
+  },
+  async create(o)     { return dbFetch('orders', { method: 'POST', body: JSON.stringify(o) }); },
+  async updateStatus(id, status) { return dbFetch(`orders?id=eq.${id}`, { method: 'PATCH', body: JSON.stringify({ status }) }); },
+  async delete(id)    { return dbFetch(`orders?id=eq.${id}`, { method: 'DELETE' }); }
+};
+
+// ── Reviews API ───────────────────────────────────────────────
+const Reviews = {
+  async getAll() {
+    try {
+      const d = await dbFetch('reviews?select=*&order=created_at.desc');
+      return d || [];
+    } catch(e) { return []; }
+  },
+  async create(r)     { return dbFetch('reviews', { method: 'POST', body: JSON.stringify(r) }); },
+  async update(id, u) { return dbFetch(`reviews?id=eq.${id}`, { method: 'PATCH', body: JSON.stringify(u) }); },
+  async delete(id)    { return dbFetch(`reviews?id=eq.${id}`, { method: 'DELETE' }); }
+};
+
+// ── Coupons API ───────────────────────────────────────────────
+const Coupons = {
+  async getAll() {
+    try {
+      const d = await dbFetch('coupons?select=*&order=created_at.desc');
+      return d || [];
+    } catch(e) { return []; }
+  },
+  async create(c)     { return dbFetch('coupons', { method: 'POST', body: JSON.stringify(c) }); },
+  async update(id, u) { return dbFetch(`coupons?id=eq.${id}`, { method: 'PATCH', body: JSON.stringify(u) }); },
+  async delete(id)    { return dbFetch(`coupons?id=eq.${id}`, { method: 'DELETE' }); }
+};
+
+// ── Site Settings API ─────────────────────────────────────────
+const SiteSettings = {
+  _ok: null,
+  async tableExists() {
+    if (this._ok !== null) return this._ok;
+    try { await dbFetch('site_settings?select=key&limit=1'); this._ok = true; }
+    catch(e) { this._ok = false; }
+    return this._ok;
+  },
+  async getAll() {
+    const c = cacheGet('cc_settings'); if (c) return c;
+    try {
+      const d = await dbFetch('site_settings?select=*');
+      const o = {}; (d || []).forEach(r => { o[r.key] = r.value; });
+      cacheSet('cc_settings', o); return o;
+    } catch(e) { return {}; }
+  },
+  async set(key, value) {
+    await dbFetch('site_settings', { method: 'POST', prefer: 'resolution=merge-duplicates,return=representation', body: JSON.stringify({ key, value }) });
+    cacheClear();
+  },
+  async setMultiple(settings) {
+    const rows = Object.entries(settings).map(([key, value]) => ({ key, value }));
+    await dbFetch('site_settings', { method: 'POST', prefer: 'resolution=merge-duplicates,return=representation', body: JSON.stringify(rows) });
+    cacheClear();
+  }
+};
+
+// ── Image Upload (Cloudinary) ─────────────────────────────────
+async function uploadImage(file, onProgress) {
+  const fd = new FormData();
+  fd.append('file', file);
+  fd.append('upload_preset', getUploadPreset());
+  fd.append('folder', 'craftedcore');
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', `https://api.cloudinary.com/v1_1/${getCloudName()}/image/upload`);
+    xhr.upload.onprogress = e => { if (onProgress && e.lengthComputable) onProgress(Math.round(e.loaded / e.total * 100)); };
+    xhr.onload = () => {
+      try {
+        const r = JSON.parse(xhr.responseText);
+        xhr.status === 200 ? resolve(r.secure_url) : reject(new Error(r.error?.message || 'Upload failed'));
+      } catch(e) { reject(new Error('Parse error')); }
+    };
+    xhr.onerror = () => reject(new Error('Network error'));
+    xhr.send(fd);
+  });
+}
+
+// ── Product Card HTML Generator ───────────────────────────────
+function productCardHTML(p) {
+  const waNum = ((window._siteSettings || {}).whatsapp_number || '919913846454').replace(/\D/g, '');
+  const waMsg = encodeURIComponent(p.wa_message || `Hi CraftedCore! I want to order: ${p.name}`);
+  return `
+  <div class="product-card" data-category="${p.category_slug || 'all'}" id="prod-${p.id}">
+    <div class="product-image-wrap">
+      ${p.badge ? `<span class="product-badge">${p.badge}</span>` : ''}
+      <img src="${p.image_url || 'images/product_mug.jpg'}" alt="${p.name}" loading="lazy"/>
+    </div>
+    <div class="product-info">
+      <div class="product-category">${p.category_name || ''}</div>
+      <div class="product-name">${p.name}</div>
+      <div class="product-desc">${p.description || ''}</div>
+      <div class="product-footer">
+        <div class="product-price"><span class="from">From </span>₹${p.price}</div>
+        <a href="https://wa.me/${waNum}?text=${waMsg}" target="_blank" class="order-btn">💬 Order</a>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── Apply Dynamic Settings To Current Page ────────────────────
+async function applyDynamicSettings() {
+  try {
+    const s = await SiteSettings.getAll();
+    window._siteSettings = s;
+    if (!s || Object.keys(s).length === 0) return;
+
+    if (s.whatsapp_number) {
+      const n = s.whatsapp_number.replace(/\D/g, '');
+      document.querySelectorAll('a[href*="wa.me"]').forEach(a => {
+        a.href = a.href.replace(/wa\.me\/\d+/, `wa.me/${n}`);
+      });
+    }
+    if (s.hero_title)     { const el = document.querySelector('.hero-title');      if (el) el.innerHTML = s.hero_title; }
+    if (s.hero_subtitle)  { const el = document.querySelector('.hero-desc');       if (el) el.textContent = s.hero_subtitle; }
+    if (s.hero_image_url) { const el = document.querySelector('.hero-image-wrap img'); if (el) el.src = s.hero_image_url; }
+    if (s.hero_cta1)      { const el = document.getElementById('hero-explore-btn'); if (el) el.innerHTML = s.hero_cta1; }
+    if (s.hero_cta2)      { const el = document.getElementById('hero-chat-btn'); if (el) el.innerHTML = s.hero_cta2; }
+
+    const sns = document.querySelectorAll('.stat-number');
+    const sls = document.querySelectorAll('.stat-label');
+    if (s.stat_1_num && sns[0]) sns[0].textContent = s.stat_1_num;
+    if (s.stat_2_num && sns[1]) sns[1].textContent = s.stat_2_num;
+    if (s.stat_3_num && sns[2]) sns[2].textContent = s.stat_3_num;
+    if (s.stat_1_lbl && sls[0]) sls[0].textContent = s.stat_1_lbl;
+    if (s.stat_2_lbl && sls[1]) sls[1].textContent = s.stat_2_lbl;
+    if (s.stat_3_lbl && sls[2]) sls[2].textContent = s.stat_3_lbl;
+
+    if (s.biz_tagline) {
+      const el = document.querySelector('.footer-bottom p:last-child');
+      if (el) el.textContent = s.biz_tagline;
+    }
+    if (s.biz_insta) {
+      document.querySelectorAll('a[href*="instagram.com"]').forEach(a => { a.href = s.biz_insta; });
+    }
+
+    if (s.announcement_enabled === 'true' && s.announcement_text && !document.getElementById('annBar')) {
+      const bar = document.createElement('div');
+      bar.id = 'annBar';
+      bar.style.cssText = `background:${s.announcement_color || '#C88A58'};color:#fff;text-align:center;padding:8px 44px;font-size:.85rem;font-weight:600;position:relative;z-index:9999;`;
+      bar.innerHTML = (s.announcement_link
+        ? `<a href="${s.announcement_link}" style="color:#fff;text-decoration:underline">${s.announcement_text}</a>`
+        : s.announcement_text)
+        + `<button onclick="this.parentElement.remove()" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:#fff;font-size:1.3rem;cursor:pointer">×</button>`;
+      document.body.prepend(bar);
+    }
+  } catch(e) { /* Silently use static fallback */ }
+}
