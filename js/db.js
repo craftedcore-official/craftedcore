@@ -18,16 +18,44 @@ const DB_CONFIG = {
 };
 
 // ============================================================
-// Supabase Client
+// Supabase & Cloudinary Dynamic Key Loaders
 // ============================================================
-const SUPABASE_URL = DB_CONFIG.supabase.url;
-const SUPABASE_KEY = DB_CONFIG.supabase.anonKey;
+function getSupabaseUrl() {
+  const saved = localStorage.getItem('cc_cfg_url');
+  if (saved && saved !== 'YOUR_SUPABASE_URL') return saved.trim();
+  return DB_CONFIG.supabase.url;
+}
+
+function getSupabaseKey() {
+  const saved = localStorage.getItem('cc_cfg_key');
+  if (saved && saved !== 'YOUR_SUPABASE_ANON_KEY') return saved.trim();
+  return DB_CONFIG.supabase.anonKey;
+}
+
+function getCloudName() {
+  const saved = localStorage.getItem('cc_cfg_cloud');
+  if (saved && saved !== 'YOUR_CLOUD_NAME') return saved.trim();
+  return DB_CONFIG.cloudinary.cloudName;
+}
+
+function getUploadPreset() {
+  const saved = localStorage.getItem('cc_cfg_preset');
+  if (saved && saved !== 'craftedcore_unsigned') return saved.trim();
+  return DB_CONFIG.cloudinary.uploadPreset;
+}
 
 async function dbFetch(endpoint, options = {}) {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/${endpoint}`, {
+  const url = getSupabaseUrl();
+  const key = getSupabaseKey();
+
+  if (!url || url === 'YOUR_SUPABASE_URL' || !key || key === 'YOUR_SUPABASE_ANON_KEY') {
+    throw new Error('Supabase keys not configured');
+  }
+
+  const res = await fetch(`${url}/rest/v1/${endpoint}`, {
     headers: {
-      'apikey': SUPABASE_KEY,
-      'Authorization': `Bearer ${SUPABASE_KEY}`,
+      'apikey': key,
+      'Authorization': `Bearer ${key}`,
       'Content-Type': 'application/json',
       'Prefer': options.prefer || 'return=representation',
       ...options.headers
@@ -152,12 +180,12 @@ const Categories = {
 async function uploadImage(file, onProgress) {
   const formData = new FormData();
   formData.append('file', file);
-  formData.append('upload_preset', DB_CONFIG.cloudinary.uploadPreset);
+  formData.append('upload_preset', getUploadPreset());
   formData.append('folder', 'craftedcore');
 
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
-    xhr.open('POST', `https://api.cloudinary.com/v1_1/${DB_CONFIG.cloudinary.cloudName}/image/upload`);
+    xhr.open('POST', `https://api.cloudinary.com/v1_1/${getCloudName()}/image/upload`);
 
     xhr.upload.onprogress = (e) => {
       if (onProgress && e.lengthComputable) {
