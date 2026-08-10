@@ -217,6 +217,39 @@ function initWhatsAppPulse() {
   });
 }
 
+// ===== Dynamic Database Integration =====
+async function loadDynamicProducts() {
+  if (typeof Products === 'undefined') return;
+  const productGrid = document.getElementById('productGrid');
+  if (!productGrid) return;
+
+  try {
+    const products = await Products.getAll();
+    if (!products || !products.length) return; // keep static fallback if DB empty
+    const html = products.map(p => productCardHTML(p)).join('');
+    productGrid.innerHTML = html;
+    initProductCardEffects();
+  } catch (e) {
+    console.log('Using static fallback products');
+  }
+}
+
+async function loadDynamicFeatured() {
+  if (typeof Products === 'undefined') return;
+  const featuredGrid = document.querySelector('#featured .product-grid');
+  if (!featuredGrid) return;
+
+  try {
+    const products = await Products.getFeatured();
+    if (!products || !products.length) return; // keep static fallback if DB empty
+    const html = products.map(p => productCardHTML(p)).join('');
+    featuredGrid.innerHTML = html;
+    initProductCardEffects();
+  } catch (e) {
+    console.log('Using static fallback featured');
+  }
+}
+
 // ===== Page Load Initialization =====
 document.addEventListener('DOMContentLoaded', () => {
   initScrollAnimations();
@@ -225,6 +258,10 @@ document.addEventListener('DOMContentLoaded', () => {
   initProductCardEffects();
   createGoldParticles();
   initWhatsAppPulse();
+
+  // Load dynamic data from DB if available
+  loadDynamicProducts();
+  loadDynamicFeatured();
 
   // Animate hero content on load
   const heroContent = document.querySelector('.hero-text');
