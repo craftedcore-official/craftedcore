@@ -1,6 +1,4 @@
-// ============================================================
-// CraftedCore — Database Config (Supabase + Cloudinary)
-// Fill in YOUR keys below after setup
+// CraftedCore — js/db.js v4
 // ============================================================
 
 const DB_CONFIG = {
@@ -12,223 +10,284 @@ const DB_CONFIG = {
     cloudName: 'q93whfml',
     uploadPreset: 'craftedcore_unsigned'
   },
-  admin: {
-    password: 'craftedcore2024'
-  }
+  admin: { password: 'craftedcore2024' }
 };
 
-// ============================================================
-// Supabase & Cloudinary Dynamic Key Loaders
-// ============================================================
+// ── Key Getters (localStorage override → hardcoded fallback) ──
 function getSupabaseUrl() {
-  const saved = localStorage.getItem('cc_cfg_url');
-  if (saved && saved !== 'YOUR_SUPABASE_URL') return saved.trim();
-  return DB_CONFIG.supabase.url;
+  const s = localStorage.getItem('cc_cfg_url');
+  let u = (s && s.trim().length > 10) ? s.trim() : DB_CONFIG.supabase.url;
+  return u.replace(/\/rest\/v1\/?$/, '').replace(/\/$/, '').trim();
 }
-
 function getSupabaseKey() {
-  const saved = localStorage.getItem('cc_cfg_key');
-  if (saved && saved !== 'YOUR_SUPABASE_ANON_KEY') return saved.trim();
-  return DB_CONFIG.supabase.anonKey;
+  const s = localStorage.getItem('cc_cfg_key');
+  return (s && s.trim().length > 20) ? s.trim() : DB_CONFIG.supabase.anonKey;
 }
-
 function getCloudName() {
-  const saved = localStorage.getItem('cc_cfg_cloud');
-  if (saved && saved !== 'YOUR_CLOUD_NAME') return saved.trim();
-  return DB_CONFIG.cloudinary.cloudName;
+  const s = localStorage.getItem('cc_cfg_cloud');
+  return (s && s.trim().length > 2) ? s.trim() : DB_CONFIG.cloudinary.cloudName;
 }
-
 function getUploadPreset() {
-  const saved = localStorage.getItem('cc_cfg_preset');
-  if (saved && saved !== 'craftedcore_unsigned') return saved.trim();
-  return DB_CONFIG.cloudinary.uploadPreset;
+  const s = localStorage.getItem('cc_cfg_preset');
+  return (s && s.trim().length > 2) ? s.trim() : DB_CONFIG.cloudinary.uploadPreset;
 }
 
-async function dbFetch(endpoint, options = {}) {
-  const url = getSupabaseUrl();
-  const key = getSupabaseKey();
-
-  if (!url || url === 'YOUR_SUPABASE_URL' || !key || key === 'YOUR_SUPABASE_ANON_KEY') {
-    throw new Error('Supabase keys not configured');
-  }
-
-  const res = await fetch(`${url}/rest/v1/${endpoint}`, {
-    headers: {
-      'apikey': key,
-      'Authorization': `Bearer ${key}`,
-      'Content-Type': 'application/json',
-      'Prefer': options.prefer || 'return=representation',
-      ...options.headers
-    },
-    ...options
-  });
-  if (!res.ok) {
-    const err = await res.text();
-    throw new Error(err);
-  }
-  if (res.status === 204) return null;
+// ── Core DB Fetch ─────────────────────────────────────────────
+async function dbFetch(endpoint, opts = {}) {
+  const BASE = getSupabaseUrl();
+  const KEY  = getSupabaseKey();
+  const method = opts.method || 'GET';
+  const prefer = opts.prefer || (method === 'DELETE' ? '' : 'return=representation');
+  const hdrs = { 'apikey': KEY, 'Authorization': `Bearer ${KEY}`, 'Content-Type': 'application/json' };
+  if (prefer) hdrs['Prefer'] = prefer;
+  const fetchOpts = { method, headers: hdrs };
+  if (opts.body) fetchOpts.body = opts.body;
+  const res = await fetch(`${BASE}/rest/v1/${endpoint}`, fetchOpts);
+  if (!res.ok) throw new Error(`HTTP ${res.status}: ${(await res.text()).slice(0, 300)}`);
+  if (method === 'DELETE' || res.status === 204) return null;
   return res.json();
 }
 
-// ============================================================
-// CACHE — Reduces Firebase reads (30 min cache)
-// ============================================================
-const CACHE_TTL = 30 * 60 * 1000; // 30 minutes
-
-function cacheSet(key, data) {
-  localStorage.setItem(key, JSON.stringify({ data, ts: Date.now() }));
+// ── Cache ─────────────────────────────────────────────────────
+const CACHE_TTL = 30 * 60 * 1000;
+function cacheSet(k, d) { try { localStorage.setItem(k, JSON.stringify({ d, t: Date.now() })); } catch(e) {} }
+function cacheGet(k) {
+  try {
+    const r = localStorage.getItem(k); if (!r) return null;
+    const { d, t } = JSON.parse(r);
+    if (Date.now() - t > CACHE_TTL) { localStorage.removeItem(k); return null; }
+    return d;
+  } catch(e) { return null; }
 }
-
-function cacheGet(key) {
-  const raw = localStorage.getItem(key);
-  if (!raw) return null;
-  const { data, ts } = JSON.parse(raw);
-  if (Date.now() - ts > CACHE_TTL) { localStorage.removeItem(key); return null; }
-  return data;
-}
-
 function cacheClear() {
-  ['cc_products', 'cc_categories'].forEach(k => localStorage.removeItem(k));
+  ['cc_products', 'cc_categories', 'cc_settings'].forEach(k => { try { localStorage.removeItem(k); } catch(e) {} });
 }
 
-// ============================================================
-// PRODUCTS API
-// ============================================================
+// ── Products API ──────────────────────────────────────────────
 const Products = {
   async getAll() {
-    const cached = cacheGet('cc_products');
-    if (cached) return cached;
-    const data = await dbFetch('products?select=*&order=created_at.desc');
-    cacheSet('cc_products', data);
-    return data;
+    const c = cacheGet('cc_products'); if (c) return c;
+    const d = await dbFetch('products?select=*&order=created_at.desc');
+    cacheSet('cc_products', d); return d || [];
   },
-
-  async getFeatured() {
-    const all = await this.getAll();
-    return all.filter(p => p.is_featured);
-  },
-
-  async getByCategory(categorySlug) {
-    const all = await this.getAll();
-    if (categorySlug === 'all') return all;
-    return all.filter(p => p.category_slug === categorySlug);
-  },
-
-  async create(product) {
-    const data = await dbFetch('products', {
-      method: 'POST',
-      body: JSON.stringify(product)
-    });
-    cacheClear();
-    return data;
-  },
-
-  async update(id, updates) {
-    const data = await dbFetch(`products?id=eq.${id}`, {
-      method: 'PATCH',
-      body: JSON.stringify(updates)
-    });
-    cacheClear();
-    return data;
-  },
-
-  async delete(id) {
-    await dbFetch(`products?id=eq.${id}`, { method: 'DELETE' });
-    cacheClear();
-  }
+  async getFeatured()  { return (await this.getAll()).filter(p => p.is_featured); },
+  async create(p)      { cacheClear(); return dbFetch('products',              { method: 'POST',  body: JSON.stringify(p) }); },
+  async update(id, u)  { cacheClear(); return dbFetch(`products?id=eq.${id}`, { method: 'PATCH', body: JSON.stringify(u) }); },
+  async delete(id)     { cacheClear(); return dbFetch(`products?id=eq.${id}`, { method: 'DELETE' }); }
 };
 
-// ============================================================
-// CATEGORIES API
-// ============================================================
+// ── Categories API ────────────────────────────────────────────
 const Categories = {
   async getAll() {
-    const cached = cacheGet('cc_categories');
-    if (cached) return cached;
-    const data = await dbFetch('categories?select=*&order=sort_order.asc');
-    cacheSet('cc_categories', data);
-    return data;
+    const c = cacheGet('cc_categories'); if (c) return c;
+    const d = await dbFetch('categories?select=*&order=sort_order.asc,name.asc');
+    cacheSet('cc_categories', d); return d || [];
   },
+  async create(c)      { cacheClear(); return dbFetch('categories',              { method: 'POST',  body: JSON.stringify(c) }); },
+  async update(id, u)  { cacheClear(); return dbFetch(`categories?id=eq.${id}`, { method: 'PATCH', body: JSON.stringify(u) }); },
+  async delete(id)     { cacheClear(); return dbFetch(`categories?id=eq.${id}`, { method: 'DELETE' }); }
+};
 
-  async create(cat) {
-    const data = await dbFetch('categories', {
-      method: 'POST',
-      body: JSON.stringify(cat)
-    });
+// ── Orders API ────────────────────────────────────────────────
+const Orders = {
+  async getAll() {
+    try {
+      const d = await dbFetch('orders?select=*&order=created_at.desc');
+      return d || [];
+    } catch(e) { return []; }
+  },
+  async create(o)     { return dbFetch('orders', { method: 'POST', body: JSON.stringify(o) }); },
+  async updateStatus(id, status) { return dbFetch(`orders?id=eq.${id}`, { method: 'PATCH', body: JSON.stringify({ status }) }); },
+  async delete(id)    { return dbFetch(`orders?id=eq.${id}`, { method: 'DELETE' }); }
+};
+
+// ── Reviews API ───────────────────────────────────────────────
+const Reviews = {
+  async getAll() {
+    try {
+      const d = await dbFetch('reviews?select=*&order=created_at.desc');
+      return d || [];
+    } catch(e) { return []; }
+  },
+  async create(r)     { return dbFetch('reviews', { method: 'POST', body: JSON.stringify(r) }); },
+  async update(id, u) { return dbFetch(`reviews?id=eq.${id}`, { method: 'PATCH', body: JSON.stringify(u) }); },
+  async delete(id)    { return dbFetch(`reviews?id=eq.${id}`, { method: 'DELETE' }); }
+};
+
+// ── Coupons API ───────────────────────────────────────────────
+const Coupons = {
+  async getAll() {
+    try {
+      const d = await dbFetch('coupons?select=*&order=created_at.desc');
+      return d || [];
+    } catch(e) { return []; }
+  },
+  async create(c)     { return dbFetch('coupons', { method: 'POST', body: JSON.stringify(c) }); },
+  async update(id, u) { return dbFetch(`coupons?id=eq.${id}`, { method: 'PATCH', body: JSON.stringify(u) }); },
+  async delete(id)    { return dbFetch(`coupons?id=eq.${id}`, { method: 'DELETE' }); }
+};
+
+// ── Site Settings API ─────────────────────────────────────────
+const SiteSettings = {
+  _ok: null,
+  async tableExists() {
+    if (this._ok !== null) return this._ok;
+    try { await dbFetch('site_settings?select=key&limit=1'); this._ok = true; }
+    catch(e) { this._ok = false; }
+    return this._ok;
+  },
+  async getAll() {
+    const c = cacheGet('cc_settings'); if (c) return c;
+    try {
+      const d = await dbFetch('site_settings?select=*');
+      const o = {}; (d || []).forEach(r => { o[r.key] = r.value; });
+      cacheSet('cc_settings', o); return o;
+    } catch(e) { return {}; }
+  },
+  async set(key, value) {
+    await dbFetch('site_settings', { method: 'POST', prefer: 'resolution=merge-duplicates,return=representation', body: JSON.stringify({ key, value }) });
     cacheClear();
-    return data;
   },
-
-  async update(id, updates) {
-    const data = await dbFetch(`categories?id=eq.${id}`, {
-      method: 'PATCH',
-      body: JSON.stringify(updates)
-    });
-    cacheClear();
-    return data;
-  },
-
-  async delete(id) {
-    await dbFetch(`categories?id=eq.${id}`, { method: 'DELETE' });
+  async setMultiple(settings) {
+    const rows = Object.entries(settings).map(([key, value]) => ({ key, value }));
+    await dbFetch('site_settings', { method: 'POST', prefer: 'resolution=merge-duplicates,return=representation', body: JSON.stringify(rows) });
     cacheClear();
   }
 };
 
-// ============================================================
-// IMAGE UPLOAD — Cloudinary
-// ============================================================
+// ── Image Upload (Cloudinary) ─────────────────────────────────
 async function uploadImage(file, onProgress) {
-  const formData = new FormData();
-  formData.append('file', file);
-  formData.append('upload_preset', getUploadPreset());
-  formData.append('folder', 'craftedcore');
-
+  const fd = new FormData();
+  fd.append('file', file);
+  fd.append('upload_preset', getUploadPreset());
+  fd.append('folder', 'craftedcore');
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.open('POST', `https://api.cloudinary.com/v1_1/${getCloudName()}/image/upload`);
-
-    xhr.upload.onprogress = (e) => {
-      if (onProgress && e.lengthComputable) {
-        onProgress(Math.round((e.loaded / e.total) * 100));
-      }
-    };
-
+    xhr.upload.onprogress = e => { if (onProgress && e.lengthComputable) onProgress(Math.round(e.loaded / e.total * 100)); };
     xhr.onload = () => {
-      const res = JSON.parse(xhr.responseText);
-      if (xhr.status === 200) resolve(res.secure_url);
-      else reject(new Error(res.error?.message || 'Upload failed'));
+      try {
+        const r = JSON.parse(xhr.responseText);
+        xhr.status === 200 ? resolve(r.secure_url) : reject(new Error(r.error?.message || 'Upload failed'));
+      } catch(e) { reject(new Error('Parse error')); }
     };
-
     xhr.onerror = () => reject(new Error('Network error'));
-    xhr.send(formData);
+    xhr.send(fd);
   });
 }
 
-// ============================================================
-// PRODUCT CARD HTML Generator (shared by site + admin)
-// ============================================================
-function productCardHTML(p, waNumber = '919913846454') {
-  const waMsg = encodeURIComponent(`Hi CraftedCore! I want to order: ${p.name}`);
-  const badge = p.badge ? `<span class="product-badge">${p.badge}</span>` : '';
-  const img = p.image_url || 'images/product_mug.jpg';
-
+// ── Product Card HTML Generator ───────────────────────────────
+function productCardHTML(p) {
+  const waNum = ((window._siteSettings || {}).whatsapp_number || '919913846454').replace(/\D/g, '');
+  const waMsg = encodeURIComponent(p.wa_message || `Hi CraftedCore! I want to order: ${p.name}`);
   return `
   <div class="product-card" data-category="${p.category_slug || 'all'}" id="prod-${p.id}">
     <div class="product-image-wrap">
-      ${badge}
-      <img src="${img}" alt="${p.name}" loading="lazy" />
-      <div class="product-overlay">
-        <a href="https://wa.me/${waNumber}?text=${waMsg}" target="_blank" class="btn btn-whatsapp" style="width:100%;justify-content:center;">💬 Order Now</a>
-      </div>
+      ${p.badge ? `<span class="product-badge">${p.badge}</span>` : ''}
+      <img src="${p.image_url || 'images/product_mug.jpg'}" alt="${p.name}" loading="lazy"/>
     </div>
     <div class="product-info">
-      <div class="product-category">${p.category_name || p.category_slug || ''}</div>
+      <div class="product-category">${p.category_name || ''}</div>
       <div class="product-name">${p.name}</div>
       <div class="product-desc">${p.description || ''}</div>
       <div class="product-footer">
         <div class="product-price"><span class="from">From </span>₹${p.price}</div>
-        <a href="https://wa.me/${waNumber}?text=${waMsg}" target="_blank" class="order-btn">💬 Order</a>
+        <a href="https://wa.me/${waNum}?text=${waMsg}" target="_blank" class="order-btn">💬 Order</a>
       </div>
     </div>
   </div>`;
+}
+
+// ── Apply Dynamic Settings To Current Page ────────────────────
+async function applyDynamicSettings() {
+  try {
+    const s = await SiteSettings.getAll();
+    window._siteSettings = s;
+    if (!s || Object.keys(s).length === 0) return;
+
+    // 1. Logo & Branding
+    if (s.site_logo_url) {
+      document.querySelectorAll('.logo-img').forEach(img => { img.src = s.site_logo_url; });
+    }
+    if (s.brand_name) {
+      document.querySelectorAll('.logo-img').forEach(img => { img.alt = s.brand_name; });
+    }
+    if (s.nav_cta_text) {
+      const el = document.getElementById('nav-whatsapp-btn');
+      if (el) el.innerHTML = `<svg class="social-svg" viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12.012 2c-5.506 0-9.989 4.478-9.989 9.984 0 1.758.459 3.474 1.33 4.982L2 22l5.176-1.348a9.982 9.982 0 004.836 1.251h.004c5.506 0 9.989-4.478 9.989-9.984 0-2.668-1.039-5.176-2.927-7.063C17.189 3.039 14.68 2 12.012 2zm.004 16.326h-.003a8.31 8.31 0 01-4.238-1.163l-.304-.18-3.149.821.838-3.067-.198-.314a8.275 8.275 0 01-1.272-4.437c0-4.577 3.724-8.301 8.306-8.301 2.217 0 4.301.865 5.869 2.434a8.261 8.261 0 012.43 5.867c0 4.578-3.725 8.302-8.279 8.302zm4.551-6.216c-.249-.125-1.477-.729-1.706-.812-.228-.083-.395-.125-.561.125-.166.249-.644.812-.789.978-.145.166-.291.187-.54.062a6.837 6.837 0 01-2.008-1.238 7.55 7.55 0 01-1.39-1.73c-.145-.249-.016-.384.109-.508.113-.112.249-.291.374-.436.125-.145.166-.249.249-.415.083-.166.042-.312-.021-.436-.062-.125-.561-1.352-.769-1.85-.202-.486-.407-.42-.561-.428l-.478-.009c-.166 0-.436.062-.664.312-.228.249-.873.852-.873 2.079 0 1.226.893 2.41 1.018 2.577.125.166 1.757 2.684 4.257 3.764.595.257 1.06.41 1.422.525.597.19 1.14.163 1.57.099.479-.071 1.477-.603 1.684-1.184.208-.582.208-1.08.145-1.184-.063-.104-.229-.166-.478-.291z"/></svg> ${s.nav_cta_text}`;
+    }
+
+    // 2. WhatsApp Number
+    if (s.whatsapp_number) {
+      const n = s.whatsapp_number.replace(/\D/g, '');
+      document.querySelectorAll('a[href*="wa.me"]').forEach(a => {
+        a.href = a.href.replace(/wa\.me\/\d+/, `wa.me/${n}`);
+      });
+    }
+
+    // 3. Hero Section
+    if (s.hero_title)     { const el = document.querySelector('.hero-title');      if (el) el.innerHTML = s.hero_title; }
+    if (s.hero_subtitle)  { const el = document.querySelector('.hero-desc');       if (el) el.textContent = s.hero_subtitle; }
+    if (s.hero_image_url) { const el = document.querySelector('.hero-image-wrap img'); if (el) el.src = s.hero_image_url; }
+    if (s.hero_cta1)      { const el = document.getElementById('hero-explore-btn'); if (el) el.innerHTML = s.hero_cta1; }
+    if (s.hero_cta2)      { const el = document.getElementById('hero-chat-btn'); if (el) el.innerHTML = s.hero_cta2; }
+
+    // 4. Stats Counter
+    const sns = document.querySelectorAll('.stat-number');
+    const sls = document.querySelectorAll('.stat-label');
+    if (s.stat_1_num && sns[0]) sns[0].textContent = s.stat_1_num;
+    if (s.stat_2_num && sns[1]) sns[1].textContent = s.stat_2_num;
+    if (s.stat_3_num && sns[2]) sns[2].textContent = s.stat_3_num;
+    if (s.stat_1_lbl && sls[0]) sls[0].textContent = s.stat_1_lbl;
+    if (s.stat_2_lbl && sls[1]) sls[1].textContent = s.stat_2_lbl;
+    if (s.stat_3_lbl && sls[2]) sls[2].textContent = s.stat_3_lbl;
+
+    // 5. Feature / USP Cards
+    const uspCards = document.querySelectorAll('.usp-card');
+    for (let i = 1; i <= 6; i++) {
+      const card = uspCards[i - 1];
+      if (!card) continue;
+      const icon = s[`usp_${i}_icon`];
+      const title = s[`usp_${i}_title`];
+      const desc = s[`usp_${i}_desc`];
+      if (icon)  { const el = card.querySelector('.usp-icon');  if (el) el.textContent = icon; }
+      if (title) { const el = card.querySelector('.usp-title'); if (el) el.textContent = title; }
+      if (desc)  { const el = card.querySelector('.usp-desc');  if (el) el.textContent = desc; }
+    }
+
+    // 6. Special Promo Banner
+    if (s.promo_title) {
+      const el = document.querySelector('.cta-title');
+      if (el) el.innerHTML = s.promo_title;
+    }
+    if (s.promo_subtitle) {
+      const el = document.querySelector('.cta-desc');
+      if (el) el.textContent = s.promo_subtitle;
+    }
+
+    // 7. Footer & Social Links
+    if (s.footer_about) {
+      const el = document.querySelector('.footer-brand p');
+      if (el) el.textContent = s.footer_about;
+    }
+    if (s.biz_tagline) {
+      const el = document.querySelector('.footer-bottom p:last-child');
+      if (el) el.textContent = s.biz_tagline;
+    }
+    if (s.biz_insta) {
+      document.querySelectorAll('a[href*="instagram.com"]').forEach(a => { a.href = s.biz_insta; });
+    }
+
+    // 8. Announcement Bar
+    if (s.announcement_enabled === 'true' && s.announcement_text && !document.getElementById('annBar')) {
+      const bar = document.createElement('div');
+      bar.id = 'annBar';
+      bar.style.cssText = `background:${s.announcement_color || '#C88A58'};color:#fff;text-align:center;padding:8px 44px;font-size:.85rem;font-weight:600;position:relative;z-index:9999;`;
+      bar.innerHTML = (s.announcement_link
+        ? `<a href="${s.announcement_link}" style="color:#fff;text-decoration:underline">${s.announcement_text}</a>`
+        : s.announcement_text)
+        + `<button onclick="this.parentElement.remove()" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:#fff;font-size:1.3rem;cursor:pointer">×</button>`;
+      document.body.prepend(bar);
+    }
+  } catch(e) { /* Silently use static fallback */ }
 }
