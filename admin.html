@@ -553,13 +553,20 @@ async function initAdmin() {
 
 async function loadDashboard() {
   try {
+    cacheClear(); // Clear cache when checking dashboard
     const [products, cats] = await Promise.all([Products.getAll(), Categories.getAll()]);
     document.getElementById('statProducts').textContent = products.length;
     document.getElementById('statFeatured').textContent = products.filter(p => p.is_featured).length;
     document.getElementById('statCategories').textContent = cats.length;
-    document.getElementById('setupStatus').innerHTML = '<span style="color:#25D366;">✅ Connected to Supabase database!</span>';
+    document.getElementById('setupStatus').innerHTML = '<span style="color:#25D366;font-size:1rem;font-weight:700;">✅ Connected to Supabase Database!</span>';
   } catch (e) {
-    document.getElementById('setupStatus').innerHTML = `<span style="color:var(--red);">❌ Not connected. Go to <b>Settings</b> and fill in your Supabase & Cloudinary keys, then refresh.</span>`;
+    let msg = e.message || 'Unknown error';
+    if (msg.includes('Keys not configured')) {
+      msg = 'Supabase URL & Anon Key are empty. Please fill them in Settings tab below.';
+    } else if (msg.includes('404') || msg.includes('does not exist') || msg.includes('relation')) {
+      msg = 'Database tables missing! Did you run the SQL script in Supabase SQL Editor?';
+    }
+    document.getElementById('setupStatus').innerHTML = `<div style="color:var(--red);font-weight:600;">❌ Connection Failed: ${msg}</div><div style="font-size:0.78rem;color:var(--text3);margin-top:0.3rem;">Raw details: ${e.message}</div>`;
     document.getElementById('statProducts').textContent = '—';
     document.getElementById('statFeatured').textContent = '—';
     document.getElementById('statCategories').textContent = '—';
@@ -833,7 +840,9 @@ function saveSettings() {
   localStorage.setItem('cc_cfg_preset', document.getElementById('cfgUploadPreset').value.trim());
   const pass = document.getElementById('cfgPassword').value.trim();
   if (pass) localStorage.setItem('cc_admin_pass', pass);
-  toast('✅ Settings saved! Update js/db.js with these keys for permanent save.', 'success');
+  cacheClear();
+  toast('✅ Settings saved! Testing connection...', 'success');
+  loadDashboard();
 }
 
 // ============================================================
