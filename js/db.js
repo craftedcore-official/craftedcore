@@ -1,8 +1,4 @@
-// CraftedCore — js/db.js v4
-// ============================================================
-
-const DB_CONFIG = {
-  supabase: {
+supabase: {
     url: 'https://zlqiyxhesmrfszmjazsr.supabase.co',
     anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpscWl5eGhlc21yZnN6bWphenNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYzNDMxNjYsImV4cCI6MjEwMTkxOTE2Nn0.fQel-qiQSpJqe4ed_eb_HVYVi7VtJht7d_TxND_gq9g'
   },
