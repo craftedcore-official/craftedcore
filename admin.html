@@ -411,16 +411,44 @@
         </div>
         <div id="edContent">
           <div class="tab-nav">
-            <button class="tab-btn active" onclick="showEdTab('hero',this)">🖼️ Hero Section</button>
-            <button class="tab-btn" onclick="showEdTab('stats',this)">📊 Stats</button>
-            <button class="tab-btn" onclick="showEdTab('ann',this)">📣 Announcement</button>
-            <button class="tab-btn" onclick="showEdTab('wa',this)">💬 WhatsApp</button>
+            <button class="tab-btn active" onclick="showEdTab('branding',this)">🏷️ 1. Header & Branding</button>
+            <button class="tab-btn" onclick="showEdTab('hero',this)">🖼️ 2. Hero Section</button>
+            <button class="tab-btn" onclick="showEdTab('stats',this)">📊 3. Stats</button>
+            <button class="tab-btn" onclick="showEdTab('usps',this)">💎 4. Feature Cards</button>
+            <button class="tab-btn" onclick="showEdTab('promo',this)">🏷️ 5. Promo Banner</button>
+            <button class="tab-btn" onclick="showEdTab('ann',this)">📣 6. Announcement Bar</button>
+            <button class="tab-btn" onclick="showEdTab('wa',this)">💬 7. WhatsApp & Footer</button>
+          </div>
+
+          <!-- STEP 1: HEADER & BRANDING -->
+          <div class="tab-pane active" id="etab-branding">
+            <div class="card">
+              <div class="card-title">🏷️ Step 1: Header, Logo & Branding Controls</div>
+              <div class="fg">
+                <label>Website Logo</label>
+                <div class="img-upload" id="logoUA" ondragover="onDrag(event,'logoUA')" ondragleave="offDrag('logoUA')" ondrop="onDropLogo(event)">
+                  <input type="file" id="logoFile" accept="image/*" onchange="logoUpload(this.files[0])" />
+                  <div class="up-icon" id="logoUIcon">🏷️</div>
+                  <div class="up-text" id="logoUText">Click or drag logo image to upload</div>
+                  <img id="logoPre" class="img-pre" style="max-height:80px;object-fit:contain;" />
+                  <div class="prog-wrap" id="logoPW"><div class="prog-bar" id="logoPB"></div></div>
+                </div>
+                <input type="hidden" id="logoImgUrl" />
+                <span class="url-tog" onclick="toggleEl('logoUrlIn')">Or paste image URL</span>
+                <input type="text" class="fctl" id="logoUrlIn" placeholder="https://..." style="display:none;margin-top:.4rem;" oninput="previewLogoUrl(this.value)" />
+              </div>
+              <div class="fr2">
+                <div class="fg"><label>Brand Name</label><input type="text" class="fctl" id="brandName" placeholder="CraftedCore" /></div>
+                <div class="fg"><label>Navbar WhatsApp Button Text</label><input type="text" class="fctl" id="navCtaTxt" placeholder="WhatsApp Us" /></div>
+              </div>
+              <button class="btn btn-primary" onclick="saveHeaderBranding()">💾 Save Step 1: Header & Branding</button>
+            </div>
           </div>
 
           <!-- HERO -->
-          <div class="tab-pane active" id="etab-hero">
+          <div class="tab-pane" id="etab-hero">
             <div class="card">
-              <div class="card-title">🖼️ Hero Banner Setup</div>
+              <div class="card-title">🖼️ Step 2: Hero Banner Setup</div>
               <div class="fg">
                 <label>Hero Image</label>
                 <div class="img-upload" id="heroUA" ondragover="onDrag(event,'heroUA')" ondragleave="offDrag('heroUA')" ondrop="onDropHero(event)">
@@ -447,7 +475,7 @@
           <!-- STATS -->
           <div class="tab-pane" id="etab-stats">
             <div class="card">
-              <div class="card-title">📊 Homepage Stats</div>
+              <div class="card-title">📊 Step 3: Homepage Stats Counter</div>
               <div class="fr3">
                 <div class="fg"><label>Stat 1 Value</label><input type="text" class="fctl" id="s1n" placeholder="500+" /><label style="margin-top:.4rem;">Stat 1 Label</label><input type="text" class="fctl" id="s1l" placeholder="Happy Customers" /></div>
                 <div class="fg"><label>Stat 2 Value</label><input type="text" class="fctl" id="s2n" placeholder="7+" /><label style="margin-top:.4rem;">Stat 2 Label</label><input type="text" class="fctl" id="s2l" placeholder="Product Types" /></div>
@@ -457,10 +485,36 @@
             </div>
           </div>
 
+          <!-- FEATURE CARDS (USP) -->
+          <div class="tab-pane" id="etab-usps">
+            <div class="card">
+              <div class="card-title">💎 Step 4: Feature Cards (Why Choose Us)</div>
+              <div class="fr2">
+                <div class="fg"><label>Card 1 Icon</label><input type="text" class="fctl" id="u1i" placeholder="🎨" /><label style="margin-top:.4rem;">Title</label><input type="text" class="fctl" id="u1t" placeholder="100% Custom Designs" /><label style="margin-top:.4rem;">Description</label><input type="text" class="fctl" id="u1d" placeholder="Your vision brought to life" /></div>
+                <div class="fg"><label>Card 2 Icon</label><input type="text" class="fctl" id="u2i" placeholder="⚡" /><label style="margin-top:.4rem;">Title</label><input type="text" class="fctl" id="u2t" placeholder="Fast Delivery" /><label style="margin-top:.4rem;">Description</label><input type="text" class="fctl" id="u2d" placeholder="Quick turnaround times" /></div>
+              </div>
+              <div class="fr2">
+                <div class="fg"><label>Card 3 Icon</label><input type="text" class="fctl" id="u3i" placeholder="💎" /><label style="margin-top:.4rem;">Title</label><input type="text" class="fctl" id="u3t" placeholder="Premium Quality" /><label style="margin-top:.4rem;">Description</label><input type="text" class="fctl" id="u3d" placeholder="Best long-lasting materials" /></div>
+                <div class="fg"><label>Card 4 Icon</label><input type="text" class="fctl" id="u4i" placeholder="💬" /><label style="margin-top:.4rem;">Title</label><input type="text" class="fctl" id="u4t" placeholder="WhatsApp Support" /><label style="margin-top:.4rem;">Description</label><input type="text" class="fctl" id="u4d" placeholder="Real-time order updates" /></div>
+              </div>
+              <button class="btn btn-primary" onclick="saveUSPs()">💾 Save Feature Cards</button>
+            </div>
+          </div>
+
+          <!-- PROMO BANNER -->
+          <div class="tab-pane" id="etab-promo">
+            <div class="card">
+              <div class="card-title">🏷️ Step 5: Special Promo CTA Banner</div>
+              <div class="fg"><label>Banner Title</label><input type="text" class="fctl" id="promoTitle" placeholder="Ready to Create Something Amazing?" /></div>
+              <div class="fg"><label>Banner Subtitle</label><textarea class="fctl" id="promoSub" placeholder="Message us on WhatsApp with your idea..."></textarea></div>
+              <button class="btn btn-primary" onclick="savePromo()">💾 Save Promo Banner</button>
+            </div>
+          </div>
+
           <!-- ANNOUNCEMENT -->
           <div class="tab-pane" id="etab-ann">
             <div class="card">
-              <div class="card-title">📣 Top Announcement Bar</div>
+              <div class="card-title">📣 Step 6: Top Announcement Bar</div>
               <div class="fg">
                 <label>Enable Bar</label>
                 <div style="display:flex;align-items:center;gap:.8rem;margin-top:.35rem;">
@@ -477,15 +531,19 @@
             </div>
           </div>
 
-          <!-- WHATSAPP -->
+          <!-- WHATSAPP & FOOTER -->
           <div class="tab-pane" id="etab-wa">
             <div class="card">
-              <div class="card-title">💬 WhatsApp Integration</div>
-              <div class="fg"><label>Number (Country Code + Mobile)</label><input type="text" class="fctl" id="waNum" placeholder="919913846454" style="font-size:1.1rem;font-weight:700;" /></div>
-              <div class="fg"><label>Default Greeting Message</label><textarea class="fctl" id="waDef" placeholder="Hi CraftedCore! I want to place an order."></textarea></div>
+              <div class="card-title">💬 Step 7: Master WhatsApp & Footer Settings</div>
+              <div class="fg"><label>Master WhatsApp Number</label><input type="text" class="fctl" id="waNum" placeholder="919913846454" style="font-size:1.1rem;font-weight:700;" /></div>
+              <div class="fg"><label>Footer About Bio</label><textarea class="fctl" id="ftAbout" placeholder="Premium custom merchandise crafted with passion..."></textarea></div>
+              <div class="fr2">
+                <div class="fg"><label>Instagram Link</label><input type="text" class="fctl" id="bInstaVal" placeholder="https://instagram.com/crafted_core_" /></div>
+                <div class="fg"><label>Footer Tagline</label><input type="text" class="fctl" id="ftTagline" placeholder="Made with ❤️ for custom lovers" /></div>
+              </div>
               <div style="display:flex;gap:.8rem;">
-                <button class="btn btn-primary" onclick="saveWA()">💾 Save WhatsApp</button>
-                <button class="btn btn-green" onclick="testWA()">📱 Test Link</button>
+                <button class="btn btn-primary" onclick="saveWAFooter()">💾 Save WhatsApp & Footer</button>
+                <button class="btn btn-green" onclick="testWA()">📱 Test WhatsApp Link</button>
               </div>
             </div>
           </div>
@@ -1220,6 +1278,10 @@ async function saveReview() {
 async function loadEditor() {
   try {
     const s = await SiteSettings.getAll();
+    if (s.site_logo_url) { document.getElementById('logoImgUrl').value = s.site_logo_url; document.getElementById('logoUrlIn').value = s.site_logo_url; const img=document.getElementById('logoPre'); img.src=s.site_logo_url; img.style.display='block'; }
+    if (s.brand_name)    document.getElementById('brandName').value  = s.brand_name;
+    if (s.nav_cta_text)  document.getElementById('navCtaTxt').value = s.nav_cta_text;
+
     if (s.hero_image_url) { document.getElementById('heroImgUrl').value = s.hero_image_url; document.getElementById('heroUrlIn').value = s.hero_image_url; const img=document.getElementById('heroPre'); img.src=s.hero_image_url; img.style.display='block'; }
     if (s.hero_title)    document.getElementById('heroTitle').value = s.hero_title;
     if (s.hero_subtitle) document.getElementById('heroSub').value   = s.hero_subtitle;
@@ -1231,17 +1293,40 @@ async function loadEditor() {
     if (s.stat_2_lbl)    document.getElementById('s2l').value = s.stat_2_lbl;
     if (s.stat_3_num)    document.getElementById('s3n').value = s.stat_3_num;
     if (s.stat_3_lbl)    document.getElementById('s3l').value = s.stat_3_lbl;
+
+    for (let i = 1; i <= 4; i++) {
+      if (s[`usp_${i}_icon`])  document.getElementById(`u${i}i`).value = s[`usp_${i}_icon`];
+      if (s[`usp_${i}_title`]) document.getElementById(`u${i}t`).value = s[`usp_${i}_title`];
+      if (s[`usp_${i}_desc`])  document.getElementById(`u${i}d`).value = s[`usp_${i}_desc`];
+    }
+
+    if (s.promo_title)    document.getElementById('promoTitle').value = s.promo_title;
+    if (s.promo_subtitle) document.getElementById('promoSub').value   = s.promo_subtitle;
+
     document.getElementById('annEn').checked = s.announcement_enabled === 'true';
     if (s.announcement_text)  document.getElementById('annTxt').value  = s.announcement_text;
     if (s.announcement_color) document.getElementById('annCol').value  = s.announcement_color;
     if (s.announcement_link)  document.getElementById('annLink').value = s.announcement_link;
     if (s.whatsapp_number)    document.getElementById('waNum').value  = s.whatsapp_number;
-    if (s.wa_default_msg)     document.getElementById('waDef').value  = s.wa_default_msg;
+    if (s.footer_about)       document.getElementById('ftAbout').value = s.footer_about;
+    if (s.biz_insta)          document.getElementById('bInstaVal').value = s.biz_insta;
+    if (s.biz_tagline)        document.getElementById('ftTagline').value = s.biz_tagline;
     updAnnLbl();
   } catch(e) {}
 }
 
 function updAnnLbl() { document.getElementById('annLbl').textContent = document.getElementById('annEn').checked ? 'Enabled ✅' : 'Disabled'; }
+
+async function saveHeaderBranding() {
+  try {
+    await SiteSettings.setMultiple({
+      site_logo_url: document.getElementById('logoImgUrl').value.trim() || document.getElementById('logoUrlIn').value.trim(),
+      brand_name: document.getElementById('brandName').value.trim(),
+      nav_cta_text: document.getElementById('navCtaTxt').value.trim()
+    });
+    toast('✅ Step 1: Header & Branding Saved!', 'success');
+  } catch(e) { toast('❌ Error: ' + e.message, 'error'); }
+}
 
 async function saveHero() {
   try {
@@ -1252,14 +1337,37 @@ async function saveHero() {
       hero_cta2: document.getElementById('heroCta2').value.trim(),
       hero_image_url: document.getElementById('heroImgUrl').value.trim() || document.getElementById('heroUrlIn').value.trim()
     });
-    toast('✅ Hero saved!', 'success');
+    toast('✅ Step 2: Hero Banner Saved!', 'success');
   } catch(e) { toast('❌ Error', 'error'); }
 }
 
 async function saveStats() {
   try {
     await SiteSettings.setMultiple({ stat_1_num:document.getElementById('s1n').value.trim(), stat_1_lbl:document.getElementById('s1l').value.trim(), stat_2_num:document.getElementById('s2n').value.trim(), stat_2_lbl:document.getElementById('s2l').value.trim(), stat_3_num:document.getElementById('s3n').value.trim(), stat_3_lbl:document.getElementById('s3l').value.trim() });
-    toast('✅ Stats saved!', 'success');
+    toast('✅ Step 3: Stats Saved!', 'success');
+  } catch(e) { toast('❌ Error', 'error'); }
+}
+
+async function saveUSPs() {
+  try {
+    const data = {};
+    for (let i = 1; i <= 4; i++) {
+      data[`usp_${i}_icon`]  = document.getElementById(`u${i}i`).value.trim();
+      data[`usp_${i}_title`] = document.getElementById(`u${i}t`).value.trim();
+      data[`usp_${i}_desc`]  = document.getElementById(`u${i}d`).value.trim();
+    }
+    await SiteSettings.setMultiple(data);
+    toast('✅ Step 4: Feature Cards Saved!', 'success');
+  } catch(e) { toast('❌ Error', 'error'); }
+}
+
+async function savePromo() {
+  try {
+    await SiteSettings.setMultiple({
+      promo_title: document.getElementById('promoTitle').value.trim(),
+      promo_subtitle: document.getElementById('promoSub').value.trim()
+    });
+    toast('✅ Step 5: Promo Banner Saved!', 'success');
   } catch(e) { toast('❌ Error', 'error'); }
 }
 
@@ -1270,12 +1378,17 @@ async function saveAnn() {
   } catch(e) { toast('❌ Error', 'error'); }
 }
 
-async function saveWA() {
+async function saveWAFooter() {
   const n = document.getElementById('waNum').value.trim().replace(/\D/g, '');
-  if (!n) { toast('❌ Valid number required!', 'error'); return; }
+  if (!n) { toast('❌ Valid WhatsApp number required!', 'error'); return; }
   try {
-    await SiteSettings.setMultiple({ whatsapp_number: n, wa_default_msg: document.getElementById('waDef').value.trim() });
-    toast('✅ WhatsApp saved!', 'success');
+    await SiteSettings.setMultiple({
+      whatsapp_number: n,
+      footer_about: document.getElementById('ftAbout').value.trim(),
+      biz_insta: document.getElementById('bInstaVal').value.trim(),
+      biz_tagline: document.getElementById('ftTagline').value.trim()
+    });
+    toast('✅ Step 7: WhatsApp & Footer Saved!', 'success');
   } catch(e) { toast('❌ Error', 'error'); }
 }
 
@@ -1342,9 +1455,11 @@ function onDrag(e, id)  { e.preventDefault(); document.getElementById(id).classL
 function offDrag(id)    { document.getElementById(id).classList.remove('drag'); }
 function onDropProd(e)  { e.preventDefault(); offDrag('pUA'); const f=e.dataTransfer.files[0]; if(f) prodUpload(f); }
 function onDropHero(e)  { e.preventDefault(); offDrag('heroUA'); const f=e.dataTransfer.files[0]; if(f) heroUpload(f); }
+function onDropLogo(e)  { e.preventDefault(); offDrag('logoUA'); const f=e.dataTransfer.files[0]; if(f) logoUpload(f); }
 function toggleEl(id)   { const el=document.getElementById(id); el.style.display = el.style.display==='none'?'block':'none'; }
 function previewProdUrl(url) { document.getElementById('pImgUrl').value = url; const img=document.getElementById('pPre'); img.src=url; img.style.display=url?'block':'none'; }
 function previewHeroUrl(url) { document.getElementById('heroImgUrl').value = url; const img=document.getElementById('heroPre'); img.src=url; img.style.display=url?'block':'none'; }
+function previewLogoUrl(url) { document.getElementById('logoImgUrl').value = url; const img=document.getElementById('logoPre'); img.src=url; img.style.display=url?'block':'none'; }
 
 async function prodUpload(file) {
   if (!file) return;
@@ -1369,6 +1484,19 @@ async function heroUpload(file) {
     document.getElementById('heroImgUrl').value = url;
     document.getElementById('heroPW').style.display = 'none';
     toast('✅ Hero image uploaded!', 'success');
+  } catch(e) { toast('❌ Upload failed', 'error'); }
+}
+
+async function logoUpload(file) {
+  if (!file) return;
+  const preview = document.getElementById('logoPre');
+  const fr = new FileReader(); fr.onload = e => { preview.src = e.target.result; preview.style.display = 'block'; }; fr.readAsDataURL(file);
+  document.getElementById('logoPW').style.display = 'block';
+  try {
+    const url = await uploadImage(file, pct => { document.getElementById('logoPB').style.width = pct + '%'; });
+    document.getElementById('logoImgUrl').value = url;
+    document.getElementById('logoPW').style.display = 'none';
+    toast('✅ Logo uploaded!', 'success');
   } catch(e) { toast('❌ Upload failed', 'error'); }
 }
 
