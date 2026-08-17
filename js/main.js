@@ -515,7 +515,7 @@ async function submitCartCheckout() {
     });
     
     const orderId = (res && res.length > 0) ? res[0].id : 'NEW';
-    const waNum = ((window._siteSettings || {}).whatsapp_number || '919913846454').replace(/\D/g, '');
+    const waNum = ((window._siteSettings || {}).whatsapp_number || '918320979383').replace(/\D/g, '');
     
     let msg = `Hi CraftedCore! 👋\n\nI just placed a new order.\n*Order ID:* #${orderId}\n\n*Items:*\n`;
     shoppingCart.forEach(item => {
