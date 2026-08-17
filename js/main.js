@@ -229,9 +229,39 @@ async function loadDynamicProducts() {
     const html = products.map(p => productCardHTML(p)).join('');
     productGrid.innerHTML = html;
     initProductCardEffects();
+    injectSEOData(products);
   } catch (e) {
     console.log('Using static fallback products');
   }
+}
+
+function injectSEOData(products) {
+  const schemaList = products.map(p => ({
+    "@type": "Product",
+    "name": p.name,
+    "image": p.image_url || "https://craftedcore-official.github.io/craftedcore/images/logo.png",
+    "description": p.description || p.name,
+    "offers": {
+      "@type": "Offer",
+      "url": window.location.href,
+      "priceCurrency": "INR",
+      "price": p.price,
+      "availability": "https://schema.org/InStock"
+    }
+  }));
+
+  const script = document.createElement('script');
+  script.type = 'application/ld+json';
+  script.text = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "itemListElement": schemaList.map((s, i) => ({
+      "@type": "ListItem",
+      "position": i + 1,
+      "item": s
+    }))
+  });
+  document.head.appendChild(script);
 }
 
 async function loadDynamicFeatured() {
