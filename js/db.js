@@ -187,9 +187,11 @@ function productCardHTML(p) {
   <div class="product-card" data-category="${p.category_slug || 'all'}" id="prod-${p.id}">
     <div class="product-image-wrap">
       ${p.badge ? `<span class="product-badge">${p.badge}</span>` : ''}
-      <img src="${p.image_url || 'images/product_mug.jpg'}" alt="${p.name}" loading="lazy"/>
+      <a href="product.html?id=${p.id}">
+        <img src="${p.image_url || 'images/product_mug.jpg'}" alt="${p.name}" loading="lazy"/>
+      </a>
       <div class="product-overlay">
-        <button onclick="openQuickView(${p.id})" class="btn btn-whatsapp" style="width:100%;justify-content:center;border:none;">🛒 Add to Cart</button>
+        <a href="product.html?id=${p.id}" class="btn btn-whatsapp" style="width:100%;justify-content:center;border:none;text-decoration:none;display:flex;">🛍️ View Options</a>
       </div>
     </div>
     <div class="product-info">
