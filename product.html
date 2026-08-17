@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CraftedCore — Product Details</title>
+  <meta name="description" content="View product details on CraftedCore." />
+  <link rel="stylesheet" href="css/style.css?v=23" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <style>
+    .prod-page { max-width: 1200px; margin: 0 auto; padding: 6rem 1rem 3rem; }
+    .prod-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+    .prod-img-wrap { width: 100%; border-radius: var(--r); overflow: hidden; background: var(--bg2); border: 1px solid var(--border); }
+    .prod-img-wrap img { width: 100%; height: auto; aspect-ratio: 1/1; object-fit: cover; display: block; }
+    
+    .prod-info { padding: 1rem 0; }
+    .prod-cat { color: var(--gold); text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .prod-title { font-size: 2.2rem; font-weight: 800; margin-bottom: 1rem; color: var(--text); line-height: 1.2; }
+    .prod-price { font-size: 1.8rem; font-weight: 800; margin-bottom: 1.5rem; color: var(--text); }
+    .prod-desc { font-size: 1rem; line-height: 1.6; color: var(--text2); margin-bottom: 2rem; white-space: pre-wrap; }
+    
+    .prod-opts { margin-bottom: 1.5rem; }
+    .prod-opt-lbl { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem; display: block; }
+    .prod-colors { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .prod-custs { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 2rem; }
+    
+    .rec-sec { margin-top: 5rem; border-top: 1px solid var(--border); padding-top: 3rem; }
+    .rec-title { font-size: 1.5rem; font-weight: 800; text-align: center; margin-bottom: 2rem; }
+
+    @media (max-width: 800px) {
+      .prod-layout { grid-template-columns: 1fr; gap: 1.5rem; }
+      .prod-page { padding-top: 5rem; }
+      .prod-title { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar" id="navbar">
+    <a href="index.html" class="logo-link">
+      <img src="images/logo.png" alt="CraftedCore" class="logo-img" />
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <a href="javascript:void(0)" class="active" id="close-menu-overlay" onclick="closeMenu()"></a>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="products.html" class="active">Products</a></li>
+      <li><a href="contact.html">Order Now</a></li>
+      <li><a href="https://wa.me/918320979383?text=Hi%20CraftedCore!%20I%20want%20to%20place%20a%20custom%20order." target="_blank" class="nav-wa-mobile">💬 WhatsApp Us</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="https://wa.me/918320979383?text=Hi%20CraftedCore!%20I%20want%20to%20place%20a%20custom%20order." target="_blank" class="btn btn-primary" id="nav-whatsapp-btn">
+        WhatsApp Us
+      </a>
+      <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===== PRODUCT DETAIL PAGE ===== -->
+  <main class="prod-page">
+    <div class="prod-layout" id="pgContent" style="display:none;">
+      <div class="prod-img-wrap">
+        <img id="pgImg" src="" alt="Product Image" />
+      </div>
+      <div class="prod-info">
+        <div class="prod-cat" id="pgCat"></div>
+        <h1 class="prod-title" id="pgName"></h1>
+        <div class="prod-price" id="pgPrice"></div>
+        <div class="prod-desc" id="pgDesc"></div>
+        
+        <div id="pgColorWrap" class="prod-opts" style="display: none;">
+          <label class="prod-opt-lbl">Select Color:</label>
+          <div class="prod-colors" id="pgColors"></div>
+        </div>
+
+        <div id="pgCustWrap" class="prod-opts" style="display: none;">
+          <label class="prod-opt-lbl">Customization Options:</label>
+          <div class="prod-custs" id="pgCusts"></div>
+        </div>
+
+        <button class="btn btn-whatsapp" id="pgAddBtn" style="width: 100%; justify-content: center; padding: 1.2rem; font-size: 1.1rem; border-radius: var(--r);">🛍️ Add to Cart</button>
+      </div>
+    </div>
+    
+    <div id="pgLoading" style="text-align:center; padding: 4rem;">
+      <h2>Loading product...</h2>
+    </div>
+
+    <!-- RECOMMENDED SEC -->
+    <div class="rec-sec" id="recSec" style="display:none;">
+      <h2 class="rec-title">You May Also Like</h2>
+      <div class="product-grid" id="recGrid"></div>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer id="footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="logo-link">
+          <img src="images/logo.png" alt="CraftedCore" class="logo-img footer-logo" />
+        </a>
+        <p>Premium custom merchandise crafted with passion. Your imagination, our craftsmanship — brought together for something truly special.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Products</h4>
+        <ul>
+          <li><a href="products.html?category=tshirts">T-Shirts</a></li>
+          <li><a href="products.html?category=mugs">Mugs</a></li>
+          <li><a href="products.html?category=wallets">Wallets</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="products.html">All Products</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 CraftedCore. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="js/db.js?v=23"></script>
+  <script src="js/main.js?v=23"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const id = parseInt(urlParams.get('id'));
+      if (!id) { window.location.href = 'index.html'; return; }
+
+      if (typeof Products === 'undefined') return;
+      const prods = await Products.getAll();
+      const p = prods.find(x => x.id === id);
+      
+      if (!p) {
+        document.getElementById('pgLoading').innerHTML = '<h2>Product not found.</h2>';
+        return;
+      }
+      
+      currentQVProduct = p; // reuse main.js state
+
+      document.getElementById('pgLoading').style.display = 'none';
+      document.getElementById('pgContent').style.display = 'grid';
+      
+      document.title = p.name + " | CraftedCore";
+      document.getElementById('pgImg').src = p.image_url || 'images/product_mug.jpg';
+      document.getElementById('pgCat').textContent = p.category_name || '';
+      document.getElementById('pgName').textContent = p.name;
+      document.getElementById('pgDesc').textContent = p.description || '';
+      document.getElementById('pgPrice').textContent = `₹${p.price}`;
+      
+      const colorWrap = document.getElementById('pgColorWrap');
+      const colorsDiv = document.getElementById('pgColors');
+      colorsDiv.innerHTML = '';
+      if (p.colors && p.colors.trim() !== '') {
+        const colors = p.colors.split(',').map(c => c.trim()).filter(c => c);
+        if (colors.length > 0) {
+          colors.forEach((c, i) => {
+            colorsDiv.innerHTML += `<button class="color-btn ${i===0?'active':''}" onclick="selColor(this)">${c}</button>`;
+          });
+          colorWrap.style.display = 'block';
+        }
+      }
+
+      const custWrap = document.getElementById('pgCustWrap');
+      const custsDiv = document.getElementById('pgCusts');
+      custsDiv.innerHTML = '';
+      let hasCust = false;
+      if (p.customizations) {
+        try {
+          const c = JSON.parse(p.customizations);
+          if (c.name_engrave) { custsDiv.innerHTML += `<label class="cust-label"><input type="checkbox" value="Name Engrave"/> Name Engrave</label>`; hasCust = true; }
+          if (c.photo_engrave) { custsDiv.innerHTML += `<label class="cust-label"><input type="checkbox" value="Photo Engrave"/> Photo Engrave</label>`; hasCust = true; }
+          if (c.uvdtf_name) { custsDiv.innerHTML += `<label class="cust-label"><input type="checkbox" value="UVDTF Name"/> UVDTF Sticker Name</label>`; hasCust = true; }
+          if (c.uvdtf_photo) { custsDiv.innerHTML += `<label class="cust-label"><input type="checkbox" value="UVDTF Photo"/> UVDTF Sticker Photo</label>`; hasCust = true; }
+        } catch(e) {}
+      }
+      if (hasCust) custWrap.style.display = 'block';
+
+      document.getElementById('pgAddBtn').onclick = () => {
+        let color = '';
+        const activeColor = document.querySelector('#pgColors .color-btn.active');
+        if (activeColor) color = activeColor.textContent;
+        
+        let custs = [];
+        document.querySelectorAll('#pgCusts input:checked').forEach(cb => custs.push(cb.value));
+        
+        const cartItemId = `${p.id}-${color}-${custs.join('-')}`;
+        const existing = shoppingCart.find(item => item.cartItemId === cartItemId);
+        if (existing) {
+          existing.qty += 1;
+        } else {
+          shoppingCart.push({ 
+            id: p.id, cartItemId, name: p.name, price: parseFloat(p.price) || 0, img: p.image_url || '', qty: 1, color, custs
+          });
+        }
+        saveCart();
+        showToast('🛒 Added to Cart!');
+        setTimeout(() => toggleCartDrawer(true), 500);
+      };
+
+      // Recommended Products
+      const recs = prods.filter(x => x.category_slug === p.category_slug && x.id !== p.id).slice(0, 4);
+      if (recs.length > 0) {
+        document.getElementById('recSec').style.display = 'block';
+        document.getElementById('recGrid').innerHTML = recs.map(r => productCardHTML(r)).join('');
+      }
+    });
+
+    // Override selColor to work on pgColors instead of qvColors
+    function selColor(btn) {
+      document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+  </script>
+</body>
+</html>
