@@ -854,11 +854,11 @@ create policy "Public Settings" on site_settings for all using (true) with check
         <img id="cropTargetImg" style="max-width: 100%; display: block;" />
       </div>
       <div style="margin-top: 1rem; display: flex; gap: 0.5rem; justify-content: center;">
-        <button class="btn btn-ghost" onclick="if(cropper) cropper.zoom(0.1)" title="Zoom In">🔍➕</button>
-        <button class="btn btn-ghost" onclick="if(cropper) cropper.zoom(-0.1)" title="Zoom Out">🔍➖</button>
-        <button class="btn btn-ghost" onclick="if(cropper) cropper.setDragMode('move')" title="Move Image">🖐️</button>
-        <button class="btn btn-ghost" onclick="if(cropper) cropper.setDragMode('crop')" title="Crop Box">✂️</button>
-        <button class="btn btn-ghost" onclick="if(cropper) cropper.reset()" title="Reset">🔄</button>
+        <button type="button" class="btn btn-ghost" onclick="cropAct(event, 'zin')" title="Zoom In">🔍➕</button>
+        <button type="button" class="btn btn-ghost" onclick="cropAct(event, 'zout')" title="Zoom Out">🔍➖</button>
+        <button type="button" class="btn btn-ghost" onclick="cropAct(event, 'move')" title="Move Image">🖐️</button>
+        <button type="button" class="btn btn-ghost" onclick="cropAct(event, 'crop')" title="Crop Box">✂️</button>
+        <button type="button" class="btn btn-ghost" onclick="cropAct(event, 'reset')" title="Reset">🔄</button>
       </div>
     </div>
     <div class="modal-foot">
@@ -1566,7 +1566,7 @@ function openCropModal(file, target) {
     if (cropper) cropper.destroy();
     cropper = new Cropper(img, {
       aspectRatio: 1,
-      viewMode: 1,
+      viewMode: 0,
       autoCropArea: 1,
       dragMode: 'move',
       restore: false,
@@ -1579,6 +1579,16 @@ function openCropModal(file, target) {
     });
   };
   fr.readAsDataURL(file);
+}
+
+function cropAct(e, act) {
+  e.preventDefault();
+  if (!cropper) return;
+  if (act === 'zin') cropper.zoom(0.1);
+  if (act === 'zout') cropper.zoom(-0.1);
+  if (act === 'move') cropper.setDragMode('move');
+  if (act === 'crop') cropper.setDragMode('crop');
+  if (act === 'reset') cropper.reset();
 }
 
 function closeCropModal() {
