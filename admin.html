@@ -873,7 +873,7 @@ create policy "Public Settings" on site_settings for all using (true) with check
 
 <div id="toastWrap"></div>
 
-<script src="js/db.js?v=7"></script>
+<script src="js/db.js?v=8"></script>
 <script>
 // ─── AUTH ────────────────────────────────────────────────────
 function getAdmPass() { 
@@ -1151,7 +1151,7 @@ async function loadCats() {
     }
     document.getElementById('catGrid').innerHTML = _cats.map(c => `
       <div class="cat-card">
-        <div class="cat-emoji" style="border-radius:12px;overflow:hidden;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;">
+        <div class="cat-emoji" style="width:48px;height:48px;border-radius:12px;overflow:hidden;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.6rem;">
           <img src="${c.emoji||''}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none';this.parentElement.innerHTML='🗂️'" />
         </div>
         <div class="cat-info"><div class="cat-name">${c.name}</div><div class="cat-slug">${c.slug}</div></div>
