@@ -556,6 +556,7 @@
         <div class="tab-nav">
           <button class="tab-btn active" onclick="showStTab('sql',this)">📜 Complete SQL Setup</button>
           <button class="tab-btn" onclick="showStTab('biz',this)">🏢 Business Info</button>
+          <button class="tab-btn" onclick="showStTab('ai',this)">✨ AI Settings</button>
           <button class="tab-btn" onclick="showStTab('db',this)">🗄️ Database Keys</button>
           <button class="tab-btn" onclick="showStTab('adm',this)">🔐 Password</button>
         </div>
@@ -665,6 +666,22 @@ create policy "Public Settings" on site_settings for all using (true) with check
           </div>
         </div>
 
+        <!-- AI SETTINGS -->
+        <div class="tab-pane" id="stab-ai">
+          <div class="card">
+            <div class="card-title">✨ Google Gemini AI Setup</div>
+            <p style="color:var(--text2);font-size:.85rem;margin-bottom:1rem;">Add your free Gemini API Key to enable 1-click automatic product description and WhatsApp message generation.</p>
+            <div class="fg">
+              <label>Gemini API Key</label>
+              <input type="text" class="fctl" id="geminiKey" placeholder="AIzaSy..." />
+              <div style="font-size:0.75rem;color:var(--text3);margin-top:0.4rem;">Get your free key from <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--gold);">Google AI Studio</a>. (Saved securely in your browser)</div>
+            </div>
+            <div class="card-acts">
+              <button class="btn btn-primary" onclick="saveAIKey()">💾 Save AI Key</button>
+            </div>
+          </div>
+        </div>
+
         <!-- DATABASE -->
         <div class="tab-pane" id="stab-db">
           <div class="card">
@@ -767,7 +784,13 @@ create policy "Public Settings" on site_settings for all using (true) with check
           <span class="bdg-pre" onclick="setBdg(this,'')">✕ None</span>
         </div>
       </div>
-      <div class="fg"><label>Description</label><textarea class="fctl" id="pDesc" placeholder="Description..."></textarea></div>
+      <div class="fg">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem;">
+          <label style="margin:0;">Description</label>
+          <button type="button" class="btn" style="padding:0.2rem 0.5rem;font-size:0.75rem;background:var(--gold);color:var(--bg);" onclick="autoGenerateAI(this)">🪄 Auto Generate</button>
+        </div>
+        <textarea class="fctl" id="pDesc" placeholder="Description..." style="margin-top:0;"></textarea>
+      </div>
       <div class="fg"><label>WhatsApp Message</label><input type="text" class="fctl" id="pWA" placeholder="Hi! I want to order this product." /></div>
       <div class="fg">
         <label>⭐ Featured Item</label>
@@ -1431,6 +1454,7 @@ async function loadSettings() {
   document.getElementById('cfgKey').value   = getSupabaseKey();
   document.getElementById('cfgCloud').value  = getCloudName();
   document.getElementById('cfgPreset').value = getUploadPreset();
+  document.getElementById('geminiKey').value = localStorage.getItem('cc_gemini_key') || '';
   testConn();
 }
 
@@ -1468,6 +1492,13 @@ async function saveBiz() {
     await SiteSettings.setMultiple({ biz_name:document.getElementById('bName').value.trim(), biz_email:document.getElementById('bEmail').value.trim(), biz_insta:document.getElementById('bInsta').value.trim(), biz_tagline:document.getElementById('bTagline').value.trim() });
     toast('✅ Business Info Saved!', 'success');
   } catch(e) { toast('❌ Error', 'error'); }
+}
+
+function saveAIKey() {
+  const k = document.getElementById('geminiKey').value.trim();
+  if (k) localStorage.setItem('cc_gemini_key', k);
+  else localStorage.removeItem('cc_gemini_key');
+  toast('✅ AI Key Saved!', 'success');
 }
 
 function changePw() {
@@ -1578,6 +1609,48 @@ function toast(msg, type = 'info') {
   el.textContent = msg;
   document.getElementById('toastWrap').appendChild(el);
   setTimeout(() => el.remove(), 3500);
+}
+
+async function autoGenerateAI(btn) {
+  const key = localStorage.getItem('cc_gemini_key');
+  if (!key) {
+    toast('❌ Please add your Gemini API Key in AI Settings first!', 'error');
+    showStTab('ai', document.querySelector('.tab-btn[onclick="showStTab(\\'ai\\',this)"]'));
+    showTab('settings', document.querySelector('.nav-btn[onclick="showTab(\\'settings\\',this)"]'));
+    return;
+  }
+  const name = document.getElementById('pName').value.trim();
+  if (!name) { toast('❌ Please enter Product Name first', 'error'); return; }
+  
+  const originalTxt = btn.innerHTML;
+  btn.innerHTML = '⏳ Generating...';
+  btn.disabled = true;
+  
+  try {
+    const prompt = `You are an expert e-commerce copywriter and SEO specialist. Write a highly engaging, SEO-optimized product description (2-3 sentences max) for a product named "${name}". Use relevant search keywords naturally (like custom, personalized, buy online, etc.). Also generate a polite, engaging predefined WhatsApp order message for this product. Return ONLY a valid JSON object in this exact format: {"description": "...", "wa_message": "..."}. Do not wrap in markdown blocks, just the raw JSON text.`;
+    
+    const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' + key, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+    });
+    
+    if (!res.ok) throw new Error('API Error');
+    const data = await res.json();
+    const rawText = data.candidates[0].content.parts[0].text;
+    const jsonStr = rawText.replace(/^```json/i, '').replace(/```$/i, '').trim();
+    const result = JSON.parse(jsonStr);
+    
+    document.getElementById('pDesc').value = result.description || '';
+    document.getElementById('pWA').value = result.wa_message || '';
+    toast('✨ AI Generation Complete!', 'success');
+  } catch (e) {
+    console.error(e);
+    toast('❌ AI Generation failed. Check API Key.', 'error');
+  } finally {
+    btn.innerHTML = originalTxt;
+    btn.disabled = false;
+  }
 }
 </script>
 </body>
