@@ -250,6 +250,155 @@ async function loadDynamicFeatured() {
   }
 }
 
+async function loadDynamicCategories() {
+  if (typeof Categories === 'undefined') return;
+  try {
+    const cats = await Categories.getAll();
+    if (!cats || !cats.length) return;
+
+    const filterTabs = document.getElementById('filterTabs');
+    if (filterTabs) {
+      const html = `<button class="filter-btn active" data-filter="all" id="filter-all" onclick="filterProducts('all')">🌟 All</button>` 
+        + cats.map(c => `<button class="filter-btn" data-filter="${c.slug}" id="filter-${c.slug}" onclick="filterProducts('${c.slug}')">${c.emoji||'📦'} ${c.name}</button>`).join('');
+      filterTabs.innerHTML = html;
+    }
+
+    const catGrid = document.querySelector('.category-grid');
+    if (catGrid) {
+      const html = cats.map(c => `
+        <a href="products.html?category=${c.slug}" class="category-card fade-in">
+          <div class="category-icon">${c.emoji||'📦'}</div>
+          <div class="category-name">${c.name}</div>
+          <div class="category-count">Explore</div>
+        </a>`).join('');
+      catGrid.innerHTML = html;
+    }
+  } catch(e) { console.log('Static fallback categories'); }
+}
+
+async function loadDynamicReviews() {
+  if (typeof Reviews === 'undefined') return;
+  const reviewGrid = document.querySelector('.testimonial-grid');
+  if (!reviewGrid) return;
+  try {
+    const rvs = await Reviews.getAll();
+    if (!rvs || !rvs.length) return;
+    const activeRvs = rvs.filter(r => r.is_active);
+    if (!activeRvs.length) return;
+
+    const html = activeRvs.map(r => `
+        <div class="testimonial-card fade-in">
+          <div class="stars">${'★'.repeat(r.rating||5)}</div>
+          <p class="testimonial-text">"${r.review_text}"</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">${r.author_name.charAt(0).toUpperCase()}</div>
+            <div>
+              <div class="author-name">${r.author_name}</div>
+              <div class="author-location">${r.location||''}</div>
+            </div>
+          </div>
+        </div>`).join('');
+    reviewGrid.innerHTML = html;
+  } catch(e) {}
+}
+
+// ===== Frontend Order Modal =====
+function injectOrderModal() {
+  const modalHTML = `
+  <div class="modal-bd" id="frontOrderModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:9999; align-items:center; justify-content:center; padding:1rem;">
+    <div class="modal" style="background:var(--bg-secondary); border:1px solid rgba(212,175,55,0.2); border-radius:16px; width:100%; max-width:450px; padding:1.5rem; position:relative; box-shadow:0 10px 40px rgba(0,0,0,0.5);">
+      <button onclick="document.getElementById('frontOrderModal').style.display='none'" style="position:absolute; top:1rem; right:1rem; background:none; border:none; color:white; font-size:1.5rem; cursor:pointer;">&times;</button>
+      <h3 style="margin-bottom:1rem; color:var(--gold);">Complete Your Order</h3>
+      <div id="frontOrderProdName" style="font-weight:bold; margin-bottom:0.5rem; font-size:1.1rem;"></div>
+      <div id="frontOrderProdPrice" style="color:var(--gold); margin-bottom:1.5rem; font-size:1.2rem;"></div>
+      
+      <input type="hidden" id="foProdId" />
+      <input type="hidden" id="foProdName" />
+      <input type="hidden" id="foPrice" />
+      
+      <div style="margin-bottom:1rem;">
+        <label style="display:block; font-size:0.85rem; margin-bottom:0.4rem; color:#aaa;">Your Name *</label>
+        <input type="text" id="foName" style="width:100%; padding:0.8rem; background:rgba(0,0,0,0.3); border:1px solid #333; border-radius:8px; color:white;" placeholder="Enter your name" />
+      </div>
+      <div style="margin-bottom:1rem;">
+        <label style="display:block; font-size:0.85rem; margin-bottom:0.4rem; color:#aaa;">Phone Number *</label>
+        <input type="text" id="foPhone" style="width:100%; padding:0.8rem; background:rgba(0,0,0,0.3); border:1px solid #333; border-radius:8px; color:white;" placeholder="Enter WhatsApp number" />
+      </div>
+      <div style="margin-bottom:1.5rem;">
+        <label style="display:block; font-size:0.85rem; margin-bottom:0.4rem; color:#aaa;">Customization Notes (Optional)</label>
+        <textarea id="foNotes" style="width:100%; padding:0.8rem; background:rgba(0,0,0,0.3); border:1px solid #333; border-radius:8px; color:white; min-height:80px; resize:vertical;" placeholder="E.g. Name to print, preferred color, etc."></textarea>
+      </div>
+      <button onclick="submitFrontendOrder()" class="btn btn-primary" style="width:100%; justify-content:center; padding:1rem; font-size:1rem;" id="foSubmitBtn">💬 Submit & Continue to WhatsApp</button>
+      <div id="foError" style="color:#ff4444; font-size:0.85rem; margin-top:0.8rem; text-align:center; display:none;"></div>
+    </div>
+  </div>`;
+  document.body.insertAdjacentHTML('beforeend', modalHTML);
+}
+
+function openFrontendOrderModal(id, name, price) {
+  document.getElementById('foProdId').value = id;
+  document.getElementById('foProdName').value = name;
+  document.getElementById('foPrice').value = price || 0;
+  
+  document.getElementById('frontOrderProdName').textContent = name;
+  document.getElementById('frontOrderProdPrice').textContent = '₹' + (price || 0);
+  
+  document.getElementById('foName').value = '';
+  document.getElementById('foPhone').value = '';
+  document.getElementById('foNotes').value = '';
+  document.getElementById('foError').style.display = 'none';
+  
+  const m = document.getElementById('frontOrderModal');
+  m.style.display = 'flex';
+  m.style.opacity = '0';
+  setTimeout(() => { m.style.transition='opacity 0.2s'; m.style.opacity='1'; }, 10);
+}
+
+async function submitFrontendOrder() {
+  const name = document.getElementById('foName').value.trim();
+  const phone = document.getElementById('foPhone').value.trim();
+  const notes = document.getElementById('foNotes').value.trim();
+  const pName = document.getElementById('foProdName').value;
+  const pPrice = parseFloat(document.getElementById('foPrice').value) || 0;
+  const err = document.getElementById('foError');
+  const btn = document.getElementById('foSubmitBtn');
+  
+  if (!name || !phone) {
+    err.textContent = 'Please enter both Name and Phone number.';
+    err.style.display = 'block';
+    return;
+  }
+  
+  btn.disabled = true;
+  btn.textContent = 'Processing...';
+  
+  try {
+    const res = await Orders.create({
+      customer_name: name,
+      customer_phone: phone,
+      product_name: pName,
+      amount: pPrice,
+      status: 'pending',
+      notes: notes
+    });
+    
+    const orderId = (res && res.length > 0) ? res[0].id : 'NEW';
+    const waNum = ((window._siteSettings || {}).whatsapp_number || '919913846454').replace(/\D/g, '');
+    let msg = `Hi CraftedCore! 👋\n\nI just placed an order on the website.\n*Order ID:* #${orderId}\n*Product:* ${pName}\n*Name:* ${name}`;
+    if (notes) msg += `\n*Notes:* ${notes}`;
+    
+    document.getElementById('frontOrderModal').style.display = 'none';
+    window.location.href = `https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`;
+    
+  } catch(e) {
+    err.textContent = 'Something went wrong. Please try again.';
+    err.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = '💬 Submit & Continue to WhatsApp';
+  }
+}
+
+
 // ===== Page Load Initialization =====
 document.addEventListener('DOMContentLoaded', () => {
   initScrollAnimations();
@@ -262,6 +411,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // Load dynamic data from DB if available
   loadDynamicProducts();
   loadDynamicFeatured();
+  loadDynamicCategories();
+  loadDynamicReviews();
+  injectOrderModal();
+  
+  if (typeof applyDynamicSettings === 'function') {
+    applyDynamicSettings();
+  }
 
   // Animate hero content on load
   const heroContent = document.querySelector('.hero-text');
