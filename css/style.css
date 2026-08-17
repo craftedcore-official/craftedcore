@@ -146,6 +146,17 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; line-height: 1.2; }
   box-shadow: 0 10px 35px rgba(37, 211, 102, 0.65);
 }
 
+/* === MODAL === */
+.modal-bd { position: fixed; inset: 0; background: rgba(0,0,0,.75); backdrop-filter: blur(6px); z-index: 9999; display: none; align-items: center; justify-content: center; padding: 1rem; }
+.modal-bd.open { display: flex; }
+.modal { background: var(--bg2); border: 1px solid var(--border); border-radius: 22px; width: 100%; max-width: 580px; max-height: 92vh; overflow-y: auto; box-shadow: 0 30px 80px rgba(0,0,0,.8); position: relative; }
+.modal-hdr { padding: 1.3rem 1.5rem 1rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--bg2); z-index: 10; }
+.modal-title { font-size: 1.05rem; font-weight: 800; }
+.modal-x { background: none; border: none; color: var(--text3); font-size: 1.4rem; cursor: pointer; line-height: 1; transition: var(--tr); }
+.modal-x:hover { color: var(--text); }
+.modal-body { padding: 1.4rem 1.5rem; }
+.modal-foot { padding: 1rem 1.5rem; border-top: 1px solid var(--border); display: flex; gap: .7rem; justify-content: flex-end; }
+
 .color-btn {
   padding: 0.4rem 1rem;
   border: 1px solid var(--border);
