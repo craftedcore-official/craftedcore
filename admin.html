@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CraftedCore — WordPress-style eCommerce Admin</title>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" integrity="sha512-cyzxRvewl+FOKTtpBzYjW6x6IAYUCJiDP51IILOW3bSQ3EQSZZxI1bJMJ51R3s/ZMy30z64v6B/rR8q1c++pTQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -841,6 +842,24 @@ create policy "Public Settings" on site_settings for all using (true) with check
   </div>
 </div>
 
+<!-- CROP MODAL -->
+<div class="modal-bd" id="cropModal" style="z-index: 10000;">
+  <div class="modal" style="max-width:500px;">
+    <div class="modal-hdr">
+      <div class="modal-title">📐 Adjust Image (1:1)</div>
+      <button class="modal-x" onclick="closeCropModal()">✕</button>
+    </div>
+    <div class="modal-body" style="padding: 1rem; text-align: center;">
+      <div style="max-height: 400px; width: 100%; overflow: hidden; background: #000; border-radius: var(--r);">
+        <img id="cropTargetImg" style="max-width: 100%; display: block;" />
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeCropModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="doCropAndUpload()">✂️ Crop & Upload</button>
+    </div>
+  </div>
+
 <!-- ═════ COUPON MODAL ═════ -->
 <div class="modal-bd" id="couponModal">
   <div class="modal" style="max-width:420px;">
@@ -895,6 +914,9 @@ create policy "Public Settings" on site_settings for all using (true) with check
 </div>
 
 <div id="toastWrap"></div>
+
+<!-- Image Cropper -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js" integrity="sha512-6lplKUSl86rUVprDIjiW8DuALkM3RXd1+haQ90h5LpG/Uq0o9u/Wv0kXoN9n/O/AOSiH7YJv6W1x6iI4uB6qOg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <script src="js/db.js?v=8"></script>
 <script>
@@ -1523,31 +1545,72 @@ function previewHeroUrl(url) { document.getElementById('heroImgUrl').value = url
 function previewLogoUrl(url) { document.getElementById('logoImgUrl').value = url; const img=document.getElementById('logoPre'); img.src=url; img.style.display=url?'block':'none'; }
 function previewCatUrl(url) { document.getElementById('cmEmoji').value = url; const img=document.getElementById('cPre'); img.src=url; img.style.display=url?'block':'none'; }
 
-async function catUpload(file) {
+let cropper = null;
+let currentCropTarget = '';
+
+function openCropModal(file, target) {
   if (!file) return;
-  const preview = document.getElementById('cPre');
-  const fr = new FileReader(); fr.onload = e => { preview.src = e.target.result; preview.style.display = 'block'; }; fr.readAsDataURL(file);
-  document.getElementById('cPW').style.display = 'block';
-  try {
-    const url = await uploadImage(file, pct => { document.getElementById('cPB').style.width = pct + '%'; });
-    document.getElementById('cmEmoji').value = url;
-    document.getElementById('cPW').style.display = 'none';
-    toast('✅ Image uploaded!', 'success');
-  } catch(e) { toast('❌ Upload failed', 'error'); }
+  currentCropTarget = target;
+  const img = document.getElementById('cropTargetImg');
+  const fr = new FileReader();
+  fr.onload = e => {
+    img.src = e.target.result;
+    document.getElementById('cropModal').style.display = 'flex';
+    if (cropper) cropper.destroy();
+    cropper = new Cropper(img, {
+      aspectRatio: 1,
+      viewMode: 1,
+      autoCropArea: 1
+    });
+  };
+  fr.readAsDataURL(file);
 }
 
-async function prodUpload(file) {
-  if (!file) return;
-  const preview = document.getElementById('pPre');
-  const fr = new FileReader(); fr.onload = e => { preview.src = e.target.result; preview.style.display = 'block'; }; fr.readAsDataURL(file);
-  document.getElementById('pPW').style.display = 'block';
-  try {
-    const url = await uploadImage(file, pct => { document.getElementById('pPB').style.width = pct + '%'; });
-    document.getElementById('pImgUrl').value = url;
-    document.getElementById('pPW').style.display = 'none';
-    toast('✅ Image uploaded!', 'success');
-  } catch(e) { toast('❌ Upload failed', 'error'); }
+function closeCropModal() {
+  document.getElementById('cropModal').style.display = 'none';
+  if (cropper) { cropper.destroy(); cropper = null; }
+  if (currentCropTarget === 'product') document.getElementById('pFile').value = '';
+  if (currentCropTarget === 'category') document.getElementById('cFile').value = '';
 }
+
+async function doCropAndUpload() {
+  if (!cropper) return;
+  const canvas = cropper.getCroppedCanvas({ width: 1200, height: 1200, fillColor: '#fff' });
+  
+  const target = currentCropTarget;
+  closeCropModal();
+  
+  canvas.toBlob(async (blob) => {
+    const file = new File([blob], "cropped_image.jpg", { type: "image/jpeg" });
+    
+    if (target === 'product') {
+      const preview = document.getElementById('pPre');
+      preview.src = URL.createObjectURL(blob);
+      preview.style.display = 'block';
+      document.getElementById('pPW').style.display = 'block';
+      try {
+        const url = await uploadImage(file, pct => { document.getElementById('pPB').style.width = pct + '%'; });
+        document.getElementById('pImgUrl').value = url;
+        document.getElementById('pPW').style.display = 'none';
+        toast('✅ Image cropped & uploaded!', 'success');
+      } catch(e) { toast('❌ Upload failed', 'error'); }
+    } else if (target === 'category') {
+      const preview = document.getElementById('cPre');
+      preview.src = URL.createObjectURL(blob);
+      preview.style.display = 'block';
+      document.getElementById('cPW').style.display = 'block';
+      try {
+        const url = await uploadImage(file, pct => { document.getElementById('cPB').style.width = pct + '%'; });
+        document.getElementById('cmEmoji').value = url;
+        document.getElementById('cPW').style.display = 'none';
+        toast('✅ Image cropped & uploaded!', 'success');
+      } catch(e) { toast('❌ Upload failed', 'error'); }
+    }
+  }, 'image/jpeg', 0.9);
+}
+
+function catUpload(file) { openCropModal(file, 'category'); }
+function prodUpload(file) { openCropModal(file, 'product'); }
 
 async function heroUpload(file) {
   if (!file) return;
