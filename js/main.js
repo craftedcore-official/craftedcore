@@ -267,7 +267,7 @@ async function loadDynamicCategories() {
     if (catGrid) {
       const html = cats.map(c => `
         <a href="products.html?category=${c.slug}" class="category-card fade-in">
-          <div class="category-icon" style="padding:0;overflow:hidden;background:transparent;">
+          <div class="category-icon" style="width:56px;height:56px;margin:0 auto 0.8rem;padding:0;overflow:hidden;background:transparent;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:2rem;">
             ${(c.emoji && c.emoji.startsWith('http')) 
               ? `<img src="${c.emoji}" style="width:100%;height:100%;object-fit:cover;border-radius:12px;" onerror="this.style.display='none';this.parentElement.innerHTML='📦'" />` 
               : c.emoji||'📦'}
