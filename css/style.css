@@ -1010,7 +1010,7 @@ footer {
   .product-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
   .product-image-wrap { height: auto; aspect-ratio: 1 / 1; }
   .product-name { font-size: 0.95rem; line-height: 1.3; }
-  .product-desc { display: none; }
+  .product-desc { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 0.78rem; margin-bottom: 0.8rem; }
   .product-info { padding: 0.9rem; }
   .product-category { font-size: 0.68rem; letter-spacing: 1px; margin-bottom: 0.3rem; }
   .product-price { font-size: 0.9rem; }
@@ -1116,7 +1116,7 @@ footer {
   /* Products — 2 columns on phone with square images */
   .product-grid { grid-template-columns: repeat(2, 1fr); gap: 0.7rem; }
   .product-image-wrap { height: auto; aspect-ratio: 1 / 1; }
-  .product-desc { display: none; }
+  .product-desc { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 0.72rem; margin-bottom: 0.5rem; line-height: 1.3; }
   .product-name { font-size: 0.82rem; line-height: 1.25; margin-bottom: 0.2rem; }
   .product-category { font-size: 0.6rem; margin-bottom: 0.15rem; }
   .product-info { padding: 0.7rem 0.5rem; }
