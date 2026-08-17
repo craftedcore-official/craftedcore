@@ -1631,7 +1631,7 @@ async function autoGenerateAI(btn) {
   try {
     const prompt = `You are an expert e-commerce copywriter and SEO specialist. Write a highly engaging, SEO-optimized product description (2-3 sentences max) for a product named "${name}". Use relevant search keywords naturally (like custom, personalized, buy online, etc.). Also generate a polite, engaging predefined WhatsApp order message for this product. Return ONLY a valid JSON object in this exact format: {"description": "...", "wa_message": "..."}. Do not wrap in markdown blocks, just the raw JSON text.`;
     
-    const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' + key, {
+    const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + key, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
