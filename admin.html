@@ -1615,8 +1615,10 @@ async function autoGenerateAI(btn) {
   const key = localStorage.getItem('cc_gemini_key');
   if (!key) {
     toast('❌ Please add your Gemini API Key in AI Settings first!', 'error');
-    showStTab('ai', document.querySelector('.tab-btn[onclick="showStTab(\\'ai\\',this)"]'));
-    showTab('settings', document.querySelector('.nav-btn[onclick="showTab(\\'settings\\',this)"]'));
+    const aiBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.textContent.includes('AI Settings'));
+    showStTab('ai', aiBtn);
+    const setBtn = Array.from(document.querySelectorAll('.nav-btn')).find(b => b.textContent.includes('Settings'));
+    showTab('settings', setBtn);
     return;
   }
   const name = document.getElementById('pName').value.trim();
