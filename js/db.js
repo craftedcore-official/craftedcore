@@ -189,7 +189,7 @@ function productCardHTML(p) {
       ${p.badge ? `<span class="product-badge">${p.badge}</span>` : ''}
       <img src="${p.image_url || 'images/product_mug.jpg'}" alt="${p.name}" loading="lazy"/>
       <div class="product-overlay">
-        <button onclick="openFrontendOrderModal(${p.id}, '${safeName}', ${p.price||0})" class="btn btn-whatsapp" style="width:100%;justify-content:center;border:none;">💬 Order Now</button>
+        <button onclick="addToCart(${p.id}, '${safeName}', ${p.price||0}, '${p.image_url || ''}')" class="btn btn-whatsapp" style="width:100%;justify-content:center;border:none;">🛒 Add to Cart</button>
       </div>
     </div>
     <div class="product-info">
@@ -198,7 +198,7 @@ function productCardHTML(p) {
       <div class="product-desc">${p.description || ''}</div>
       <div class="product-footer">
         <div class="product-price"><span class="from">From </span>₹${p.price}</div>
-        <button onclick="openFrontendOrderModal(${p.id}, '${safeName}', ${p.price||0})" class="order-btn" style="border:none;background:none;cursor:pointer;">💬 Order</button>
+        <button onclick="addToCart(${p.id}, '${safeName}', ${p.price||0}, '${p.image_url || ''}')" class="order-btn" style="border:none;background:none;cursor:pointer;">🛒 Add</button>
       </div>
     </div>
   </div>`;
