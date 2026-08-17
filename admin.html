@@ -791,7 +791,19 @@ create policy "Public Settings" on site_settings for all using (true) with check
     <div class="modal-body">
       <input type="hidden" id="cmId" />
       <div class="fr2">
-        <div class="fg"><label>Emoji</label><input type="text" class="fctl" id="cmEmoji" placeholder="☕" style="font-size:1.6rem;text-align:center;" /></div>
+        <div class="fg">
+          <label>Category Image</label>
+          <div class="img-upload" id="cUA" ondragover="onDrag(event,'cUA')" ondragleave="offDrag('cUA')" ondrop="onDropCat(event)">
+            <input type="file" id="cFile" accept="image/*" onchange="catUpload(this.files[0])" />
+            <div class="up-icon" id="cUIcon">📸</div>
+            <div class="up-text" id="cUText">Click or drag category image</div>
+            <img id="cPre" class="img-pre" />
+            <div class="prog-wrap" id="cPW"><div class="prog-bar" id="cPB"></div></div>
+          </div>
+          <input type="hidden" id="cmEmoji" />
+          <span class="url-tog" onclick="toggleEl('cUrlIn')">Or paste image URL</span>
+          <input type="text" class="fctl" id="cUrlIn" placeholder="https://..." style="display:none;margin-top:.4rem;" oninput="previewCatUrl(this.value)" />
+        </div>
         <div class="fg"><label>Name *</label><input type="text" class="fctl" id="cmName" placeholder="Mugs" oninput="autoSlug(this.value)" /></div>
       </div>
       <div class="fr2">
@@ -861,7 +873,7 @@ create policy "Public Settings" on site_settings for all using (true) with check
 
 <div id="toastWrap"></div>
 
-<script src="js/db.js?v=4"></script>
+<script src="js/db.js?v=7"></script>
 <script>
 // ─── AUTH ────────────────────────────────────────────────────
 function getAdmPass() { 
@@ -1139,7 +1151,9 @@ async function loadCats() {
     }
     document.getElementById('catGrid').innerHTML = _cats.map(c => `
       <div class="cat-card">
-        <div class="cat-emoji">${c.emoji||'📦'}</div>
+        <div class="cat-emoji" style="border-radius:12px;overflow:hidden;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;">
+          <img src="${c.emoji||''}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none';this.parentElement.innerHTML='🗂️'" />
+        </div>
         <div class="cat-info"><div class="cat-name">${c.name}</div><div class="cat-slug">${c.slug}</div></div>
         <div class="cat-acts">
           <button class="btn btn-ghost btn-icon btn-sm" onclick="editCat(${c.id})">✏️</button>
@@ -1153,14 +1167,15 @@ async function loadCatDropdown() {
   try {
     _cats = await Categories.getAll();
     const sel = document.getElementById('pCat');
-    sel.innerHTML = '<option value="">-- Select Category --</option>' + _cats.map(c => `<option value="${c.slug}">${c.emoji||''} ${c.name}</option>`).join('');
+    sel.innerHTML = '<option value="">-- Select Category --</option>' + _cats.map(c => `<option value="${c.slug}">${c.name}</option>`).join('');
     const fil = document.getElementById('catFil');
-    if (fil) fil.innerHTML = '<option value="">All Categories</option>' + _cats.map(c => `<option value="${c.slug}">${c.emoji||''} ${c.name}</option>`).join('');
+    if (fil) fil.innerHTML = '<option value="">All Categories</option>' + _cats.map(c => `<option value="${c.slug}">${c.name}</option>`).join('');
   } catch(e) {}
 }
 
 function openCatModal() {
-  ['cmId','cmEmoji','cmName','cmSlug','cmOrd'].forEach(id => document.getElementById(id).value = '');
+  ['cmId','cmEmoji','cmName','cmSlug','cmOrd','cUrlIn'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('cPre').style.display = 'none';
   document.getElementById('cmTitle').textContent = 'Add Category';
   openM('catModal');
 }
@@ -1172,6 +1187,15 @@ function editCat(id) {
   document.getElementById('cmName').value = c.name;
   document.getElementById('cmSlug').value = c.slug;
   document.getElementById('cmOrd').value = c.sort_order || '';
+  
+  if (c.emoji && c.emoji.startsWith('http')) {
+    const img = document.getElementById('cPre');
+    img.src = c.emoji;
+    img.style.display = 'block';
+  } else {
+    document.getElementById('cPre').style.display = 'none';
+  }
+  
   openM('catModal');
 }
 
@@ -1461,10 +1485,25 @@ function offDrag(id)    { document.getElementById(id).classList.remove('drag'); 
 function onDropProd(e)  { e.preventDefault(); offDrag('pUA'); const f=e.dataTransfer.files[0]; if(f) prodUpload(f); }
 function onDropHero(e)  { e.preventDefault(); offDrag('heroUA'); const f=e.dataTransfer.files[0]; if(f) heroUpload(f); }
 function onDropLogo(e)  { e.preventDefault(); offDrag('logoUA'); const f=e.dataTransfer.files[0]; if(f) logoUpload(f); }
+function onDropCat(e)   { e.preventDefault(); offDrag('cUA'); const f=e.dataTransfer.files[0]; if(f) catUpload(f); }
 function toggleEl(id)   { const el=document.getElementById(id); el.style.display = el.style.display==='none'?'block':'none'; }
 function previewProdUrl(url) { document.getElementById('pImgUrl').value = url; const img=document.getElementById('pPre'); img.src=url; img.style.display=url?'block':'none'; }
 function previewHeroUrl(url) { document.getElementById('heroImgUrl').value = url; const img=document.getElementById('heroPre'); img.src=url; img.style.display=url?'block':'none'; }
 function previewLogoUrl(url) { document.getElementById('logoImgUrl').value = url; const img=document.getElementById('logoPre'); img.src=url; img.style.display=url?'block':'none'; }
+function previewCatUrl(url) { document.getElementById('cmEmoji').value = url; const img=document.getElementById('cPre'); img.src=url; img.style.display=url?'block':'none'; }
+
+async function catUpload(file) {
+  if (!file) return;
+  const preview = document.getElementById('cPre');
+  const fr = new FileReader(); fr.onload = e => { preview.src = e.target.result; preview.style.display = 'block'; }; fr.readAsDataURL(file);
+  document.getElementById('cPW').style.display = 'block';
+  try {
+    const url = await uploadImage(file, pct => { document.getElementById('cPB').style.width = pct + '%'; });
+    document.getElementById('cmEmoji').value = url;
+    document.getElementById('cPW').style.display = 'none';
+    toast('✅ Image uploaded!', 'success');
+  } catch(e) { toast('❌ Upload failed', 'error'); }
+}
 
 async function prodUpload(file) {
   if (!file) return;
