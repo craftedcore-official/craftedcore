@@ -441,7 +441,7 @@ section { padding: 6rem 2rem; }
 
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
 }
 
@@ -959,7 +959,7 @@ footer {
   .section-header { margin-bottom: 2rem; }
 
   /* Categories */
-  .category-grid { grid-template-columns: repeat(4, 1fr); gap: 0.7rem; }
+  .category-grid { grid-template-columns: repeat(3, 1fr); gap: 0.7rem; }
   .category-card { padding: 1.1rem 0.6rem; }
   .category-icon { font-size: 1.8rem; }
   .category-name { font-size: 0.75rem; }
@@ -1066,7 +1066,7 @@ footer {
   .section-subtitle { font-size: 0.8rem; margin-bottom: 1.2rem; }
 
   /* Categories — 4 on mobile, smaller */
-  .category-grid { grid-template-columns: repeat(4, 1fr); gap: 0.5rem; }
+  .category-grid { grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
   .category-card { padding: 0.8rem 0.4rem; border-radius: 10px; min-height: 80px; }
   .category-icon { font-size: 1.3rem; margin-bottom: 0.3rem; }
   .category-name { font-size: 0.65rem; font-weight: 700; }
@@ -1114,7 +1114,7 @@ footer {
 /* ===== Very Small (360px) ===== */
 @media (max-width: 360px) {
   .hero-title { font-size: 1.65rem; }
-  .category-grid { grid-template-columns: repeat(4, 1fr); gap: 0.4rem; }
+  .category-grid { grid-template-columns: repeat(3, 1fr); gap: 0.4rem; }
   .category-name { font-size: 0.6rem; }
   .section-title { font-size: 1.3rem; }
   .btn { padding: 0.75rem 1.2rem; font-size: 0.85rem; }
