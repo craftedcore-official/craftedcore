@@ -258,8 +258,8 @@ async function loadDynamicCategories() {
 
     const filterTabs = document.getElementById('filterTabs');
     if (filterTabs) {
-      const html = `<button class="filter-btn active" data-filter="all" id="filter-all" onclick="filterProducts('all')">🌟 All</button>` 
-        + cats.map(c => `<button class="filter-btn" data-filter="${c.slug}" id="filter-${c.slug}" onclick="filterProducts('${c.slug}')">${c.emoji||'📦'} ${c.name}</button>`).join('');
+      const html = `<button class="filter-btn active" data-filter="all" id="filter-all" onclick="filterProducts('all')">All</button>` 
+        + cats.map(c => `<button class="filter-btn" data-filter="${c.slug}" id="filter-${c.slug}" onclick="filterProducts('${c.slug}')">${c.name}</button>`).join('');
       filterTabs.innerHTML = html;
     }
 
@@ -267,7 +267,11 @@ async function loadDynamicCategories() {
     if (catGrid) {
       const html = cats.map(c => `
         <a href="products.html?category=${c.slug}" class="category-card fade-in">
-          <div class="category-icon">${c.emoji||'📦'}</div>
+          <div class="category-icon" style="padding:0;overflow:hidden;background:transparent;">
+            ${(c.emoji && c.emoji.startsWith('http')) 
+              ? `<img src="${c.emoji}" style="width:100%;height:100%;object-fit:cover;border-radius:12px;" onerror="this.style.display='none';this.parentElement.innerHTML='📦'" />` 
+              : c.emoji||'📦'}
+          </div>
           <div class="category-name">${c.name}</div>
           <div class="category-count">Explore</div>
         </a>`).join('');
