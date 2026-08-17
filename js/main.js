@@ -302,19 +302,151 @@ async function loadDynamicReviews() {
   } catch(e) {}
 }
 
-// ===== Frontend Order Modal =====
-function injectOrderModal() {
-  const modalHTML = `
+// ===== Shopping Cart Logic =====
+let shoppingCart = JSON.parse(localStorage.getItem('cc_cart')) || [];
+
+function saveCart() {
+  localStorage.setItem('cc_cart', JSON.stringify(shoppingCart));
+  updateCartUI();
+}
+
+function addToCart(id, name, price, img) {
+  const existing = shoppingCart.find(item => item.id === id);
+  if (existing) {
+    existing.qty += 1;
+  } else {
+    shoppingCart.push({ id, name, price: parseFloat(price) || 0, img: img || '', qty: 1 });
+  }
+  saveCart();
+  showToast('🛒 Added to Cart!');
+}
+
+function removeFromCart(index) {
+  shoppingCart.splice(index, 1);
+  saveCart();
+}
+
+function changeQty(index, delta) {
+  if (shoppingCart[index]) {
+    shoppingCart[index].qty += delta;
+    if (shoppingCart[index].qty <= 0) {
+      shoppingCart.splice(index, 1);
+    }
+    saveCart();
+  }
+}
+
+function toggleCartDrawer(show) {
+  const overlay = document.getElementById('cartOverlay');
+  const drawer = document.getElementById('cartDrawer');
+  if (!overlay || !drawer) return;
+  
+  if (show) {
+    overlay.classList.add('active');
+    drawer.classList.add('active');
+    updateCartUI();
+  } else {
+    overlay.classList.remove('active');
+    drawer.classList.remove('active');
+  }
+}
+
+function updateCartUI() {
+  const badge = document.getElementById('cartBadge');
+  const body = document.getElementById('cartBody');
+  const totalEl = document.getElementById('cartTotal');
+  const checkoutBtn = document.getElementById('cartCheckoutBtn');
+  
+  if (!badge || !body) return;
+  
+  const totalItems = shoppingCart.reduce((sum, item) => sum + item.qty, 0);
+  badge.textContent = totalItems;
+  badge.style.display = totalItems > 0 ? 'flex' : 'none';
+  
+  if (shoppingCart.length === 0) {
+    body.innerHTML = `
+      <div class="cart-empty">
+        <div class="cart-empty-icon">🛒</div>
+        <p>Your cart is empty.</p>
+        <button class="btn btn-primary" style="margin-top:1rem;" onclick="toggleCartDrawer(false)">Continue Shopping</button>
+      </div>`;
+    if (totalEl) totalEl.textContent = '₹0';
+    if (checkoutBtn) checkoutBtn.disabled = true;
+    return;
+  }
+  
+  if (checkoutBtn) checkoutBtn.disabled = false;
+  
+  let html = '';
+  let total = 0;
+  
+  shoppingCart.forEach((item, index) => {
+    const itemTotal = item.price * item.qty;
+    total += itemTotal;
+    
+    html += `
+      <div class="cart-item">
+        <div class="cart-item-details">
+          <div class="cart-item-title">${item.name}</div>
+          <div class="cart-item-price">₹${item.price}</div>
+          <div class="cart-item-actions">
+            <div class="qty-ctrl">
+              <button class="qty-btn" onclick="changeQty(${index}, -1)">-</button>
+              <div class="qty-val">${item.qty}</div>
+              <button class="qty-btn" onclick="changeQty(${index}, 1)">+</button>
+            </div>
+            <button class="remove-item-btn" onclick="removeFromCart(${index})">Remove</button>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+  
+  body.innerHTML = html;
+  if (totalEl) totalEl.textContent = '₹' + total;
+}
+
+function showToast(msg) {
+  let toast = document.getElementById('ccToast');
+  if (!toast) {
+    document.body.insertAdjacentHTML('beforeend', `<div id="ccToast" class="toast"></div>`);
+    toast = document.getElementById('ccToast');
+  }
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+function injectCartUI() {
+  const html = `
+  <!-- Floating Cart Button -->
+  <div class="cart-float-btn" onclick="toggleCartDrawer(true)">
+    🛒
+    <div class="cart-badge" id="cartBadge" style="display:none;">0</div>
+  </div>
+
+  <!-- Cart Drawer -->
+  <div class="cart-drawer-overlay" id="cartOverlay" onclick="if(event.target===this) toggleCartDrawer(false)"></div>
+  <div class="cart-drawer" id="cartDrawer">
+    <div class="cart-header">
+      <h2>Your Cart</h2>
+      <button class="close-cart-btn" onclick="toggleCartDrawer(false)">&times;</button>
+    </div>
+    <div class="cart-body" id="cartBody"></div>
+    <div class="cart-footer">
+      <div class="cart-total-row">
+        <span>Total:</span>
+        <span id="cartTotal" style="color:var(--gold);">₹0</span>
+      </div>
+      <button class="btn btn-primary checkout-btn" id="cartCheckoutBtn" onclick="openCheckoutFromCart()">Proceed to Checkout</button>
+    </div>
+  </div>
+
+  <!-- Checkout Modal -->
   <div class="modal-bd" id="frontOrderModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:9999; align-items:center; justify-content:center; padding:1rem;">
     <div class="modal" style="background:var(--bg-secondary); border:1px solid rgba(212,175,55,0.2); border-radius:16px; width:100%; max-width:450px; padding:1.5rem; position:relative; box-shadow:0 10px 40px rgba(0,0,0,0.5);">
       <button onclick="document.getElementById('frontOrderModal').style.display='none'" style="position:absolute; top:1rem; right:1rem; background:none; border:none; color:white; font-size:1.5rem; cursor:pointer;">&times;</button>
       <h3 style="margin-bottom:1rem; color:var(--gold);">Complete Your Order</h3>
-      <div id="frontOrderProdName" style="font-weight:bold; margin-bottom:0.5rem; font-size:1.1rem;"></div>
-      <div id="frontOrderProdPrice" style="color:var(--gold); margin-bottom:1.5rem; font-size:1.2rem;"></div>
-      
-      <input type="hidden" id="foProdId" />
-      <input type="hidden" id="foProdName" />
-      <input type="hidden" id="foPrice" />
       
       <div style="margin-bottom:1rem;">
         <label style="display:block; font-size:0.85rem; margin-bottom:0.4rem; color:#aaa;">Your Name *</label>
@@ -328,20 +460,17 @@ function injectOrderModal() {
         <label style="display:block; font-size:0.85rem; margin-bottom:0.4rem; color:#aaa;">Customization Notes (Optional)</label>
         <textarea id="foNotes" style="width:100%; padding:0.8rem; background:rgba(0,0,0,0.3); border:1px solid #333; border-radius:8px; color:white; min-height:80px; resize:vertical;" placeholder="E.g. Name to print, preferred color, etc."></textarea>
       </div>
-      <button onclick="submitFrontendOrder()" class="btn btn-primary" style="width:100%; justify-content:center; padding:1rem; font-size:1rem;" id="foSubmitBtn">💬 Submit & Continue to WhatsApp</button>
+      <button onclick="submitCartCheckout()" class="btn btn-primary" style="width:100%; justify-content:center; padding:1rem; font-size:1rem;" id="foSubmitBtn">💬 Submit Order</button>
       <div id="foError" style="color:#ff4444; font-size:0.85rem; margin-top:0.8rem; text-align:center; display:none;"></div>
     </div>
   </div>`;
-  document.body.insertAdjacentHTML('beforeend', modalHTML);
+  document.body.insertAdjacentHTML('beforeend', html);
+  updateCartUI();
 }
 
-function openFrontendOrderModal(id, name, price) {
-  document.getElementById('foProdId').value = id;
-  document.getElementById('foProdName').value = name;
-  document.getElementById('foPrice').value = price || 0;
-  
-  document.getElementById('frontOrderProdName').textContent = name;
-  document.getElementById('frontOrderProdPrice').textContent = '₹' + (price || 0);
+function openCheckoutFromCart() {
+  if (shoppingCart.length === 0) return;
+  toggleCartDrawer(false);
   
   document.getElementById('foName').value = '';
   document.getElementById('foPhone').value = '';
@@ -354,12 +483,12 @@ function openFrontendOrderModal(id, name, price) {
   setTimeout(() => { m.style.transition='opacity 0.2s'; m.style.opacity='1'; }, 10);
 }
 
-async function submitFrontendOrder() {
+async function submitCartCheckout() {
+  if (shoppingCart.length === 0) return;
+  
   const name = document.getElementById('foName').value.trim();
   const phone = document.getElementById('foPhone').value.trim();
   const notes = document.getElementById('foNotes').value.trim();
-  const pName = document.getElementById('foProdName').value;
-  const pPrice = parseFloat(document.getElementById('foPrice').value) || 0;
   const err = document.getElementById('foError');
   const btn = document.getElementById('foSubmitBtn');
   
@@ -372,20 +501,31 @@ async function submitFrontendOrder() {
   btn.disabled = true;
   btn.textContent = 'Processing...';
   
+  const totalAmount = shoppingCart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+  const combinedProductName = shoppingCart.map(item => `${item.name} (x${item.qty})`).join(', ');
+  
   try {
     const res = await Orders.create({
       customer_name: name,
       customer_phone: phone,
-      product_name: pName,
-      amount: pPrice,
+      product_name: combinedProductName,
+      amount: totalAmount,
       status: 'pending',
       notes: notes
     });
     
     const orderId = (res && res.length > 0) ? res[0].id : 'NEW';
     const waNum = ((window._siteSettings || {}).whatsapp_number || '919913846454').replace(/\D/g, '');
-    let msg = `Hi CraftedCore! 👋\n\nI just placed an order on the website.\n*Order ID:* #${orderId}\n*Product:* ${pName}\n*Name:* ${name}`;
+    
+    let msg = `Hi CraftedCore! 👋\n\nI just placed a new order.\n*Order ID:* #${orderId}\n\n*Items:*\n`;
+    shoppingCart.forEach(item => {
+      msg += `- ${item.qty}x ${item.name} (₹${item.price * item.qty})\n`;
+    });
+    msg += `\n*Total:* ₹${totalAmount}\n*Name:* ${name}`;
     if (notes) msg += `\n*Notes:* ${notes}`;
+    
+    shoppingCart = [];
+    saveCart();
     
     document.getElementById('frontOrderModal').style.display = 'none';
     window.location.href = `https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`;
@@ -394,7 +534,7 @@ async function submitFrontendOrder() {
     err.textContent = 'Something went wrong. Please try again.';
     err.style.display = 'block';
     btn.disabled = false;
-    btn.textContent = '💬 Submit & Continue to WhatsApp';
+    btn.textContent = '💬 Submit Order';
   }
 }
 
@@ -413,7 +553,7 @@ document.addEventListener('DOMContentLoaded', () => {
   loadDynamicFeatured();
   loadDynamicCategories();
   loadDynamicReviews();
-  injectOrderModal();
+  injectCartUI();
   
   if (typeof applyDynamicSettings === 'function') {
     applyDynamicSettings();
