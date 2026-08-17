@@ -792,6 +792,20 @@ create policy "Public Settings" on site_settings for all using (true) with check
         </div>
         <textarea class="fctl" id="pDesc" placeholder="Description..." style="margin-top:0;"></textarea>
       </div>
+      </div>
+      <div class="fg">
+        <label>Available Colors</label>
+        <input type="text" class="fctl" id="pColors" placeholder="Red, Blue, Black (Leave blank if none)" />
+      </div>
+      <div class="fg">
+        <label>Customization Options</label>
+        <div style="display:flex; flex-wrap:wrap; gap:1rem; margin-top:.4rem; font-size:.9rem;">
+          <label style="display:flex; align-items:center; gap:.4rem;"><input type="checkbox" id="pcName" /> Name Engrave</label>
+          <label style="display:flex; align-items:center; gap:.4rem;"><input type="checkbox" id="pcPhoto" /> Photo Engrave</label>
+          <label style="display:flex; align-items:center; gap:.4rem;"><input type="checkbox" id="pcUvName" /> UVDTF Name</label>
+          <label style="display:flex; align-items:center; gap:.4rem;"><input type="checkbox" id="pcUvPhoto" /> UVDTF Photo</label>
+        </div>
+      </div>
       <div class="fg"><label>WhatsApp Message</label><input type="text" class="fctl" id="pWA" placeholder="Hi! I want to order this product." /></div>
       <div class="fg">
         <label>⭐ Featured Item</label>
@@ -1141,9 +1155,10 @@ async function togFeat(id, val) {
 }
 
 function openProdModal() {
-  ['pmId','pName','pPrice','pBadge','pDesc','pWA','pImgUrl'].forEach(id => document.getElementById(id).value = '');
+  ['pmId','pName','pPrice','pBadge','pDesc','pWA','pImgUrl','pColors'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('pCat').value = '';
   document.getElementById('pFeat').checked = false;
+  ['pcName','pcPhoto','pcUvName','pcUvPhoto'].forEach(id => document.getElementById(id).checked = false);
   document.getElementById('pPre').style.display = 'none';
   document.getElementById('pmTitle').textContent = 'Add Product';
   openM('prodModal');
@@ -1157,9 +1172,18 @@ function editProd(id) {
   document.getElementById('pCat').value = p.category_slug || '';
   document.getElementById('pBadge').value = p.badge || '';
   document.getElementById('pDesc').value = p.description || '';
+  document.getElementById('pColors').value = p.colors || '';
   document.getElementById('pWA').value = p.wa_message || '';
   document.getElementById('pImgUrl').value = p.image_url || '';
   document.getElementById('pFeat').checked = !!p.is_featured;
+  
+  let cust = {};
+  try { if (p.customizations) cust = JSON.parse(p.customizations); } catch(e){}
+  document.getElementById('pcName').checked = !!cust.name_engrave;
+  document.getElementById('pcPhoto').checked = !!cust.photo_engrave;
+  document.getElementById('pcUvName').checked = !!cust.uvdtf_name;
+  document.getElementById('pcUvPhoto').checked = !!cust.uvdtf_photo;
+
   if (p.image_url) { const img = document.getElementById('pPre'); img.src = p.image_url; img.style.display = 'block'; }
   document.getElementById('pmTitle').textContent = 'Edit Product';
   openM('prodModal');
@@ -1171,10 +1195,20 @@ async function saveProd() {
   const cat   = document.getElementById('pCat').value;
   if (!name || !price || !cat) { toast('❌ Name, price & category are required!', 'error'); return; }
   const catObj = _cats.find(c => c.slug === cat);
+  
+  const cust = {
+    name_engrave: document.getElementById('pcName').checked,
+    photo_engrave: document.getElementById('pcPhoto').checked,
+    uvdtf_name: document.getElementById('pcUvName').checked,
+    uvdtf_photo: document.getElementById('pcUvPhoto').checked
+  };
+  
   const data = {
     name, price, category_slug: cat, category_name: catObj?.name || cat,
     badge: document.getElementById('pBadge').value.trim() || null,
     description: document.getElementById('pDesc').value.trim(),
+    colors: document.getElementById('pColors').value.trim() || null,
+    customizations: JSON.stringify(cust),
     wa_message: document.getElementById('pWA').value.trim() || `Hi CraftedCore! I want to order: ${name}`,
     is_featured: document.getElementById('pFeat').checked,
     image_url: document.getElementById('pImgUrl').value.trim() || null
