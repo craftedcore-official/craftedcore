@@ -343,14 +343,93 @@ function saveCart() {
   updateCartUI();
 }
 
-function addToCart(id, name, price, img) {
-  const existing = shoppingCart.find(item => item.id === id);
+let currentQVProduct = null;
+
+async function openQuickView(id) {
+  if (typeof Products === 'undefined') return;
+  const prods = await Products.getAll();
+  const p = prods.find(x => x.id === id);
+  if (!p) return;
+  
+  currentQVProduct = p;
+  document.getElementById('qvTitle').textContent = p.category_name || 'Options';
+  document.getElementById('qvImg').src = p.image_url || 'images/product_mug.jpg';
+  document.getElementById('qvName').textContent = p.name;
+  document.getElementById('qvDesc').textContent = p.description || '';
+  document.getElementById('qvPrice').textContent = `₹${p.price}`;
+  
+  const colorWrap = document.getElementById('qvColorWrap');
+  const colorsDiv = document.getElementById('qvColors');
+  colorsDiv.innerHTML = '';
+  if (p.colors && p.colors.trim() !== '') {
+    const colors = p.colors.split(',').map(c => c.trim()).filter(c => c);
+    if (colors.length > 0) {
+      colors.forEach((c, i) => {
+        colorsDiv.innerHTML += `<button class="color-btn ${i===0?'active':''}" onclick="selColor(this)">${c}</button>`;
+      });
+      colorWrap.style.display = 'block';
+    } else colorWrap.style.display = 'none';
+  } else {
+    colorWrap.style.display = 'none';
+  }
+
+  const custWrap = document.getElementById('qvCustWrap');
+  const custsDiv = document.getElementById('qvCusts');
+  custsDiv.innerHTML = '';
+  let hasCust = false;
+  if (p.customizations) {
+    try {
+      const c = JSON.parse(p.customizations);
+      if (c.name_engrave) { custsDiv.innerHTML += `<label class="cust-label"><input type="checkbox" value="Name Engrave"/> Name Engrave</label>`; hasCust = true; }
+      if (c.photo_engrave) { custsDiv.innerHTML += `<label class="cust-label"><input type="checkbox" value="Photo Engrave"/> Photo Engrave</label>`; hasCust = true; }
+      if (c.uvdtf_name) { custsDiv.innerHTML += `<label class="cust-label"><input type="checkbox" value="UVDTF Name"/> UVDTF Sticker Name</label>`; hasCust = true; }
+      if (c.uvdtf_photo) { custsDiv.innerHTML += `<label class="cust-label"><input type="checkbox" value="UVDTF Photo"/> UVDTF Sticker Photo</label>`; hasCust = true; }
+    } catch(e) {}
+  }
+  custWrap.style.display = hasCust ? 'block' : 'none';
+
+  document.getElementById('qvBtn').onclick = () => confirmAddToCart();
+  document.getElementById('qvModal').classList.add('open');
+}
+
+function selColor(btn) {
+  document.querySelectorAll('#qvColors .color-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function closeQV() {
+  document.getElementById('qvModal').classList.remove('open');
+}
+
+function confirmAddToCart() {
+  if (!currentQVProduct) return;
+  const p = currentQVProduct;
+  
+  let color = '';
+  const activeColor = document.querySelector('#qvColors .color-btn.active');
+  if (activeColor) color = activeColor.textContent;
+  
+  let custs = [];
+  document.querySelectorAll('#qvCusts input:checked').forEach(cb => custs.push(cb.value));
+  
+  const cartItemId = `${p.id}-${color}-${custs.join('-')}`;
+  const existing = shoppingCart.find(item => item.cartItemId === cartItemId);
   if (existing) {
     existing.qty += 1;
   } else {
-    shoppingCart.push({ id, name, price: parseFloat(price) || 0, img: img || '', qty: 1 });
+    shoppingCart.push({ 
+      id: p.id, 
+      cartItemId,
+      name: p.name, 
+      price: parseFloat(p.price) || 0, 
+      img: p.image_url || '', 
+      qty: 1,
+      color,
+      custs
+    });
   }
   saveCart();
+  closeQV();
   showToast('🛒 Added to Cart!');
 }
 
@@ -417,10 +496,15 @@ function updateCartUI() {
     const itemTotal = item.price * item.qty;
     total += itemTotal;
     
+    let optionsHtml = '';
+    if (item.color) optionsHtml += `<div style="font-size:0.8rem;color:var(--gold);">Color: ${item.color}</div>`;
+    if (item.custs && item.custs.length > 0) optionsHtml += `<div style="font-size:0.8rem;color:var(--text2);">${item.custs.join(', ')}</div>`;
+
     html += `
       <div class="cart-item">
         <div class="cart-item-details">
           <div class="cart-item-title">${item.name}</div>
+          ${optionsHtml}
           <div class="cart-item-price">₹${item.price}</div>
           <div class="cart-item-actions">
             <div class="qty-ctrl">
@@ -552,7 +636,10 @@ async function submitCartCheckout() {
     
     let msg = `Hi CraftedCore! 👋\n\nI just placed a new order.\n*Order ID:* #${orderId}\n\n*Items:*\n`;
     shoppingCart.forEach(item => {
-      msg += `- ${item.qty}x ${item.name} (₹${item.price * item.qty})\n`;
+      let opts = '';
+      if (item.color) opts += ` [Color: ${item.color}]`;
+      if (item.custs && item.custs.length > 0) opts += ` [Cust: ${item.custs.join(', ')}]`;
+      msg += `- ${item.qty}x ${item.name}${opts} (₹${item.price * item.qty})\n`;
     });
     msg += `\n*Total:* ₹${totalAmount}\n*Name:* ${name}`;
     if (notes) msg += `\n*Notes:* ${notes}`;
