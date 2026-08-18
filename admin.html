@@ -255,6 +255,9 @@
     <div class="login-logo">⚡ CraftedCore</div>
     <div class="login-sub">WooCommerce Style Admin Panel</div>
     <input type="password" id="passIn" placeholder="🔐 Enter admin password" onkeydown="if(event.key==='Enter')doLogin()" />
+    <label style="display:flex; align-items:center; gap:.5rem; margin-top:-.5rem; margin-bottom:.8rem; font-size:.85rem; color:var(--text2); cursor:pointer;">
+      <input type="checkbox" id="remLogin" checked /> Remember me
+    </label>
     <button class="login-btn" onclick="doLogin()">Login to Admin Panel</button>
     <div class="login-err" id="loginErr">❌ Wrong password. Try again.</div>
   </div>
@@ -956,6 +959,11 @@ function getAdmPass() {
 function doLogin() {
   const v = document.getElementById('passIn').value.trim();
   if (v === getAdmPass()) {
+    if (document.getElementById('remLogin').checked) {
+      localStorage.setItem('cc_admin_auth', 'true');
+    } else {
+      sessionStorage.setItem('cc_admin_auth', 'true');
+    }
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminApp').style.display = 'block';
     initAdmin();
@@ -965,10 +973,20 @@ function doLogin() {
   }
 }
 function doLogout() {
+  localStorage.removeItem('cc_admin_auth');
+  sessionStorage.removeItem('cc_admin_auth');
   document.getElementById('adminApp').style.display = 'none';
   document.getElementById('loginScreen').style.display = 'flex';
   document.getElementById('passIn').value = '';
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (localStorage.getItem('cc_admin_auth') === 'true' || sessionStorage.getItem('cc_admin_auth') === 'true') {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminApp').style.display = 'block';
+    initAdmin();
+  }
+});
 
 // ─── NAV ─────────────────────────────────────────────────────
 const PG_TITLES = { dashboard:'Dashboard', orders:'Orders', products:'Products', categories:'Categories', coupons:'Coupons', reviews:'Reviews', editor:'Website Editor', settings:'Settings' };
