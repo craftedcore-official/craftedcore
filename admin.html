@@ -1283,7 +1283,14 @@ async function delPinBadge(i) {
 }
 
 // --- PINNED COLORS ---
-function setColPre(val) { document.getElementById('pColors').value = val; renderPGallery(); }
+function setColPre(val) { 
+  const el = document.getElementById('pColors');
+  let arr = el.value.split(',').map(s=>s.trim()).filter(s=>s);
+  if (arr.includes(val)) arr = arr.filter(x => x !== val);
+  else arr.push(val);
+  el.value = arr.join(', ');
+  renderPGallery(); 
+}
 async function pinColor() {
   const b = document.getElementById('pColors').value.trim();
   if (!b) return;
@@ -1317,7 +1324,13 @@ async function delPinColor(i) {
 }
 
 // --- PINNED CUSTS ---
-function setCustPre(val) { document.getElementById('pCustOptions').value = val; }
+function setCustPre(val) { 
+  const el = document.getElementById('pCustOptions');
+  let arr = el.value.split(',').map(s=>s.trim()).filter(s=>s);
+  if (arr.includes(val)) arr = arr.filter(x => x !== val);
+  else arr.push(val);
+  el.value = arr.join(', ');
+}
 async function pinCust() {
   const b = document.getElementById('pCustOptions').value.trim();
   if (!b) return;
