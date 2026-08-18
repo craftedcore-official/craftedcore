@@ -148,6 +148,10 @@ const SiteSettings = {
       cacheSet('cc_settings', o); return o;
     } catch(e) { return {}; }
   },
+  async get(key) {
+    const all = await this.getAll();
+    return all[key];
+  },
   async set(key, value) {
     await dbFetch('site_settings', { method: 'POST', prefer: 'resolution=merge-duplicates,return=representation', body: JSON.stringify({ key, value }) });
     cacheClear();
