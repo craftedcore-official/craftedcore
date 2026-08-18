@@ -15,20 +15,24 @@ const DB_CONFIG = {
 
 // ── Key Getters (localStorage override → hardcoded fallback) ──
 function getSupabaseUrl() {
-  const s = localStorage.getItem('cc_cfg_url');
+  let s = null;
+  try { s = localStorage.getItem('cc_cfg_url'); } catch(e) {}
   let u = (s && s.trim().length > 10) ? s.trim() : DB_CONFIG.supabase.url;
   return u.replace(/\/rest\/v1\/?$/, '').replace(/\/$/, '').trim();
 }
 function getSupabaseKey() {
-  const s = localStorage.getItem('cc_cfg_key');
+  let s = null;
+  try { s = localStorage.getItem('cc_cfg_key'); } catch(e) {}
   return (s && s.trim().length > 20) ? s.trim() : DB_CONFIG.supabase.anonKey;
 }
 function getCloudName() {
-  const s = localStorage.getItem('cc_cfg_cloud');
+  let s = null;
+  try { s = localStorage.getItem('cc_cfg_cloud'); } catch(e) {}
   return (s && s.trim().length > 2) ? s.trim() : DB_CONFIG.cloudinary.cloudName;
 }
 function getUploadPreset() {
-  const s = localStorage.getItem('cc_cfg_preset');
+  let s = null;
+  try { s = localStorage.getItem('cc_cfg_preset'); } catch(e) {}
   return (s && s.trim().length > 2) ? s.trim() : DB_CONFIG.cloudinary.uploadPreset;
 }
 
@@ -144,6 +148,10 @@ const SiteSettings = {
       cacheSet('cc_settings', o); return o;
     } catch(e) { return {}; }
   },
+  async get(key) {
+    const all = await this.getAll();
+    return all[key];
+  },
   async set(key, value) {
     await dbFetch('site_settings', { method: 'POST', prefer: 'resolution=merge-duplicates,return=representation', body: JSON.stringify({ key, value }) });
     cacheClear();
@@ -178,13 +186,16 @@ async function uploadImage(file, onProgress) {
 
 // ── Product Card HTML Generator ───────────────────────────────
 function productCardHTML(p) {
-  const waNum = ((window._siteSettings || {}).whatsapp_number || '919913846454').replace(/\D/g, '');
-  const waMsg = encodeURIComponent(p.wa_message || `Hi CraftedCore! I want to order: ${p.name}`);
+  const safeName = (p.name || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+  const mainImg = p.image_url ? p.image_url.split(',')[0] : 'images/product_mug.jpg';
   return `
   <div class="product-card" data-category="${p.category_slug || 'all'}" id="prod-${p.id}">
     <div class="product-image-wrap">
       ${p.badge ? `<span class="product-badge">${p.badge}</span>` : ''}
-      <img src="${p.image_url || 'images/product_mug.jpg'}" alt="${p.name}" loading="lazy"/>
+      <img src="${mainImg}" alt="${p.name}" loading="lazy"/>
+      <div class="product-overlay">
+        <button onclick="openFrontendOrderModal(${p.id}, '${safeName}', ${p.price||0})" class="btn btn-whatsapp" style="width:100%;justify-content:center;border:none;">💬 Order Now</button>
+      </div>
     </div>
     <div class="product-info">
       <div class="product-category">${p.category_name || ''}</div>
@@ -192,7 +203,7 @@ function productCardHTML(p) {
       <div class="product-desc">${p.description || ''}</div>
       <div class="product-footer">
         <div class="product-price"><span class="from">From </span>₹${p.price}</div>
-        <a href="https://wa.me/${waNum}?text=${waMsg}" target="_blank" class="order-btn">💬 Order</a>
+        <button onclick="openFrontendOrderModal(${p.id}, '${safeName}', ${p.price||0})" class="order-btn" style="border:none;background:none;cursor:pointer;">💬 Order</button>
       </div>
     </div>
   </div>`;
