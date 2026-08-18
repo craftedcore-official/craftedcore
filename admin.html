@@ -798,12 +798,20 @@ create policy "Public Settings" on site_settings for all using (true) with check
       </div>
       <div class="fg">
         <label>Available Colors</label>
-        <input type="text" class="fctl" id="pColors" placeholder="Red, Blue, Black (Leave blank if none)" onkeyup="renderPGallery()" onchange="renderPGallery()" />
+        <div style="display:flex; gap:0.5rem; align-items:center;">
+          <input type="text" class="fctl" id="pColors" placeholder="Red, Blue, Black (Leave blank if none)" onkeyup="renderPGallery()" onchange="renderPGallery()" />
+          <button type="button" class="btn" style="padding:0.2rem 0.5rem;font-size:0.75rem;background:var(--bg3);color:var(--text);" onclick="pinColor()">📌 Pin</button>
+        </div>
+        <div class="bdg-presets" id="colorPresetsCont" style="margin-top:0.4rem;"></div>
       </div>
       <div class="fg">
         <label>Customization Options</label>
         <div style="font-size:0.75rem;color:var(--text2);margin-bottom:0.4rem;">Type options separated by commas. Add extra price in brackets, e.g. <code>Gift Wrap (+50)</code>.</div>
-        <input type="text" class="fctl" id="pCustOptions" placeholder="Name Engrave, Gift Wrap (+50), Urgent (+100) (Leave blank if none)" />
+        <div style="display:flex; gap:0.5rem; align-items:center;">
+          <input type="text" class="fctl" id="pCustOptions" placeholder="Name Engrave, Gift Wrap (+50), Urgent (+100) (Leave blank if none)" />
+          <button type="button" class="btn" style="padding:0.2rem 0.5rem;font-size:0.75rem;background:var(--bg3);color:var(--text);" onclick="pinCust()">📌 Pin</button>
+        </div>
+        <div class="bdg-presets" id="custPresetsCont" style="margin-top:0.4rem;"></div>
       </div>
       <div class="fg"><label>WhatsApp Message</label><input type="text" class="fctl" id="pWA" placeholder="Hi! I want to order this product." /></div>
       <div class="fg">
@@ -999,6 +1007,8 @@ async function initAdmin() {
   await loadDash();
   await loadCatDropdown();
   await loadPinnedBadges();
+  await loadPinnedColors();
+  await loadPinnedCusts();
 }
 
 // ─── DASHBOARD ───────────────────────────────────────────────
@@ -1258,10 +1268,86 @@ function renderPinnedBadges(arr) {
     <span class="bdg-pre" onclick="setBdg(this,'🆕 New')">🆕 New</span>
     <span class="bdg-pre" onclick="setBdg(this,'')">✕ None</span>
   `;
-  arr.forEach(b => {
-    html += `<span class="bdg-pre" onclick="setBdg(this,'${b}')">${b}</span>`;
+  arr.forEach((b, i) => {
+    html += `<span class="bdg-pre"><span onclick="setBdg(this,'${b}')">${b}</span><span style="font-size:0.6rem;color:var(--red);cursor:pointer;margin-left:0.4rem;" onclick="delPinBadge(${i})">✖</span></span>`;
   });
   c.innerHTML = html;
+}
+
+async function delPinBadge(i) {
+  const s = await SiteSettings.get('pinned_badges') || '';
+  let arr = s ? s.split('||') : [];
+  arr.splice(i, 1);
+  await SiteSettings.set('pinned_badges', arr.join('||'));
+  renderPinnedBadges(arr);
+}
+
+// --- PINNED COLORS ---
+function setColPre(val) { document.getElementById('pColors').value = val; renderPGallery(); }
+async function pinColor() {
+  const b = document.getElementById('pColors').value.trim();
+  if (!b) return;
+  const s = await SiteSettings.get('pinned_colors') || '';
+  let arr = s ? s.split('||') : [];
+  if (!arr.includes(b)) {
+    arr.push(b);
+    await SiteSettings.set('pinned_colors', arr.join('||'));
+    renderPinnedColors(arr);
+    toast('📌 Colors pinned!', 'success');
+  }
+}
+async function loadPinnedColors() {
+  const s = await SiteSettings.get('pinned_colors') || '';
+  if (s) renderPinnedColors(s.split('||'));
+}
+function renderPinnedColors(arr) {
+  const c = document.getElementById('colorPresetsCont');
+  let html = '';
+  arr.forEach((b, i) => {
+    html += `<span class="bdg-pre"><span onclick="setColPre('${b}')">${b}</span><span style="font-size:0.6rem;color:var(--red);cursor:pointer;margin-left:0.4rem;" onclick="delPinColor(${i})">✖</span></span>`;
+  });
+  c.innerHTML = html;
+}
+async function delPinColor(i) {
+  const s = await SiteSettings.get('pinned_colors') || '';
+  let arr = s ? s.split('||') : [];
+  arr.splice(i, 1);
+  await SiteSettings.set('pinned_colors', arr.join('||'));
+  renderPinnedColors(arr);
+}
+
+// --- PINNED CUSTS ---
+function setCustPre(val) { document.getElementById('pCustOptions').value = val; }
+async function pinCust() {
+  const b = document.getElementById('pCustOptions').value.trim();
+  if (!b) return;
+  const s = await SiteSettings.get('pinned_custs') || '';
+  let arr = s ? s.split('||') : [];
+  if (!arr.includes(b)) {
+    arr.push(b);
+    await SiteSettings.set('pinned_custs', arr.join('||'));
+    renderPinnedCusts(arr);
+    toast('📌 Customizations pinned!', 'success');
+  }
+}
+async function loadPinnedCusts() {
+  const s = await SiteSettings.get('pinned_custs') || '';
+  if (s) renderPinnedCusts(s.split('||'));
+}
+function renderPinnedCusts(arr) {
+  const c = document.getElementById('custPresetsCont');
+  let html = '';
+  arr.forEach((b, i) => {
+    html += `<span class="bdg-pre"><span onclick="setCustPre('${b}')">${b}</span><span style="font-size:0.6rem;color:var(--red);cursor:pointer;margin-left:0.4rem;" onclick="delPinCust(${i})">✖</span></span>`;
+  });
+  c.innerHTML = html;
+}
+async function delPinCust(i) {
+  const s = await SiteSettings.get('pinned_custs') || '';
+  let arr = s ? s.split('||') : [];
+  arr.splice(i, 1);
+  await SiteSettings.set('pinned_custs', arr.join('||'));
+  renderPinnedCusts(arr);
 }
 
 // ─── CATEGORIES ──────────────────────────────────────────────
