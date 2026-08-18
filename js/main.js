@@ -378,6 +378,7 @@ async function openQuickView(id) {
   custsDiv.innerHTML = '';
   let hasCust = false;
   if (p.customizations) {
+    try {
       let opts = [];
       const c = JSON.parse(p.customizations);
       if (c.options) opts = opts.concat(c.options.split(',').map(x=>x.trim()).filter(x=>x));
