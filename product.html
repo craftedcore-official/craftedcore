@@ -353,6 +353,10 @@
       window.pgImages = urls;
       window.pgIndex = 0;
       
+      let cust = {};
+      try { if (p.customizations) cust = JSON.parse(p.customizations); } catch(e){}
+      window.pgImageColorsMap = cust.image_colors || {};
+      
       const pgImg = document.getElementById('pgImg');
       const pgGallery = document.getElementById('pgGallery');
       const galPrev = document.getElementById('galPrev');
@@ -413,6 +417,16 @@
         const activeColor = document.querySelector('#pgColors .color-btn.active');
         if (activeColor) color = activeColor.textContent;
         
+        let cartImg = window.pgImages && window.pgImages.length > 0 ? window.pgImages[0] : '';
+        if (color && window.pgImageColorsMap && window.pgImages) {
+          for (let i = 0; i < window.pgImages.length; i++) {
+            if (window.pgImageColorsMap[window.pgImages[i]] === color) {
+              cartImg = window.pgImages[i];
+              break;
+            }
+          }
+        }
+        
         let custs = [];
         document.querySelectorAll('#pgCusts input:checked').forEach(cb => custs.push(cb.value));
         
@@ -422,7 +436,7 @@
           existing.qty += 1;
         } else {
           shoppingCart.push({ 
-            id: p.id, cartItemId, name: p.name, price: parseFloat(p.price) || 0, img: p.image_url ? p.image_url.split(',')[0] : '', qty: 1, color, custs
+            id: p.id, cartItemId, name: p.name, price: parseFloat(p.price) || 0, img: cartImg, qty: 1, color, custs
           });
         }
         saveCart();
@@ -437,10 +451,18 @@
       }
     });
 
-    // Override selColor to work on pgColors instead of qvColors
     function selColor(btn) {
       document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
+      const c = btn.textContent;
+      if (window.pgImageColorsMap && window.pgImages) {
+        for (let i = 0; i < window.pgImages.length; i++) {
+          if (window.pgImageColorsMap[window.pgImages[i]] === c) {
+            if (typeof window.setGalImg === 'function') window.setGalImg(i);
+            break;
+          }
+        }
+      }
     }
 
     // Gallery Sliding & Swipe Logic
