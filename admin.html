@@ -795,7 +795,7 @@ create policy "Public Settings" on site_settings for all using (true) with check
       </div>
       <div class="fg">
         <label>Available Colors</label>
-        <input type="text" class="fctl" id="pColors" placeholder="Red, Blue, Black (Leave blank if none)" />
+        <input type="text" class="fctl" id="pColors" placeholder="Red, Blue, Black (Leave blank if none)" onkeyup="renderPGallery()" onchange="renderPGallery()" />
       </div>
       <div class="fg">
         <label>Customization Options</label>
@@ -1159,6 +1159,7 @@ function openProdModal() {
   document.getElementById('pCat').value = '';
   document.getElementById('pFeat').checked = false;
   ['pcName','pcPhoto','pcUvName','pcUvPhoto'].forEach(id => document.getElementById(id).checked = false);
+  window.pgImageColors = {};
   renderPGallery();
   document.getElementById('pmTitle').textContent = 'Add Product';
   openM('prodModal');
@@ -1183,6 +1184,7 @@ function editProd(id) {
   document.getElementById('pcPhoto').checked = !!cust.photo_engrave;
   document.getElementById('pcUvName').checked = !!cust.uvdtf_name;
   document.getElementById('pcUvPhoto').checked = !!cust.uvdtf_photo;
+  window.pgImageColors = cust.image_colors || {};
 
   renderPGallery();
   document.getElementById('pmTitle').textContent = 'Edit Product';
@@ -1200,7 +1202,8 @@ async function saveProd() {
     name_engrave: document.getElementById('pcName').checked,
     photo_engrave: document.getElementById('pcPhoto').checked,
     uvdtf_name: document.getElementById('pcUvName').checked,
-    uvdtf_photo: document.getElementById('pcUvPhoto').checked
+    uvdtf_photo: document.getElementById('pcUvPhoto').checked,
+    image_colors: window.pgImageColors || {}
   };
   
   const data = {
@@ -1596,12 +1599,30 @@ function renderPGallery() {
   if(!g) return;
   g.innerHTML = '';
   let urls = document.getElementById('pImgUrl').value.split(',').map(s=>s.trim()).filter(s=>s);
+  
+  const colorsText = document.getElementById('pColors').value.trim();
+  const colors = colorsText ? colorsText.split(',').map(c => c.trim()).filter(c => c) : [];
+  if (!window.pgImageColors) window.pgImageColors = {};
+
   urls.forEach((url, i) => {
+    let selectHtml = '';
+    if (colors.length > 0) {
+      let opts = `<option value="">-- No Color --</option>`;
+      colors.forEach(c => {
+        const sel = (window.pgImageColors[url] === c) ? 'selected' : '';
+        opts += `<option value="${c}" ${sel}>${c}</option>`;
+      });
+      selectHtml = `<select style="width:100%;font-size:0.65rem;padding:2px;margin-top:4px;border:1px solid #444;background:#222;color:#fff;border-radius:4px;" onchange="window.pgImageColors['${url}']=this.value">${opts}</select>`;
+    }
+
     g.innerHTML += `
-      <div style="position:relative; width:60px; height:60px; border-radius:8px; overflow:hidden; border:2px solid ${i===0?'var(--gold)':'transparent'}">
-        <img src="${url}" style="width:100%;height:100%;object-fit:cover;" />
-        <div style="position:absolute;top:0;right:0;background:rgba(0,0,0,0.5);color:#fff;cursor:pointer;font-size:.7rem;padding:2px;" onclick="remPGal(${i})">✕</div>
-        ${i !== 0 ? `<div style="position:absolute;bottom:0;left:0;width:100%;text-align:center;background:rgba(212,175,55,0.8);color:#000;cursor:pointer;font-size:.6rem;font-weight:bold;padding:2px;" onclick="mainPGal(${i})">MAIN</div>` : ''}
+      <div style="position:relative; width:70px; display:flex; flex-direction:column; align-items:center;">
+        <div style="position:relative; width:60px; height:60px; border-radius:8px; overflow:hidden; border:2px solid ${i===0?'var(--gold)':'transparent'}">
+          <img src="${url}" style="width:100%;height:100%;object-fit:cover;" />
+          <div style="position:absolute;top:0;right:0;background:rgba(0,0,0,0.5);color:#fff;cursor:pointer;font-size:.7rem;padding:2px;" onclick="remPGal(${i})">✕</div>
+          ${i !== 0 ? `<div style="position:absolute;bottom:0;left:0;width:100%;text-align:center;background:rgba(212,175,55,0.8);color:#000;cursor:pointer;font-size:.6rem;font-weight:bold;padding:2px;" onclick="mainPGal(${i})">MAIN</div>` : ''}
+        </div>
+        ${selectHtml}
       </div>
     `;
   });
