@@ -401,14 +401,28 @@
       const custsDiv = document.getElementById('pgCusts');
       custsDiv.innerHTML = '';
       let hasCust = false;
+      let opts = [];
       if (p.customizations) {
         try {
           const c = JSON.parse(p.customizations);
-          if (c.name_engrave) { custsDiv.innerHTML += `<label class="cust-label"><input type="checkbox" value="Name Engrave"/> Name Engrave</label>`; hasCust = true; }
-          if (c.photo_engrave) { custsDiv.innerHTML += `<label class="cust-label"><input type="checkbox" value="Photo Engrave"/> Photo Engrave</label>`; hasCust = true; }
-          if (c.uvdtf_name) { custsDiv.innerHTML += `<label class="cust-label"><input type="checkbox" value="UVDTF Name"/> UVDTF Sticker Name</label>`; hasCust = true; }
-          if (c.uvdtf_photo) { custsDiv.innerHTML += `<label class="cust-label"><input type="checkbox" value="UVDTF Photo"/> UVDTF Sticker Photo</label>`; hasCust = true; }
+          if (c.options) opts = opts.concat(c.options.split(',').map(x=>x.trim()).filter(x=>x));
+          if (c.name_engrave) opts.push('Name Engrave');
+          if (c.photo_engrave) opts.push('Photo Engrave');
+          if (c.uvdtf_name) opts.push('UVDTF Name');
+          if (c.uvdtf_photo) opts.push('UVDTF Photo');
         } catch(e) {}
+      }
+      
+      window.pgBasePrice = parseFloat(p.price) || 0;
+      
+      if (opts.length > 0) {
+        hasCust = true;
+        opts.forEach(o => {
+          let extra = 0;
+          const match = o.match(/\(\+\s*(\d+(\.\d+)?)\)/);
+          if (match) extra = parseFloat(match[1]);
+          custsDiv.innerHTML += `<label class="cust-label"><input type="checkbox" value="${o}" data-price="${extra}" onchange="updatePgPrice()" /> ${o}</label>`;
+        });
       }
       if (hasCust) custWrap.style.display = 'block';
 
@@ -428,7 +442,13 @@
         }
         
         let custs = [];
-        document.querySelectorAll('#pgCusts input:checked').forEach(cb => custs.push(cb.value));
+        let extraPrice = 0;
+        document.querySelectorAll('#pgCusts input:checked').forEach(cb => {
+          custs.push(cb.value);
+          extraPrice += parseFloat(cb.getAttribute('data-price')) || 0;
+        });
+        
+        const finalPrice = (parseFloat(p.price) || 0) + extraPrice;
         
         const cartItemId = `${p.id}-${color}-${custs.join('-')}`;
         const existing = shoppingCart.find(item => item.cartItemId === cartItemId);
@@ -436,7 +456,7 @@
           existing.qty += 1;
         } else {
           shoppingCart.push({ 
-            id: p.id, cartItemId, name: p.name, price: parseFloat(p.price) || 0, img: cartImg, qty: 1, color, custs
+            id: p.id, cartItemId, name: p.name, price: finalPrice, img: cartImg, qty: 1, color, custs
           });
         }
         saveCart();
@@ -464,6 +484,14 @@
         }
       }
     }
+
+    window.updatePgPrice = function() {
+      let total = window.pgBasePrice;
+      document.querySelectorAll('#pgCusts input:checked').forEach(cb => {
+        total += parseFloat(cb.getAttribute('data-price')) || 0;
+      });
+      document.getElementById('pgPrice').textContent = `₹${total}`;
+    };
 
     // Gallery Sliding & Swipe Logic
     window.setGalImg = function(i) {
