@@ -378,18 +378,38 @@ async function openQuickView(id) {
   custsDiv.innerHTML = '';
   let hasCust = false;
   if (p.customizations) {
-    try {
+      let opts = [];
       const c = JSON.parse(p.customizations);
-      if (c.name_engrave) { custsDiv.innerHTML += `<label class="cust-label"><input type="checkbox" value="Name Engrave"/> Name Engrave</label>`; hasCust = true; }
-      if (c.photo_engrave) { custsDiv.innerHTML += `<label class="cust-label"><input type="checkbox" value="Photo Engrave"/> Photo Engrave</label>`; hasCust = true; }
-      if (c.uvdtf_name) { custsDiv.innerHTML += `<label class="cust-label"><input type="checkbox" value="UVDTF Name"/> UVDTF Sticker Name</label>`; hasCust = true; }
-      if (c.uvdtf_photo) { custsDiv.innerHTML += `<label class="cust-label"><input type="checkbox" value="UVDTF Photo"/> UVDTF Sticker Photo</label>`; hasCust = true; }
+      if (c.options) opts = opts.concat(c.options.split(',').map(x=>x.trim()).filter(x=>x));
+      if (c.name_engrave) opts.push('Name Engrave');
+      if (c.photo_engrave) opts.push('Photo Engrave');
+      if (c.uvdtf_name) opts.push('UVDTF Name');
+      if (c.uvdtf_photo) opts.push('UVDTF Photo');
+      
+      window.qvBasePrice = parseFloat(p.price) || 0;
+      if (opts.length > 0) {
+        hasCust = true;
+        opts.forEach(o => {
+          let extra = 0;
+          const match = o.match(/\(\+\s*(\d+(\.\d+)?)\)/);
+          if (match) extra = parseFloat(match[1]);
+          custsDiv.innerHTML += `<label class="cust-label"><input type="checkbox" value="${o}" data-price="${extra}" onchange="updateQvPrice()" /> ${o}</label>`;
+        });
+      }
     } catch(e) {}
   }
   custWrap.style.display = hasCust ? 'block' : 'none';
 
   document.getElementById('qvBtn').onclick = () => confirmAddToCart();
   document.getElementById('qvModal').classList.add('open');
+}
+
+function updateQvPrice() {
+  let total = window.qvBasePrice || 0;
+  document.querySelectorAll('#qvCusts input:checked').forEach(cb => {
+    total += parseFloat(cb.getAttribute('data-price')) || 0;
+  });
+  document.getElementById('qvPrice').textContent = `₹${total}`;
 }
 
 function selColor(btn) {
@@ -424,7 +444,13 @@ function confirmAddToCart() {
   if (activeColor) color = activeColor.textContent;
   
   let custs = [];
-  document.querySelectorAll('#qvCusts input:checked').forEach(cb => custs.push(cb.value));
+  let extraPrice = 0;
+  document.querySelectorAll('#qvCusts input:checked').forEach(cb => {
+    custs.push(cb.value);
+    extraPrice += parseFloat(cb.getAttribute('data-price')) || 0;
+  });
+  
+  const finalPrice = (parseFloat(p.price) || 0) + extraPrice;
   
   let custObj = {};
   try { if (p.customizations) custObj = JSON.parse(p.customizations); } catch(e){}
@@ -449,7 +475,7 @@ function confirmAddToCart() {
       id: p.id, 
       cartItemId,
       name: p.name, 
-      price: parseFloat(p.price) || 0, 
+      price: finalPrice, 
       img: cartImg, 
       qty: 1,
       color,
