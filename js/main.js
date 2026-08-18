@@ -395,6 +395,20 @@ async function openQuickView(id) {
 function selColor(btn) {
   document.querySelectorAll('#qvColors .color-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
+  
+  const c = btn.textContent;
+  if (currentQVProduct) {
+    let cust = {};
+    try { if (currentQVProduct.customizations) cust = JSON.parse(currentQVProduct.customizations); } catch(e){}
+    const cmap = cust.image_colors || {};
+    let urls = currentQVProduct.image_url ? currentQVProduct.image_url.split(',').map(u=>u.trim()).filter(u=>u) : [];
+    for (let i = 0; i < urls.length; i++) {
+      if (cmap[urls[i]] === c) {
+        document.getElementById('qvImg').src = urls[i];
+        break;
+      }
+    }
+  }
 }
 
 function closeQV() {
@@ -412,6 +426,20 @@ function confirmAddToCart() {
   let custs = [];
   document.querySelectorAll('#qvCusts input:checked').forEach(cb => custs.push(cb.value));
   
+  let custObj = {};
+  try { if (p.customizations) custObj = JSON.parse(p.customizations); } catch(e){}
+  const cmap = custObj.image_colors || {};
+  let urls = p.image_url ? p.image_url.split(',').map(u=>u.trim()).filter(u=>u) : [];
+  let cartImg = urls.length > 0 ? urls[0] : '';
+  if (color) {
+    for (let i = 0; i < urls.length; i++) {
+      if (cmap[urls[i]] === color) {
+        cartImg = urls[i];
+        break;
+      }
+    }
+  }
+  
   const cartItemId = `${p.id}-${color}-${custs.join('-')}`;
   const existing = shoppingCart.find(item => item.cartItemId === cartItemId);
   if (existing) {
@@ -422,7 +450,7 @@ function confirmAddToCart() {
       cartItemId,
       name: p.name, 
       price: parseFloat(p.price) || 0, 
-      img: p.image_url ? p.image_url.split(',')[0] : '', 
+      img: cartImg, 
       qty: 1,
       color,
       custs
