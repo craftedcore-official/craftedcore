@@ -1123,7 +1123,7 @@ function renderProds(ps) {
   }
   const rows = ps.map(p => `
     <tr>
-      <td><img class="thumb" src="${p.image_url||''}" alt="" onerror="this.style.background='var(--bg4)';this.src=''" /></td>
+      <td><img class="thumb" src="${p.image_url ? p.image_url.split(',')[0] : ''}" alt="" onerror="this.style.background='var(--bg4)';this.src=''" /></td>
       <td><div class="prod-n">${p.name}</div><div class="prod-p">₹${p.price}${p.badge?` &nbsp;<span class="bdg bdg-cat">${p.badge}</span>`:''}</div></td>
       <td><span class="bdg bdg-cat">${p.category_name||p.category_slug||'—'}</span></td>
       <td>
