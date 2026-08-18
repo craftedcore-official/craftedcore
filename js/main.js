@@ -502,6 +502,7 @@ function updateCartUI() {
 
     html += `
       <div class="cart-item">
+        <img src="${item.img || 'images/product_mug.jpg'}" class="cart-item-img" alt="${item.name}" />
         <div class="cart-item-details">
           <div class="cart-item-title">${item.name}</div>
           ${optionsHtml}
