@@ -188,7 +188,7 @@ function productCardHTML(p) {
     <div class="product-image-wrap">
       ${p.badge ? `<span class="product-badge">${p.badge}</span>` : ''}
       <a href="product.html?id=${p.id}">
-        <img src="${p.image_url || 'images/product_mug.jpg'}" alt="${p.name}" loading="lazy"/>
+        <img src="${p.image_url ? p.image_url.split(',')[0] : 'images/product_mug.jpg'}" alt="${p.name}" loading="lazy"/>
       </a>
       <div class="product-overlay">
         <a href="product.html?id=${p.id}" class="btn btn-whatsapp" style="width:100%;justify-content:center;border:none;text-decoration:none;display:flex;">🛍️ View Options</a>
@@ -200,7 +200,7 @@ function productCardHTML(p) {
       <div class="product-desc">${p.description || ''}</div>
       <div class="product-footer">
         <div class="product-price"><span class="from">From </span>₹${p.price}</div>
-        <button onclick="addToCart(${p.id}, '${safeName}', ${p.price||0}, '${p.image_url || ''}')" class="order-btn" style="border:none;background:none;cursor:pointer;">🛒 Add</button>
+        <button onclick="addToCart(${p.id}, '${safeName}', ${p.price||0}, '${p.image_url ? p.image_url.split(',')[0] : ''}')" class="order-btn" style="border:none;background:none;cursor:pointer;">🛒 Add</button>
       </div>
     </div>
   </div>`;
