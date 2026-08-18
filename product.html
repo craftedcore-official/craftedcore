@@ -11,8 +11,21 @@
   <style>
     .prod-page { max-width: 1200px; margin: 0 auto; padding: 6rem 1rem 3rem; }
     .prod-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
-    .prod-img-wrap { width: 100%; border-radius: var(--r); overflow: hidden; background: var(--bg2); border: 1px solid var(--border); }
-    .prod-img-wrap img { width: 100%; height: auto; aspect-ratio: 1/1; object-fit: cover; display: block; }
+    .prod-img-wrap { width: 100%; border-radius: var(--r); overflow: hidden; background: var(--bg2); border: 1px solid var(--border); position: relative; touch-action: pan-y; }
+    .prod-img-wrap img { width: 100%; height: auto; aspect-ratio: 1/1; object-fit: cover; display: block; transition: opacity 0.2s ease; }
+    
+    .prod-gallery { display: flex; gap: 0.8rem; margin-top: 1rem; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 0.5rem; }
+    .prod-gallery::-webkit-scrollbar { height: 6px; }
+    .prod-gallery::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    .gal-thumb { width: 70px; height: 70px; border-radius: 8px; border: 2px solid transparent; cursor: pointer; scroll-snap-align: start; flex-shrink: 0; overflow: hidden; opacity: 0.6; transition: 0.3s ease; }
+    .gal-thumb.active { border-color: var(--gold); opacity: 1; }
+    .gal-thumb img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+    
+    .gal-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: #fff; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; cursor: pointer; z-index: 5; opacity: 0; transition: opacity 0.3s; border: none; font-size: 1.2rem; }
+    .prod-img-wrap:hover .gal-nav { opacity: 1; }
+    .gal-prev { left: 10px; }
+    .gal-next { right: 10px; }
+    @media (max-width: 800px) { .gal-nav { opacity: 1; } }
     
     .prod-info { padding: 1rem 0; }
     .prod-cat { color: var(--gold); text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.5rem; }
@@ -62,8 +75,13 @@
   <!-- ===== PRODUCT DETAIL PAGE ===== -->
   <main class="prod-page">
     <div class="prod-layout" id="pgContent" style="display:none;">
-      <div class="prod-img-wrap">
-        <img id="pgImg" src="" alt="Product Image" />
+      <div>
+        <div class="prod-img-wrap" id="pgMainWrap">
+          <img id="pgImg" src="" alt="Product Image" />
+          <button class="gal-nav gal-prev" id="galPrev" style="display:none;" onclick="slideGal(-1)">❮</button>
+          <button class="gal-nav gal-next" id="galNext" style="display:none;" onclick="slideGal(1)">❯</button>
+        </div>
+        <div class="prod-gallery" id="pgGallery"></div>
       </div>
       <div class="prod-info">
         <div class="prod-cat" id="pgCat"></div>
@@ -305,8 +323,8 @@
     <svg class="social-svg" viewBox="0 0 24 24" width="28" height="28" fill="#fff"><path d="M12.012 2c-5.506 0-9.989 4.478-9.989 9.984 0 1.758.459 3.474 1.33 4.982L2 22l5.176-1.348a9.982 9.982 0 004.836 1.251h.004c5.506 0 9.989-4.478 9.989-9.984 0-2.668-1.039-5.176-2.927-7.063C17.189 3.039 14.68 2 12.012 2zm.004 16.326h-.003a8.31 8.31 0 01-4.238-1.163l-.304-.18-3.149.821.838-3.067-.198-.314a8.275 8.275 0 01-1.272-4.437c0-4.577 3.724-8.301 8.306-8.301 2.217 0 4.301.865 5.869 2.434a8.261 8.261 0 012.43 5.867c0 4.578-3.725 8.302-8.279 8.302zm4.551-6.216c-.249-.125-1.477-.729-1.706-.812-.228-.083-.395-.125-.561.125-.166.249-.644.812-.789.978-.145.166-.291.187-.54.062a6.837 6.837 0 01-2.008-1.238 7.55 7.55 0 01-1.39-1.73c-.145-.249-.016-.384.109-.508.113-.112.249-.291.374-.436.125-.145.166-.249.249-.415.083-.166.042-.312-.021-.436-.062-.125-.561-1.352-.769-1.85-.202-.486-.407-.42-.561-.428l-.478-.009c-.166 0-.436.062-.664.312-.228.249-.873.852-.873 2.079 0 1.226.893 2.41 1.018 2.577.125.166 1.757 2.684 4.257 3.764.595.257 1.06.41 1.422.525.597.19 1.14.163 1.57.099.479-.071 1.477-.603 1.684-1.184.208-.582.208-1.08.145-1.184-.063-.104-.229-.166-.478-.291z"/></svg>
   </a>
 
-  <script src="js/db.js?v=23"></script>
-  <script src="js/main.js?v=23"></script>
+  <script src="js/db.js?v=24"></script>
+  <script src="js/main.js?v=24"></script>
   <script>
     document.addEventListener("DOMContentLoaded", async () => {
       const urlParams = new URLSearchParams(window.location.search);
@@ -328,7 +346,35 @@
       document.getElementById('pgContent').style.display = 'grid';
       
       document.title = p.name + " | CraftedCore";
-      document.getElementById('pgImg').src = p.image_url || 'images/product_mug.jpg';
+      
+      let urls = p.image_url ? p.image_url.split(',').map(u=>u.trim()).filter(u=>u) : ['images/product_mug.jpg'];
+      if(urls.length === 0) urls = ['images/product_mug.jpg'];
+      
+      window.pgImages = urls;
+      window.pgIndex = 0;
+      
+      const pgImg = document.getElementById('pgImg');
+      const pgGallery = document.getElementById('pgGallery');
+      const galPrev = document.getElementById('galPrev');
+      const galNext = document.getElementById('galNext');
+      
+      pgImg.src = urls[0];
+      
+      if(urls.length > 1) {
+        galPrev.style.display = 'flex';
+        galNext.style.display = 'flex';
+        pgGallery.style.display = 'flex';
+        pgGallery.innerHTML = urls.map((url, i) => `
+          <div class="gal-thumb ${i===0?'active':''}" onclick="setGalImg(${i})">
+            <img src="${url}" />
+          </div>
+        `).join('');
+      } else {
+        if(pgGallery) pgGallery.style.display = 'none';
+        if(galPrev) galPrev.style.display = 'none';
+        if(galNext) galNext.style.display = 'none';
+      }
+      
       document.getElementById('pgCat').textContent = p.category_name || '';
       document.getElementById('pgName').textContent = p.name;
       document.getElementById('pgDesc').textContent = p.description || '';
@@ -397,6 +443,41 @@
       document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
     }
+
+    // Gallery Sliding & Swipe Logic
+    window.setGalImg = function(i) {
+      if (!window.pgImages || window.pgImages.length <= 1) return;
+      if (i < 0) i = window.pgImages.length - 1;
+      if (i >= window.pgImages.length) i = 0;
+      window.pgIndex = i;
+      const pgImg = document.getElementById('pgImg');
+      pgImg.style.opacity = 0;
+      setTimeout(() => {
+        pgImg.src = window.pgImages[i];
+        pgImg.style.opacity = 1;
+      }, 150);
+      
+      document.querySelectorAll('.gal-thumb').forEach((el, idx) => {
+        if(idx === i) el.classList.add('active');
+        else el.classList.remove('active');
+      });
+      const activeThumb = document.querySelectorAll('.gal-thumb')[i];
+      if(activeThumb) activeThumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
+    
+    window.slideGal = function(dir) {
+      setGalImg(window.pgIndex + dir);
+    }
+    
+    const wrap = document.getElementById('pgMainWrap');
+    let touchStartX = 0;
+    let touchEndX = 0;
+    wrap.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
+    wrap.addEventListener('touchend', e => {
+      touchEndX = e.changedTouches[0].screenX;
+      if (touchEndX < touchStartX - 40) slideGal(1); 
+      if (touchEndX > touchStartX + 40) slideGal(-1);
+    }, {passive: true});
   </script>
 </body>
 </html>
