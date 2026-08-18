@@ -763,12 +763,12 @@ create policy "Public Settings" on site_settings for all using (true) with check
           <input type="file" id="pFile" accept="image/*" onchange="prodUpload(this.files[0])" />
           <div class="up-icon" id="pUIcon">📸</div>
           <div class="up-text" id="pUText">Click or drag product image</div>
-          <img id="pPre" class="img-pre" />
           <div class="prog-wrap" id="pPW"><div class="prog-bar" id="pPB"></div></div>
         </div>
         <input type="hidden" id="pImgUrl" />
         <span class="url-tog" onclick="toggleEl('pUrlIn')">Or paste image URL</span>
-        <input type="text" class="fctl" id="pUrlIn" placeholder="https://..." style="display:none;margin-top:.4rem;" oninput="previewProdUrl(this.value)" />
+        <input type="text" class="fctl" id="pUrlIn" placeholder="https://..." style="display:none;margin-top:.4rem;" onchange="previewProdUrl(this.value)" />
+        <div id="pGallery" style="display:flex;gap:.5rem;margin-top:.5rem;overflow-x:auto;"></div>
       </div>
       <div class="fr2">
         <div class="fg"><label>Name *</label><input type="text" class="fctl" id="pName" placeholder="Custom Black Mug" /></div>
@@ -939,7 +939,7 @@ create policy "Public Settings" on site_settings for all using (true) with check
 <!-- Image Cropper -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js" ></script>
 
-<script src="js/db.js?v=8"></script>
+<script src="js/db.js?v=24"></script>
 <script>
 // ─── AUTH ────────────────────────────────────────────────────
 function getAdmPass() { 
@@ -1159,7 +1159,7 @@ function openProdModal() {
   document.getElementById('pCat').value = '';
   document.getElementById('pFeat').checked = false;
   ['pcName','pcPhoto','pcUvName','pcUvPhoto'].forEach(id => document.getElementById(id).checked = false);
-  document.getElementById('pPre').style.display = 'none';
+  renderPGallery();
   document.getElementById('pmTitle').textContent = 'Add Product';
   openM('prodModal');
 }
@@ -1184,7 +1184,7 @@ function editProd(id) {
   document.getElementById('pcUvName').checked = !!cust.uvdtf_name;
   document.getElementById('pcUvPhoto').checked = !!cust.uvdtf_photo;
 
-  if (p.image_url) { const img = document.getElementById('pPre'); img.src = p.image_url; img.style.display = 'block'; }
+  renderPGallery();
   document.getElementById('pmTitle').textContent = 'Edit Product';
   openM('prodModal');
 }
@@ -1581,7 +1581,50 @@ function onDropHero(e)  { e.preventDefault(); offDrag('heroUA'); const f=e.dataT
 function onDropLogo(e)  { e.preventDefault(); offDrag('logoUA'); const f=e.dataTransfer.files[0]; if(f) logoUpload(f); }
 function onDropCat(e)   { e.preventDefault(); offDrag('cUA'); const f=e.dataTransfer.files[0]; if(f) catUpload(f); }
 function toggleEl(id)   { const el=document.getElementById(id); el.style.display = el.style.display==='none'?'block':'none'; }
-function previewProdUrl(url) { document.getElementById('pImgUrl').value = url; const img=document.getElementById('pPre'); img.src=url; img.style.display=url?'block':'none'; }
+function previewProdUrl(url) {
+  if(!url) return;
+  let curr = document.getElementById('pImgUrl').value.split(',').filter(s=>s);
+  curr.push(url);
+  document.getElementById('pImgUrl').value = curr.join(',');
+  document.getElementById('pUrlIn').value = '';
+  document.getElementById('pUrlIn').style.display = 'none';
+  renderPGallery();
+}
+
+function renderPGallery() {
+  const g = document.getElementById('pGallery');
+  if(!g) return;
+  g.innerHTML = '';
+  let urls = document.getElementById('pImgUrl').value.split(',').map(s=>s.trim()).filter(s=>s);
+  urls.forEach((url, i) => {
+    g.innerHTML += `
+      <div style="position:relative; width:60px; height:60px; border-radius:8px; overflow:hidden; border:2px solid ${i===0?'var(--gold)':'transparent'}">
+        <img src="${url}" style="width:100%;height:100%;object-fit:cover;" />
+        <div style="position:absolute;top:0;right:0;background:rgba(0,0,0,0.5);color:#fff;cursor:pointer;font-size:.7rem;padding:2px;" onclick="remPGal(${i})">✕</div>
+        ${i !== 0 ? `<div style="position:absolute;bottom:0;left:0;width:100%;text-align:center;background:rgba(212,175,55,0.8);color:#000;cursor:pointer;font-size:.6rem;font-weight:bold;padding:2px;" onclick="mainPGal(${i})">MAIN</div>` : ''}
+      </div>
+    `;
+  });
+  document.getElementById('pImgUrl').value = urls.join(',');
+}
+
+function remPGal(i) {
+  let urls = document.getElementById('pImgUrl').value.split(',').filter(s=>s);
+  urls.splice(i, 1);
+  document.getElementById('pImgUrl').value = urls.join(',');
+  renderPGallery();
+}
+
+function mainPGal(i) {
+  let urls = document.getElementById('pImgUrl').value.split(',').filter(s=>s);
+  if(i>0 && i<urls.length) {
+    const temp = urls[0];
+    urls[0] = urls[i];
+    urls[i] = temp;
+    document.getElementById('pImgUrl').value = urls.join(',');
+    renderPGallery();
+  }
+}
 function previewHeroUrl(url) { document.getElementById('heroImgUrl').value = url; const img=document.getElementById('heroPre'); img.src=url; img.style.display=url?'block':'none'; }
 function previewLogoUrl(url) { document.getElementById('logoImgUrl').value = url; const img=document.getElementById('logoPre'); img.src=url; img.style.display=url?'block':'none'; }
 function previewCatUrl(url) { document.getElementById('cmEmoji').value = url; const img=document.getElementById('cPre'); img.src=url; img.style.display=url?'block':'none'; }
@@ -1643,14 +1686,14 @@ async function doCropAndUpload() {
     const file = new File([blob], "cropped_image.jpg", { type: "image/jpeg" });
     
     if (target === 'product') {
-      const preview = document.getElementById('pPre');
-      preview.src = URL.createObjectURL(blob);
-      preview.style.display = 'block';
       document.getElementById('pPW').style.display = 'block';
       try {
         const url = await uploadImage(file, pct => { document.getElementById('pPB').style.width = pct + '%'; });
-        document.getElementById('pImgUrl').value = url;
+        let curr = document.getElementById('pImgUrl').value.split(',').filter(s=>s);
+        curr.push(url);
+        document.getElementById('pImgUrl').value = curr.join(',');
         document.getElementById('pPW').style.display = 'none';
+        renderPGallery();
         toast('✅ Image cropped & uploaded!', 'success');
       } catch(e) { toast('❌ Upload failed', 'error'); }
     } else if (target === 'category') {
