@@ -422,7 +422,7 @@
           existing.qty += 1;
         } else {
           shoppingCart.push({ 
-            id: p.id, cartItemId, name: p.name, price: parseFloat(p.price) || 0, img: p.image_url || '', qty: 1, color, custs
+            id: p.id, cartItemId, name: p.name, price: parseFloat(p.price) || 0, img: p.image_url ? p.image_url.split(',')[0] : '', qty: 1, color, custs
           });
         }
         saveCart();
