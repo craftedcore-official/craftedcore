@@ -239,7 +239,7 @@ function injectSEOData(products) {
   const schemaList = products.map(p => ({
     "@type": "Product",
     "name": p.name,
-    "image": p.image_url || "https://craftedcore-official.github.io/craftedcore/images/logo.png",
+    "image": p.image_url ? p.image_url.split(',')[0] : "https://craftedcore-official.github.io/craftedcore/images/logo.png",
     "description": p.description || p.name,
     "offers": {
       "@type": "Offer",
@@ -353,7 +353,7 @@ async function openQuickView(id) {
   
   currentQVProduct = p;
   document.getElementById('qvTitle').textContent = p.category_name || 'Options';
-  document.getElementById('qvImg').src = p.image_url || 'images/product_mug.jpg';
+  document.getElementById('qvImg').src = p.image_url ? p.image_url.split(',')[0] : 'images/product_mug.jpg';
   document.getElementById('qvName').textContent = p.name;
   document.getElementById('qvDesc').textContent = p.description || '';
   document.getElementById('qvPrice').textContent = `₹${p.price}`;
@@ -422,7 +422,7 @@ function confirmAddToCart() {
       cartItemId,
       name: p.name, 
       price: parseFloat(p.price) || 0, 
-      img: p.image_url || '', 
+      img: p.image_url ? p.image_url.split(',')[0] : '', 
       qty: 1,
       color,
       custs
