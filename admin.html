@@ -254,12 +254,13 @@
   <div class="login-box">
     <div class="login-logo">⚡ CraftedCore</div>
     <div class="login-sub">WooCommerce Style Admin Panel</div>
-    <input type="password" id="passIn" placeholder="🔐 Enter admin password" onkeydown="if(event.key==='Enter')doLogin()" />
+    <input type="text" id="userIn" placeholder="👤 Enter User ID" onkeydown="if(event.key==='Enter')document.getElementById('passIn').focus()" />
+    <input type="password" id="passIn" placeholder="🔐 Enter admin password" onkeydown="if(event.key==='Enter')doLogin()" style="margin-top:0.6rem;" />
     <label style="display:flex; align-items:center; gap:.5rem; margin-top:-.5rem; margin-bottom:.8rem; font-size:.85rem; color:var(--text2); cursor:pointer;">
       <input type="checkbox" id="remLogin" checked /> Remember me
     </label>
     <button class="login-btn" onclick="doLogin()">Login to Admin Panel</button>
-    <div class="login-err" id="loginErr">❌ Wrong password. Try again.</div>
+    <div class="login-err" id="loginErr">❌ Invalid User ID or Password. Try again.</div>
   </div>
 </div>
 
@@ -957,8 +958,9 @@ function getAdmPass() {
   catch(e) { return DB_CONFIG.admin.password; }
 }
 function doLogin() {
+  const u = document.getElementById('userIn').value.trim();
   const v = document.getElementById('passIn').value.trim();
-  if (v === getAdmPass()) {
+  if (u.toLowerCase() === 'admin@craftedcore' && v === getAdmPass()) {
     if (document.getElementById('remLogin').checked) {
       localStorage.setItem('cc_admin_auth', 'true');
     } else {
@@ -968,7 +970,9 @@ function doLogin() {
     document.getElementById('adminApp').style.display = 'block';
     initAdmin();
   } else {
-    const e = document.getElementById('loginErr'); e.style.display = 'block';
+    const e = document.getElementById('loginErr'); 
+    e.textContent = '❌ Invalid User ID or Password. Try again.';
+    e.style.display = 'block';
     setTimeout(() => e.style.display = 'none', 3000);
   }
 }
@@ -977,6 +981,7 @@ function doLogout() {
   sessionStorage.removeItem('cc_admin_auth');
   document.getElementById('adminApp').style.display = 'none';
   document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('userIn').value = '';
   document.getElementById('passIn').value = '';
 }
 
