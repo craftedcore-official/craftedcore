@@ -777,8 +777,11 @@ create policy "Public Settings" on site_settings for all using (true) with check
       <div class="fg"><label>Category *</label><select class="fctl" id="pCat"><option value="">-- Select Category --</option></select></div>
       <div class="fg">
         <label>Badge Label</label>
-        <input type="text" class="fctl" id="pBadge" placeholder="🔥 Top Seller" />
-        <div class="bdg-presets">
+        <div style="display:flex; gap:0.5rem; align-items:center;">
+          <input type="text" class="fctl" id="pBadge" placeholder="🔥 Top Seller" />
+          <button type="button" class="btn" style="padding:0.2rem 0.5rem;font-size:0.75rem;background:var(--bg3);color:var(--text);" onclick="pinBadge()">📌 Pin</button>
+        </div>
+        <div class="bdg-presets" id="badgePresetsCont">
           <span class="bdg-pre" onclick="setBdg(this,'🔥 Top Seller')">🔥 Top Seller</span>
           <span class="bdg-pre" onclick="setBdg(this,'🎁 Gift Idea')">🎁 Gift Idea</span>
           <span class="bdg-pre" onclick="setBdg(this,'🆕 New')">🆕 New</span>
@@ -799,12 +802,8 @@ create policy "Public Settings" on site_settings for all using (true) with check
       </div>
       <div class="fg">
         <label>Customization Options</label>
-        <div style="display:flex; flex-wrap:wrap; gap:1rem; margin-top:.4rem; font-size:.9rem;">
-          <label style="display:flex; align-items:center; gap:.4rem;"><input type="checkbox" id="pcName" /> Name Engrave</label>
-          <label style="display:flex; align-items:center; gap:.4rem;"><input type="checkbox" id="pcPhoto" /> Photo Engrave</label>
-          <label style="display:flex; align-items:center; gap:.4rem;"><input type="checkbox" id="pcUvName" /> UVDTF Name</label>
-          <label style="display:flex; align-items:center; gap:.4rem;"><input type="checkbox" id="pcUvPhoto" /> UVDTF Photo</label>
-        </div>
+        <div style="font-size:0.75rem;color:var(--text2);margin-bottom:0.4rem;">Type options separated by commas. Add extra price in brackets, e.g. <code>Gift Wrap (+50)</code>.</div>
+        <input type="text" class="fctl" id="pCustOptions" placeholder="Name Engrave, Gift Wrap (+50), Urgent (+100) (Leave blank if none)" />
       </div>
       <div class="fg"><label>WhatsApp Message</label><input type="text" class="fctl" id="pWA" placeholder="Hi! I want to order this product." /></div>
       <div class="fg">
@@ -999,6 +998,7 @@ function closeSB() { document.getElementById('sidebar').classList.remove('open')
 async function initAdmin() {
   await loadDash();
   await loadCatDropdown();
+  await loadPinnedBadges();
 }
 
 // ─── DASHBOARD ───────────────────────────────────────────────
@@ -1155,10 +1155,9 @@ async function togFeat(id, val) {
 }
 
 function openProdModal() {
-  ['pmId','pName','pPrice','pBadge','pDesc','pWA','pImgUrl','pColors'].forEach(id => document.getElementById(id).value = '');
+  ['pmId','pName','pPrice','pBadge','pDesc','pWA','pImgUrl','pColors','pCustOptions'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('pCat').value = '';
   document.getElementById('pFeat').checked = false;
-  ['pcName','pcPhoto','pcUvName','pcUvPhoto'].forEach(id => document.getElementById(id).checked = false);
   window.pgImageColors = {};
   renderPGallery();
   document.getElementById('pmTitle').textContent = 'Add Product';
@@ -1180,10 +1179,17 @@ function editProd(id) {
   
   let cust = {};
   try { if (p.customizations) cust = JSON.parse(p.customizations); } catch(e){}
-  document.getElementById('pcName').checked = !!cust.name_engrave;
-  document.getElementById('pcPhoto').checked = !!cust.photo_engrave;
-  document.getElementById('pcUvName').checked = !!cust.uvdtf_name;
-  document.getElementById('pcUvPhoto').checked = !!cust.uvdtf_photo;
+  
+  let oldOpts = [];
+  if (cust.options) {
+    oldOpts.push(cust.options);
+  } else {
+    if (cust.name_engrave) oldOpts.push('Name Engrave');
+    if (cust.photo_engrave) oldOpts.push('Photo Engrave');
+    if (cust.uvdtf_name) oldOpts.push('UVDTF Name');
+    if (cust.uvdtf_photo) oldOpts.push('UVDTF Photo');
+  }
+  document.getElementById('pCustOptions').value = oldOpts.join(', ');
   window.pgImageColors = cust.image_colors || {};
 
   renderPGallery();
@@ -1199,10 +1205,7 @@ async function saveProd() {
   const catObj = _cats.find(c => c.slug === cat);
   
   const cust = {
-    name_engrave: document.getElementById('pcName').checked,
-    photo_engrave: document.getElementById('pcPhoto').checked,
-    uvdtf_name: document.getElementById('pcUvName').checked,
-    uvdtf_photo: document.getElementById('pcUvPhoto').checked,
+    options: document.getElementById('pCustOptions').value.trim(),
     image_colors: window.pgImageColors || {}
   };
   
@@ -1228,6 +1231,38 @@ async function saveProd() {
 }
 
 function setBdg(el, val) { document.getElementById('pBadge').value = val; }
+
+async function pinBadge() {
+  const b = document.getElementById('pBadge').value.trim();
+  if (!b) return;
+  const s = await SiteSettings.get('pinned_badges') || '';
+  let arr = s ? s.split('||') : [];
+  if (!arr.includes(b)) {
+    arr.push(b);
+    await SiteSettings.set('pinned_badges', arr.join('||'));
+    renderPinnedBadges(arr);
+    toast('📌 Badge pinned!', 'success');
+  }
+}
+
+async function loadPinnedBadges() {
+  const s = await SiteSettings.get('pinned_badges') || '';
+  if (s) renderPinnedBadges(s.split('||'));
+}
+
+function renderPinnedBadges(arr) {
+  const c = document.getElementById('badgePresetsCont');
+  let html = `
+    <span class="bdg-pre" onclick="setBdg(this,'🔥 Top Seller')">🔥 Top Seller</span>
+    <span class="bdg-pre" onclick="setBdg(this,'🎁 Gift Idea')">🎁 Gift Idea</span>
+    <span class="bdg-pre" onclick="setBdg(this,'🆕 New')">🆕 New</span>
+    <span class="bdg-pre" onclick="setBdg(this,'')">✕ None</span>
+  `;
+  arr.forEach(b => {
+    html += `<span class="bdg-pre" onclick="setBdg(this,'${b}')">${b}</span>`;
+  });
+  c.innerHTML = html;
+}
 
 // ─── CATEGORIES ──────────────────────────────────────────────
 async function loadCats() {
@@ -1815,7 +1850,7 @@ async function autoGenerateAI(btn) {
   btn.disabled = true;
   
   try {
-    const prompt = `You are an expert e-commerce copywriter and SEO specialist. Write a highly engaging, SEO-optimized product description (2-3 sentences max) for a product named "${name}". Use relevant search keywords naturally (like custom, personalized, buy online, etc.). Also generate a polite, engaging predefined WhatsApp order message for this product. Return ONLY a valid JSON object in this exact format: {"description": "...", "wa_message": "..."}. Do not wrap in markdown blocks, just the raw JSON text.`;
+    const prompt = `You are an expert e-commerce copywriter and SEO specialist. Write a highly engaging, SEO-optimized product description (2-3 sentences max) for a product named "${name}". Use relevant search keywords naturally (like custom, personalized, buy online, etc.). Also generate a polite, engaging predefined WhatsApp order message for this product. Also generate a catchy, short emoji-filled badge for this product (like "💎 Premium Pick" or "🔥 Hot Trend"). Return ONLY a valid JSON object in this exact format: {"description": "...", "wa_message": "...", "badge": "..."}. Do not wrap in markdown blocks, just the raw JSON text.`;
     
     const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=' + key, {
       method: 'POST',
@@ -1831,6 +1866,7 @@ async function autoGenerateAI(btn) {
     
     document.getElementById('pDesc').value = result.description || '';
     document.getElementById('pWA').value = result.wa_message || '';
+    if (result.badge) document.getElementById('pBadge').value = result.badge;
     toast('✨ AI Generation Complete!', 'success');
   } catch (e) {
     console.error(e);
