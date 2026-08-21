@@ -399,7 +399,12 @@ async function submitFrontendOrder() {
     let msg = `Hi Crafted Core! 👋\n\nA new order has been successfully placed on your website.\n\n📦 *ORDER DETAILS*\n━━━━━━━━━━━━━━━━━━\n🆔 *Order ID:* #${orderId}\n\n🛍️ *Items*\n• 1 × ${pName}\nItem Total: ₹${pPrice}\n\n👤 *Customer:* ${name}\n`;
     if (notes) msg += `📝 *Notes:* ${notes}\n`;
     msg += `\n💰 *TOTAL:* ₹${pPrice}\n\n━━━━━━━━━━━━━━━━━━\n`;
-    if (imgUrl) msg += `🖼️ *Product Image:* ${imgUrl}\n\n`;
+    if (imgUrl) {
+      try {
+        let absoluteImg = new URL(imgUrl, document.baseURI).href;
+        msg += `🖼️ *Product Image:* ${absoluteImg}\n\n`;
+      } catch(e) { msg += `🖼️ *Product Image:* ${imgUrl}\n\n`; }
+    }
     msg += `✅ Order placed successfully.\n\nPlease review the order details and process it accordingly.`;
     
     document.getElementById('frontOrderModal').style.display = 'none';

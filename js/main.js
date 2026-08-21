@@ -695,6 +695,12 @@ async function submitCartCheckout() {
       msg += `• ${item.qty} × ${item.name}\n`;
       if (item.color) msg += `Color: ${item.color}\n`;
       if (item.custs && item.custs.length > 0) msg += `Cust: ${item.custs.join(', ')}\n`;
+      if (item.img) {
+        try {
+          let absoluteImg = new URL(item.img, document.baseURI).href;
+          msg += `Image: ${absoluteImg}\n`;
+        } catch(e) { msg += `Image: ${item.img}\n`; }
+      }
       msg += `Item Total: ₹${item.price * item.qty}\n\n`;
     });
     msg += `👤 *Customer:* ${name}\n`;
