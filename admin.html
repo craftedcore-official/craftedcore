@@ -1081,6 +1081,7 @@ function renderOrders(os) {
       <td><div class="prod-n">${o.customer_name}</div><div style="font-size:.76rem;color:var(--text3);">${o.customer_phone||'No phone'}</div></td>
       <td>${o.product_name||'Custom Order'}</td>
       <td style="font-weight:700;color:var(--gold);">₹${o.amount||0}</td>
+      <td style="font-size:0.8rem; white-space:pre-wrap; max-width:200px;">${o.notes || '-'}</td>
       <td>
         <div style="display:flex; gap:5px; align-items:center;">
           <select class="fctl btn-sm" id="osel_${o.id}" style="width:110px;padding:.2rem .4rem;">
@@ -1099,7 +1100,7 @@ function renderOrders(os) {
   }).join('');
   document.getElementById('ordersTbl').innerHTML = `
     <table>
-      <thead><tr><th>ID</th><th>Customer</th><th>Product</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead>
+      <thead><tr><th>ID</th><th>Customer</th><th>Product</th><th>Amount</th><th>Notes</th><th>Status</th><th>Action</th></tr></thead>
       <tbody>${rows}</tbody>
     </table>`;
 }
