@@ -421,18 +421,19 @@ document.addEventListener('click', (e) => {
     const card = waBtn.closest('.product-card');
     if (card) {
       e.preventDefault();
-      const pName = card.querySelector('.product-name')?.textContent?.trim() || 'Custom Product';
+      let hrefUrl;
+      try { hrefUrl = new URL(waBtn.href); } catch(err) { return window.open(waBtn.href, '_blank'); }
+      
+      let text = hrefUrl.searchParams.get('text') || '';
       let img = card.querySelector('img');
       let imgUrl = img ? img.src : '';
       
-      const waNum = ((window._siteSettings || {}).whatsapp_number || '+918320979383').replace(/[^\d+]/g, '');
-      let msg = `Hello CraftedCore! 🌟\n\nI would like to order:\n*${pName}*\n`;
-      if (imgUrl) {
-         msg += `\n*Product Image:* ${imgUrl}\n`;
+      if (imgUrl && !text.includes(imgUrl) && !text.includes('Product Image:')) {
+         text += `\n\n*Product Image:* ${imgUrl}`;
       }
-      msg += `\nPlease guide me with the details!`;
       
-      window.open(`https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`, '_blank');
+      const waNum = ((window._siteSettings || {}).whatsapp_number || '+918320979383').replace(/[^\d+]/g, '');
+      window.open(`https://wa.me/${waNum}?text=${encodeURIComponent(text)}`, '_blank');
     }
   }
 });

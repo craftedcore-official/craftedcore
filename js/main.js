@@ -688,17 +688,18 @@ async function submitCartCheckout() {
     });
     
     const orderId = (res && res.length > 0) ? res[0].id : 'NEW';
-    const waNum = ((window._siteSettings || {}).whatsapp_number || '918320979383').replace(/\D/g, '');
+    const waNum = ((window._siteSettings || {}).whatsapp_number || '+918320979383').replace(/[^\d+]/g, '');
     
-    let msg = `Hi CraftedCore! 👋\n\nI just placed a new order.\n*Order ID:* #${orderId}\n\n*Items:*\n`;
+    let msg = `Hi Crafted Core! 👋\n\nA new order has been successfully placed on your website.\n\n📦 *ORDER DETAILS*\n━━━━━━━━━━━━━━━━━━\n🆔 *Order ID:* #${orderId}\n\n🛍️ *Items*\n`;
     shoppingCart.forEach(item => {
-      let opts = '';
-      if (item.color) opts += ` [Color: ${item.color}]`;
-      if (item.custs && item.custs.length > 0) opts += ` [Cust: ${item.custs.join(', ')}]`;
-      msg += `- ${item.qty}x ${item.name}${opts} (₹${item.price * item.qty})\n`;
+      msg += `• ${item.qty} × ${item.name}\n`;
+      if (item.color) msg += `Color: ${item.color}\n`;
+      if (item.custs && item.custs.length > 0) msg += `Cust: ${item.custs.join(', ')}\n`;
+      msg += `Item Total: ₹${item.price * item.qty}\n\n`;
     });
-    msg += `\n*Total:* ₹${totalAmount}\n*Name:* ${name}`;
-    if (notes) msg += `\n*Notes:* ${notes}`;
+    msg += `👤 *Customer:* ${name}\n`;
+    if (notes) msg += `📝 *Notes:* ${notes}\n`;
+    msg += `\n💰 *TOTAL:* ₹${totalAmount}\n\n━━━━━━━━━━━━━━━━━━\n✅ Order placed successfully.\n\nPlease review the order details and process it accordingly.`;
     
     shoppingCart = [];
     saveCart();
@@ -713,6 +714,30 @@ async function submitCartCheckout() {
     btn.textContent = '💬 Submit Order';
   }
 }
+
+// ===== Intercept Static WhatsApp Order Clicks to add Image URL & Format =====
+document.addEventListener('click', (e) => {
+  const waBtn = e.target.closest('a[href*="wa.me"]');
+  if (waBtn) {
+    const card = waBtn.closest('.product-card');
+    if (card) {
+      e.preventDefault();
+      let hrefUrl;
+      try { hrefUrl = new URL(waBtn.href); } catch(err) { return window.open(waBtn.href, '_blank'); }
+      
+      let text = hrefUrl.searchParams.get('text') || '';
+      let img = card.querySelector('img');
+      let imgUrl = img ? img.src : '';
+      
+      if (imgUrl && !text.includes(imgUrl) && !text.includes('Product Image:')) {
+         text += `\n\n*Product Image:* ${imgUrl}`;
+      }
+      
+      const waNum = ((window._siteSettings || {}).whatsapp_number || '+918320979383').replace(/[^\d+]/g, '');
+      window.open(`https://wa.me/${waNum}?text=${encodeURIComponent(text)}`, '_blank');
+    }
+  }
+});
 
 
 // ===== Page Load Initialization =====
