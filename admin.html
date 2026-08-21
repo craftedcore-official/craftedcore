@@ -540,7 +540,7 @@
           <div class="tab-pane" id="etab-wa">
             <div class="card">
               <div class="card-title">💬 Step 7: Master WhatsApp & Footer Settings</div>
-              <div class="fg"><label>Master WhatsApp Number</label><input type="text" class="fctl" id="waNum" placeholder="918320979383" style="font-size:1.1rem;font-weight:700;" /></div>
+              <div class="fg"><label>Master WhatsApp Number</label><input type="text" class="fctl" id="waNum" placeholder="+918320979383" style="font-size:1.1rem;font-weight:700;" /></div>
               <div class="fg"><label>Footer About Bio</label><textarea class="fctl" id="ftAbout" placeholder="Premium custom merchandise crafted with passion..."></textarea></div>
               <div class="fr2">
                 <div class="fg"><label>Instagram Link</label><input type="text" class="fctl" id="bInstaVal" placeholder="https://instagram.com/crafted_core_" /></div>
@@ -1082,15 +1082,18 @@ function renderOrders(os) {
       <td>${o.product_name||'Custom Order'}</td>
       <td style="font-weight:700;color:var(--gold);">₹${o.amount||0}</td>
       <td>
-        <select class="fctl btn-sm" onchange="updOrderStatus(${o.id},this.value)" style="width:110px;padding:.2rem .4rem;">
-          <option value="pending" ${o.status==='pending'?'selected':''}>🟡 Pending</option>
-          <option value="processing" ${o.status==='processing'?'selected':''}>🔵 Processing</option>
-          <option value="completed" ${o.status==='completed'?'selected':''}>🟢 Completed</option>
-          <option value="cancelled" ${o.status==='cancelled'?'selected':''}>🔴 Cancelled</option>
-        </select>
+        <div style="display:flex; gap:5px; align-items:center;">
+          <select class="fctl btn-sm" id="osel_${o.id}" style="width:110px;padding:.2rem .4rem;">
+            <option value="pending" ${o.status==='pending'?'selected':''}>🟡 Pending</option>
+            <option value="processing" ${o.status==='processing'?'selected':''}>🔵 Processing</option>
+            <option value="completed" ${o.status==='completed'?'selected':''}>🟢 Completed</option>
+            <option value="cancelled" ${o.status==='cancelled'?'selected':''}>🔴 Cancelled</option>
+          </select>
+          <button class="btn btn-primary btn-sm" onclick="updOrderStatus(${o.id})" style="padding:.2rem .4rem;">Update</button>
+        </div>
       </td>
       <td class="act-cell">
-        <button class="btn btn-danger btn-icon btn-sm" onclick="confDel('order',${o.id},'Order #${o.id}')">🗑️</button>
+        <button class="btn btn-danger btn-icon btn-sm" onclick="delOrderConfirm(${o.id})">🗑️</button>
       </td>
     </tr>`;
   }).join('');
@@ -1104,11 +1107,25 @@ function renderOrders(os) {
 function srchOrders(q) { renderOrders(_orders.filter(o => o.customer_name.toLowerCase().includes(q.toLowerCase()) || (o.product_name||'').toLowerCase().includes(q.toLowerCase()))); }
 function filOrders(s)  { renderOrders(s ? _orders.filter(o => o.status === s) : _orders); }
 
-async function updOrderStatus(id, status) {
+async function updOrderStatus(id) {
+  const status = document.getElementById('osel_' + id).value;
+  if (!confirm(`Are you sure you want to update Order #${id} status to ${status}?`)) return;
   try {
     await Orders.updateStatus(id, status);
     toast(`✅ Order #${id} status updated to ${status}!`, 'success');
+    loadOrders();
+    loadDash();
   } catch(e) { toast('❌ Error updating status', 'error'); }
+}
+
+async function delOrderConfirm(id) {
+  if (!confirm(`Are you sure you want to delete Order #${id}?`)) return;
+  try {
+    await Orders.delete(id);
+    toast('🗑️ Deleted!', 'success');
+    loadOrders();
+    loadDash();
+  } catch(e) { toast('❌ Error deleting', 'error'); }
 }
 
 function openOrderModal() {
@@ -1652,7 +1669,7 @@ async function saveAnn() {
 }
 
 async function saveWAFooter() {
-  const n = document.getElementById('waNum').value.trim().replace(/\D/g, '');
+  const n = document.getElementById('waNum').value.trim().replace(/[^\d+]/g, '');
   if (!n) { toast('❌ Valid WhatsApp number required!', 'error'); return; }
   try {
     await SiteSettings.setMultiple({
@@ -1666,7 +1683,7 @@ async function saveWAFooter() {
 }
 
 function testWA() {
-  const n = document.getElementById('waNum').value.trim().replace(/\D/g, '');
+  const n = document.getElementById('waNum').value.trim().replace(/[^\d+]/g, '');
   if (!n) return;
   window.open(`https://wa.me/${n}?text=Test+from+Admin`, '_blank');
 }
