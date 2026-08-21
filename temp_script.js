@@ -121,7 +121,7 @@ function renderOrders(os) {
 }
 
 function viewOrderDetails(id) {
-  const o = _orders.find(ord => ord.id === id);
+  const o = _orders.find(ord => ord.id == id);
   if (!o) return;
   
   document.getElementById('odIdLabel').textContent = '#' + o.id;
