@@ -616,25 +616,44 @@ function injectCartUI() {
   </div>
 
   <!-- Checkout Modal -->
-  <div class="modal-bd" id="frontOrderModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:9999; align-items:center; justify-content:center; padding:1rem;">
-    <div class="modal" style="background:var(--bg-secondary); border:1px solid rgba(212,175,55,0.2); border-radius:16px; width:100%; max-width:450px; padding:1.5rem; position:relative; box-shadow:0 10px 40px rgba(0,0,0,0.5);">
-      <button onclick="document.getElementById('frontOrderModal').style.display='none'" style="position:absolute; top:1rem; right:1rem; background:none; border:none; color:white; font-size:1.5rem; cursor:pointer;">&times;</button>
-      <h3 style="margin-bottom:1rem; color:var(--gold);">Complete Your Order</h3>
+  <div class="modal-bd" id="frontOrderModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center; padding:1rem; overflow-y:auto;">
+    <div class="modal" style="background:var(--bg-secondary); border:1px solid rgba(212,175,55,0.3); border-radius:12px; width:100%; max-width:600px; padding:2rem; position:relative; box-shadow:0 15px 50px rgba(0,0,0,0.7); margin:auto;">
+      <button onclick="document.getElementById('frontOrderModal').style.display='none'" style="position:absolute; top:1.2rem; right:1.5rem; background:none; border:none; color:#aaa; font-size:1.8rem; cursor:pointer; transition:color 0.2s;" onmouseover="this.style.color='white'" onmouseout="this.style.color='#aaa'">&times;</button>
+      <h2 style="margin-bottom:1.5rem; color:var(--gold); font-size:1.6rem; text-align:center; font-weight:600;">Checkout Details</h2>
+      
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
+        <div>
+          <label style="display:block; font-size:0.85rem; margin-bottom:0.4rem; color:#bbb;">Full Name *</label>
+          <input type="text" id="foName" style="width:100%; padding:0.8rem; background:rgba(0,0,0,0.4); border:1px solid #444; border-radius:6px; color:white; font-size:0.95rem; outline:none; transition:border 0.2s;" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='#444'" placeholder="John Doe" />
+        </div>
+        <div>
+          <label style="display:block; font-size:0.85rem; margin-bottom:0.4rem; color:#bbb;">WhatsApp Number *</label>
+          <input type="text" id="foPhone" style="width:100%; padding:0.8rem; background:rgba(0,0,0,0.4); border:1px solid #444; border-radius:6px; color:white; font-size:0.95rem; outline:none; transition:border 0.2s;" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='#444'" placeholder="+91 0000000000" />
+        </div>
+      </div>
       
       <div style="margin-bottom:1rem;">
-        <label style="display:block; font-size:0.85rem; margin-bottom:0.4rem; color:#aaa;">Your Name *</label>
-        <input type="text" id="foName" style="width:100%; padding:0.8rem; background:rgba(0,0,0,0.3); border:1px solid #333; border-radius:8px; color:white;" placeholder="Enter your name" />
+        <label style="display:block; font-size:0.85rem; margin-bottom:0.4rem; color:#bbb;">Email Address *</label>
+        <input type="email" id="foEmail" style="width:100%; padding:0.8rem; background:rgba(0,0,0,0.4); border:1px solid #444; border-radius:6px; color:white; font-size:0.95rem; outline:none; transition:border 0.2s;" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='#444'" placeholder="johndoe@example.com" />
       </div>
+      
       <div style="margin-bottom:1rem;">
-        <label style="display:block; font-size:0.85rem; margin-bottom:0.4rem; color:#aaa;">Phone Number *</label>
-        <input type="text" id="foPhone" style="width:100%; padding:0.8rem; background:rgba(0,0,0,0.3); border:1px solid #333; border-radius:8px; color:white;" placeholder="Enter WhatsApp number" />
+        <label style="display:block; font-size:0.85rem; margin-bottom:0.4rem; color:#bbb;">Delivery Address *</label>
+        <textarea id="foAddress" style="width:100%; padding:0.8rem; background:rgba(0,0,0,0.4); border:1px solid #444; border-radius:6px; color:white; font-size:0.95rem; min-height:80px; resize:vertical; outline:none; transition:border 0.2s;" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='#444'" placeholder="House No, Street, Landmark, City, State"></textarea>
       </div>
+      
+      <div style="margin-bottom:1rem;">
+        <label style="display:block; font-size:0.85rem; margin-bottom:0.4rem; color:#bbb;">Pincode *</label>
+        <input type="text" id="foPincode" style="width:100%; padding:0.8rem; background:rgba(0,0,0,0.4); border:1px solid #444; border-radius:6px; color:white; font-size:0.95rem; outline:none; transition:border 0.2s;" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='#444'" placeholder="e.g. 110001" />
+      </div>
+      
       <div style="margin-bottom:1.5rem;">
-        <label style="display:block; font-size:0.85rem; margin-bottom:0.4rem; color:#aaa;">Customization Notes (Optional)</label>
-        <textarea id="foNotes" style="width:100%; padding:0.8rem; background:rgba(0,0,0,0.3); border:1px solid #333; border-radius:8px; color:white; min-height:80px; resize:vertical;" placeholder="E.g. Name to print, preferred color, etc."></textarea>
+        <label style="display:block; font-size:0.85rem; margin-bottom:0.4rem; color:#bbb;">Customization Notes (Optional)</label>
+        <textarea id="foNotes" style="width:100%; padding:0.8rem; background:rgba(0,0,0,0.4); border:1px solid #444; border-radius:6px; color:white; font-size:0.95rem; min-height:60px; resize:vertical; outline:none; transition:border 0.2s;" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='#444'" placeholder="Any special instructions..."></textarea>
       </div>
-      <button onclick="submitCartCheckout()" class="btn btn-primary" style="width:100%; justify-content:center; padding:1rem; font-size:1rem;" id="foSubmitBtn">💬 Submit Order</button>
-      <div id="foError" style="color:#ff4444; font-size:0.85rem; margin-top:0.8rem; text-align:center; display:none;"></div>
+      
+      <button onclick="submitCartCheckout()" class="btn btn-primary" style="width:100%; justify-content:center; padding:1rem; font-size:1.1rem; font-weight:bold; letter-spacing:0.5px; border-radius:8px;" id="foSubmitBtn">🛍️ Place Order & WhatsApp</button>
+      <div id="foError" style="color:#ff5555; font-size:0.9rem; margin-top:1rem; text-align:center; display:none; font-weight:500;"></div>
     </div>
   </div>`;
   document.body.insertAdjacentHTML('beforeend', html);
@@ -647,6 +666,9 @@ function openCheckoutFromCart() {
   
   document.getElementById('foName').value = '';
   document.getElementById('foPhone').value = '';
+  document.getElementById('foEmail').value = '';
+  document.getElementById('foAddress').value = '';
+  document.getElementById('foPincode').value = '';
   document.getElementById('foNotes').value = '';
   document.getElementById('foError').style.display = 'none';
   
@@ -661,12 +683,15 @@ async function submitCartCheckout() {
   
   const name = document.getElementById('foName').value.trim();
   const phone = document.getElementById('foPhone').value.trim();
+  const email = document.getElementById('foEmail').value.trim();
+  const address = document.getElementById('foAddress').value.trim();
+  const pincode = document.getElementById('foPincode').value.trim();
   const notes = document.getElementById('foNotes').value.trim();
   const err = document.getElementById('foError');
   const btn = document.getElementById('foSubmitBtn');
   
-  if (!name || !phone) {
-    err.textContent = 'Please enter both Name and Phone number.';
+  if (!name || !phone || !email || !address || !pincode) {
+    err.textContent = 'Please fill in all the required details (Name, Phone, Email, Address, Pincode).';
     err.style.display = 'block';
     return;
   }
@@ -677,6 +702,9 @@ async function submitCartCheckout() {
   const totalAmount = shoppingCart.reduce((sum, item) => sum + (item.price * item.qty), 0);
   const combinedProductName = shoppingCart.map(item => `${item.name} (x${item.qty})`).join(', ');
   
+  // Combine all details into the DB notes field so it's readable in the admin panel
+  const dbNotes = `Email: ${email}\nPincode: ${pincode}\nAddress: ${address}\nNotes: ${notes}`;
+  
   try {
     const res = await Orders.create({
       customer_name: name,
@@ -684,7 +712,7 @@ async function submitCartCheckout() {
       product_name: combinedProductName,
       amount: totalAmount,
       status: 'pending',
-      notes: notes
+      notes: dbNotes
     });
     
     const orderId = (res && res.length > 0) ? res[0].id : 'NEW';
@@ -703,8 +731,15 @@ async function submitCartCheckout() {
       }
       msg += `Item Total: ₹${item.price * item.qty}\n\n`;
     });
-    msg += `👤 *Customer:* ${name}\n`;
-    if (notes) msg += `📝 *Notes:* ${notes}\n`;
+    
+    msg += `👤 *CUSTOMER DETAILS*\n`;
+    msg += `Name: ${name}\n`;
+    msg += `Phone: ${phone}\n`;
+    msg += `Email: ${email}\n\n`;
+    msg += `📍 *DELIVERY ADDRESS*\n${address}\nPincode: ${pincode}\n`;
+    
+    if (notes) msg += `\n📝 *Notes:* ${notes}\n`;
+    
     msg += `\n💰 *TOTAL:* ₹${totalAmount}\n\n━━━━━━━━━━━━━━━━━━\n✅ Order placed successfully.\n\nPlease review the order details and process it accordingly.`;
     
     shoppingCart = [];
@@ -717,7 +752,7 @@ async function submitCartCheckout() {
     err.textContent = 'Something went wrong. Please try again.';
     err.style.display = 'block';
     btn.disabled = false;
-    btn.textContent = '💬 Submit Order';
+    btn.textContent = '🛍️ Place Order & WhatsApp';
   }
 }
 
