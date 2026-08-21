@@ -100,34 +100,86 @@ function renderOrders(os) {
   }
   const rows = os.map(o => {
     const stBdg = o.status==='completed'?'bdg-done':o.status==='processing'?'bdg-proc':o.status==='cancelled'?'bdg-canc':'bdg-pend';
+    const statusLabel = o.status.charAt(0).toUpperCase() + o.status.slice(1);
     return `
     <tr>
       <td><b>#${o.id}</b></td>
       <td><div class="prod-n">${o.customer_name}</div><div style="font-size:.76rem;color:var(--text3);">${o.customer_phone||'No phone'}</div></td>
       <td>${o.product_name||'Custom Order'}</td>
       <td style="font-weight:700;color:var(--gold);">₹${o.amount||0}</td>
-      <td style="font-size:0.8rem; white-space:pre-wrap; max-width:200px;">${o.notes || '-'}</td>
-      <td>
-        <div style="display:flex; gap:5px; align-items:center;">
-          <select class="fctl btn-sm" id="osel_${o.id}" style="width:110px;padding:.2rem .4rem;">
-            <option value="pending" ${o.status==='pending'?'selected':''}>🟡 Pending</option>
-            <option value="processing" ${o.status==='processing'?'selected':''}>🔵 Processing</option>
-            <option value="completed" ${o.status==='completed'?'selected':''}>🟢 Completed</option>
-            <option value="cancelled" ${o.status==='cancelled'?'selected':''}>🔴 Cancelled</option>
-          </select>
-          <button class="btn btn-primary btn-sm" onclick="updOrderStatus(${o.id})" style="padding:.2rem .4rem;">Update</button>
-        </div>
-      </td>
+      <td><span class="bdg ${stBdg}">${statusLabel}</span></td>
       <td class="act-cell">
-        <button class="btn btn-danger btn-icon btn-sm" onclick="delOrderConfirm(${o.id})">🗑️</button>
+        <button class="btn btn-primary btn-sm" onclick="viewOrderDetails(${o.id})" style="padding:.4rem .8rem; font-weight:600;">👁️ View</button>
       </td>
     </tr>`;
   }).join('');
   document.getElementById('ordersTbl').innerHTML = `
     <table>
-      <thead><tr><th>ID</th><th>Customer</th><th>Product</th><th>Amount</th><th>Notes</th><th>Status</th><th>Action</th></tr></thead>
+      <thead><tr><th>ID</th><th>Customer</th><th>Product</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead>
       <tbody>${rows}</tbody>
     </table>`;
+}
+
+function viewOrderDetails(id) {
+  const o = _orders.find(ord => ord.id === id);
+  if (!o) return;
+  
+  document.getElementById('odIdLabel').textContent = '#' + o.id;
+  
+  // Format the notes beautifully
+  let notesHtml = o.notes ? o.notes.replace(/\n/g, '<br/>') : '<i>No additional notes</i>';
+  
+  const content = `
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:1.5rem;">
+      <div style="background:rgba(0,0,0,0.2); padding:1rem; border-radius:8px; border:1px solid rgba(255,255,255,0.05);">
+        <h4 style="color:var(--gold); margin-bottom:0.8rem; font-size:1.05rem;">👤 Customer Info</h4>
+        <div><b>Name:</b> ${o.customer_name}</div>
+        <div><b>Phone:</b> ${o.customer_phone || '-'}</div>
+      </div>
+      <div style="background:rgba(0,0,0,0.2); padding:1rem; border-radius:8px; border:1px solid rgba(255,255,255,0.05);">
+        <h4 style="color:var(--gold); margin-bottom:0.8rem; font-size:1.05rem;">🛍️ Order Summary</h4>
+        <div><b>Product:</b> ${o.product_name || 'Custom Order'}</div>
+        <div><b>Amount:</b> <span style="color:var(--gold); font-weight:bold;">₹${o.amount || 0}</span></div>
+      </div>
+    </div>
+    
+    <div style="background:rgba(0,0,0,0.2); padding:1.2rem; border-radius:8px; border:1px solid rgba(255,255,255,0.05);">
+      <h4 style="color:var(--gold); margin-bottom:0.8rem; font-size:1.05rem;">📝 Full Details & Address</h4>
+      <div style="color:#ddd;">${notesHtml}</div>
+    </div>
+  `;
+  
+  document.getElementById('odContent').innerHTML = content;
+  document.getElementById('odStatusSel').value = o.status || 'pending';
+  
+  // Bind actions
+  document.getElementById('odUpdBtn').onclick = () => updOrderStatusFromModal(id);
+  document.getElementById('odDelBtn').onclick = () => delOrderConfirmFromModal(id);
+  
+  openM('orderDetailModal');
+}
+
+async function updOrderStatusFromModal(id) {
+  const status = document.getElementById('odStatusSel').value;
+  if (!confirm(`Update Order #${id} status to ${status}?`)) return;
+  try {
+    await Orders.updateStatus(id, status);
+    toast(`✅ Order #${id} status updated!`, 'success');
+    closeM('orderDetailModal');
+    loadOrders();
+    loadDash();
+  } catch(e) { toast('❌ Error updating status', 'error'); }
+}
+
+async function delOrderConfirmFromModal(id) {
+  if (!confirm(`Are you sure you want to permanently delete Order #${id}?`)) return;
+  try {
+    await Orders.delete(id);
+    toast('🗑️ Deleted!', 'success');
+    closeM('orderDetailModal');
+    loadOrders();
+    loadDash();
+  } catch(e) { toast('❌ Error deleting', 'error'); }
 }
 
 function srchOrders(q) { renderOrders(_orders.filter(o => o.customer_name.toLowerCase().includes(q.toLowerCase()) || (o.product_name||'').toLowerCase().includes(q.toLowerCase()))); }
