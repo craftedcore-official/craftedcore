@@ -891,6 +891,7 @@ create policy "Public Settings" on site_settings for all using (true) with check
       <button class="btn btn-primary" onclick="doCropAndUpload()">✂️ Crop & Upload</button>
     </div>
   </div>
+</div>
 
 <!-- ═════ COUPON MODAL ═════ -->
 <div class="modal-bd" id="couponModal">
@@ -1121,13 +1122,18 @@ function renderOrders(os) {
 }
 
 function viewOrderDetails(id) {
-  const o = _orders.find(ord => ord.id == id);
-  if (!o) return;
+  const o = _orders.find(ord => String(ord.id) === String(id));
+  if (!o) { toast('Order not found', 'error'); return; }
   
   document.getElementById('odIdLabel').textContent = '#' + o.id;
   
   // Format the notes beautifully
-  let notesHtml = o.notes ? o.notes.replace(/\n/g, '<br/>') : '<i>No additional notes</i>';
+  let notesHtml = '<i>No additional notes</i>';
+  try {
+    if (o.notes) {
+      notesHtml = String(o.notes).replace(/\n/g, '<br/>');
+    }
+  } catch(e) {}
   
   const content = `
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:1.5rem;">
@@ -1262,7 +1268,7 @@ function renderProds(ps) {
       </td>
       <td class="act-cell">
         <button class="btn btn-ghost btn-icon btn-sm" onclick="editProd(${p.id})">✏️</button>
-        <button class="btn btn-danger btn-icon btn-sm" onclick="confDel('product',${p.id},${JSON.stringify(p.name)})">🗑️</button>
+        <button class="btn btn-danger btn-icon btn-sm" data-name="${(p.name||'').replace(/"/g, '&quot;')}" onclick="confDel('product',${p.id},this.getAttribute('data-name'))">🗑️</button>
       </td>
     </tr>`).join('');
   document.getElementById('prodTbl').innerHTML = `
@@ -1498,7 +1504,7 @@ async function loadCats() {
         <div class="cat-info"><div class="cat-name">${c.name}</div><div class="cat-slug">${c.slug}</div></div>
         <div class="cat-acts">
           <button class="btn btn-ghost btn-icon btn-sm" onclick="editCat(${c.id})">✏️</button>
-          <button class="btn btn-danger btn-icon btn-sm" onclick="confDel('category',${c.id},${JSON.stringify(c.name)})">🗑️</button>
+          <button class="btn btn-danger btn-icon btn-sm" data-name="${(c.name||'').replace(/"/g, '&quot;')}" onclick="confDel('category',${c.id},this.getAttribute('data-name'))">🗑️</button>
         </div>
       </div>`).join('');
   } catch(e) { document.getElementById('catGrid').innerHTML = `<div class="empty" style="grid-column:1/-1">Connection error.</div>`; }
@@ -1575,7 +1581,7 @@ async function loadCoupons() {
         <td><b style="color:var(--gold);">${c.code}</b></td>
         <td><b>${c.discount_percent}% OFF</b></td>
         <td><span class="bdg ${c.is_active?'bdg-done':'bdg-canc'}">${c.is_active?'ACTIVE':'INACTIVE'}</span></td>
-        <td class="act-cell"><button class="btn btn-danger btn-icon btn-sm" onclick="confDel('coupon',${c.id},${JSON.stringify(c.code)})">🗑️</button></td>
+        <td class="act-cell"><button class="btn btn-danger btn-icon btn-sm" data-name="${(c.code||'').replace(/"/g, '&quot;')}" onclick="confDel('coupon',${c.id},this.getAttribute('data-name'))">🗑️</button></td>
       </tr>`).join('');
     document.getElementById('couponsTbl').innerHTML = `<table><thead><tr><th>Code</th><th>Discount</th><th>Status</th><th>Action</th></tr></thead><tbody>${rows}</tbody></table>`;
   } catch(e) { document.getElementById('couponsTbl').innerHTML = `<div class="empty">Error loading coupons.</div>`; }
@@ -1613,7 +1619,7 @@ async function loadReviews() {
         <td><b>${r.author_name}</b><div style="font-size:.74rem;color:var(--text3);">${r.location||''}</div></td>
         <td style="color:var(--gold);">${'★'.repeat(r.rating||5)}</td>
         <td style="font-size:.82rem;color:var(--text2);">${r.review_text||''}</td>
-        <td class="act-cell"><button class="btn btn-danger btn-icon btn-sm" onclick="confDel('review',${r.id},${JSON.stringify(r.author_name)})">🗑️</button></td>
+        <td class="act-cell"><button class="btn btn-danger btn-icon btn-sm" data-name="${(r.author_name||'').replace(/"/g, '&quot;')}" onclick="confDel('review',${r.id},this.getAttribute('data-name'))">🗑️</button></td>
       </tr>`).join('');
     document.getElementById('reviewsTbl').innerHTML = `<table><thead><tr><th>Customer</th><th>Rating</th><th>Review</th><th>Action</th></tr></thead><tbody>${rows}</tbody></table>`;
   } catch(e) { document.getElementById('reviewsTbl').innerHTML = `<div class="empty">Error loading reviews.</div>`; }

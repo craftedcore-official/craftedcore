@@ -121,13 +121,18 @@ function renderOrders(os) {
 }
 
 function viewOrderDetails(id) {
-  const o = _orders.find(ord => ord.id == id);
-  if (!o) return;
+  const o = _orders.find(ord => String(ord.id) === String(id));
+  if (!o) { toast('Order not found', 'error'); return; }
   
   document.getElementById('odIdLabel').textContent = '#' + o.id;
   
   // Format the notes beautifully
-  let notesHtml = o.notes ? o.notes.replace(/\n/g, '<br/>') : '<i>No additional notes</i>';
+  let notesHtml = '<i>No additional notes</i>';
+  try {
+    if (o.notes) {
+      notesHtml = String(o.notes).replace(/\n/g, '<br/>');
+    }
+  } catch(e) {}
   
   const content = `
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:1.5rem;">
