@@ -746,7 +746,7 @@ async function submitCartCheckout() {
     saveCart();
     
     document.getElementById('frontOrderModal').style.display = 'none';
-    window.location.href = `https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`;
+    openQR(`https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`);
     
   } catch(e) {
     err.textContent = 'Something went wrong. Please try again.';
@@ -775,11 +775,45 @@ document.addEventListener('click', (e) => {
       }
       
       const waNum = ((window._siteSettings || {}).whatsapp_number || '+918320979383').replace(/[^\d+]/g, '');
-      window.open(`https://wa.me/${waNum}?text=${encodeURIComponent(text)}`, '_blank');
+      openQR(`https://wa.me/${waNum}?text=${encodeURIComponent(text)}`);
     }
   }
 });
 
+// ===== QR Code Modal Logic =====
+let currentWaLink = '';
+
+window.openQR = function(waLink) {
+  currentWaLink = waLink;
+  const modal = document.getElementById('qrModal');
+  if (modal) {
+    modal.style.display = 'flex';
+    modal.style.opacity = '0';
+    setTimeout(() => { modal.style.transition='opacity 0.2s'; modal.style.opacity='1'; }, 10);
+  } else {
+    // Fallback if modal not present
+    window.location.href = waLink;
+  }
+};
+
+window.closeQR = function() {
+  const modal = document.getElementById('qrModal');
+  if (modal) {
+    modal.style.display = 'none';
+  }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  const qrWaBtn = document.getElementById('qrWaBtn');
+  if (qrWaBtn) {
+    qrWaBtn.onclick = () => {
+      closeQR();
+      if (currentWaLink) {
+        window.open(currentWaLink, '_blank');
+      }
+    };
+  }
+});
 
 // ===== Page Load Initialization =====
 document.addEventListener('DOMContentLoaded', () => {
