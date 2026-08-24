@@ -495,7 +495,16 @@
       if (window.pgImageColorsMap && window.pgImages) {
         for (let i = 0; i < window.pgImages.length; i++) {
           if (window.pgImageColorsMap[window.pgImages[i]] === c) {
-            if (typeof window.setGalImg === 'function') window.setGalImg(i);
+            if (typeof window.setGalImg === 'function') {
+              window.setGalImg(i);
+              if (window.innerWidth <= 800) {
+                const wrap = document.getElementById('pgMainWrap');
+                if (wrap) {
+                  const y = wrap.getBoundingClientRect().top + window.scrollY - 80;
+                  window.scrollTo({ top: y, behavior: 'smooth' });
+                }
+              }
+            }
             break;
           }
         }
