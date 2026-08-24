@@ -500,8 +500,7 @@
               if (window.innerWidth <= 800) {
                 const wrap = document.getElementById('pgMainWrap');
                 if (wrap) {
-                  const y = wrap.getBoundingClientRect().top + window.scrollY - 80;
-                  window.scrollTo({ top: y, behavior: 'smooth' });
+                  wrap.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
               }
             }
