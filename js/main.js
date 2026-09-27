@@ -185,13 +185,17 @@ function createGoldParticles() {
   const hero = document.getElementById('hero');
   if (!hero) return;
 
-  for (let i = 0; i < 15; i++) {
+  const colors = ['rgba(0, 240, 255,', 'rgba(255, 0, 229,', 'rgba(162, 0, 255,'];
+
+  for (let i = 0; i < 20; i++) {
     const particle = document.createElement('div');
+    const color = colors[Math.floor(Math.random() * colors.length)];
     particle.style.cssText = `
       position: absolute;
       width: ${Math.random() * 4 + 2}px;
       height: ${Math.random() * 4 + 2}px;
-      background: rgba(212, 175, 55, ${Math.random() * 0.5 + 0.1});
+      background: ${color} ${Math.random() * 0.5 + 0.3});
+      box-shadow: 0 0 10px ${color} 0.8);
       border-radius: 50%;
       left: ${Math.random() * 100}%;
       top: ${Math.random() * 100}%;
