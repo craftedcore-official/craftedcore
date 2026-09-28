@@ -3,502 +3,556 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Premium Posters - Turn Your Walls Into Statements</title>
-  <meta name="description" content="Premium custom posters, metal posters, anime, gods, and more. Upgrade your walls today." />
-  <link rel="stylesheet" href="css/style.css?v=26" />
+  <title>CraftedCore — Premium Custom Products</title>
+  <meta name="description" content="CraftedCore — Premium custom products including t-shirts, mugs, bottles, wallets, keychains, lockets, and posters. Crafted just for you." />
+  <link rel="stylesheet" href="css/style.css?v=23" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <style>
-    /* Additional Custom Styles for the New Premium Layout */
-    body {
-      background-color: #0d0d0d;
-      color: #fff;
-      font-family: 'Outfit', sans-serif;
+    /* =========================================
+       CUSTOM PREMIUM OVERRIDES FOR SCREENSHOT MATCH
+       ========================================= */
+
+    /* Hero Section matching screenshot exactly */
+    .hero {
+      background: linear-gradient(180deg, #0d0d0f 0%, #151515 100%);
+      padding: 10rem 2rem 5rem;
+      position: relative;
     }
     
-    /* Top Banner Promo */
-    .promo-banner {
-      background: #000;
-      color: #aaa;
-      text-align: center;
-      padding: 8px;
-      font-size: 0.85rem;
-      border-bottom: 1px solid #222;
-    }
-    .promo-banner span { color: #fff; font-weight: 600; }
-
-    /* Custom Navbar */
-    .premium-navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 3rem;
-      background: #050505;
-      border-bottom: 1px solid #1a1a1a;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-    }
-    .nav-left .logo { font-size: 1.5rem; font-weight: 800; font-family: 'Playfair Display', serif; }
-    .nav-center { display: flex; gap: 2rem; }
-    .nav-center a { color: #ccc; font-size: 0.9rem; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; transition: color 0.3s; }
-    .nav-center a:hover { color: #d4af37; }
-    .nav-right { display: flex; gap: 1.5rem; align-items: center; }
-    .nav-icon { width: 20px; height: 20px; fill: #fff; cursor: pointer; transition: fill 0.3s; }
-    .nav-icon:hover { fill: #d4af37; }
-
-    /* Hero Section */
-    .premium-hero {
-      position: relative;
-      width: 100%;
-      height: 70vh;
-      min-height: 500px;
-      display: flex;
-      align-items: center;
-      padding: 0 5rem;
-      background: #111; /* Fallback */
-      overflow: hidden;
-    }
-    .hero-placeholder-img {
+    .hero::after {
+      content: '';
       position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, #1c1c1c, #0a0a0a);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      color: #444;
+      top: 0; right: 0; bottom: 0; left: 0;
+      background: url('https://via.placeholder.com/1920x1080/000000/333333?text=Hero+Background+Image') center/cover no-repeat;
+      opacity: 0.4;
       z-index: 0;
-      border: 2px dashed #333;
     }
-    .hero-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to right, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.2) 60%, transparent 100%);
-      z-index: 1;
-    }
-    .hero-content-inner {
+
+    .hero-content {
       position: relative;
       z-index: 2;
-      max-width: 600px;
+      max-width: 1200px;
+      margin: 0 auto;
+      text-align: left;
     }
-    .hero-content-inner h1 {
-      font-size: 4rem;
-      line-height: 1.1;
-      margin-bottom: 1rem;
+
+    .hero-title {
+      font-size: clamp(3rem, 6vw, 5rem);
       font-family: 'Outfit', sans-serif;
-      font-weight: 800;
+      font-weight: 900;
+      line-height: 1.1;
+      color: #fff;
     }
-    .hero-content-inner h1 span {
+
+    .hero-title .statement {
+      display: block;
       font-style: italic;
       font-weight: 300;
-      color: #d4af37;
+      color: transparent;
+      -webkit-text-stroke: 1px #fff;
+      background: linear-gradient(90deg, #fff, #888);
+      -webkit-background-clip: text;
     }
-    .trust-badge {
-      font-size: 0.85rem;
+
+    .hero-subtitle {
+      font-size: 1.1rem;
       color: #aaa;
-      margin-bottom: 2rem;
-      display: flex;
+      margin-top: 1.5rem;
+      max-width: 500px;
+      line-height: 1.5;
+    }
+    
+    .hero-actions {
+      margin-top: 2rem;
+    }
+    
+    .btn-gold {
+      background: #e6a822;
+      color: #000;
+      border: none;
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      border-radius: 4px;
+      cursor: pointer;
+      display: inline-flex;
       align-items: center;
       gap: 10px;
+      transition: all 0.3s ease;
     }
-    .btn-gold {
-      background: #d4af37;
-      color: #000;
-      padding: 1rem 2.5rem;
-      font-weight: 700;
-      font-size: 1rem;
-      border-radius: 4px;
-      border: none;
-      cursor: pointer;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      transition: all 0.3s;
-    }
+    
     .btn-gold:hover {
-      background: #e6c555;
+      background: #ffbc2a;
       transform: translateY(-2px);
     }
 
-    /* Section Headings */
-    .section-heading {
+    /* Promo Banner - Design Your Custom Poster */
+    .promo-strip {
+      background: #111;
+      border-top: 1px solid #333;
+      border-bottom: 1px solid #333;
+      padding: 3rem 2rem;
       text-align: center;
-      margin: 4rem 0 2rem;
     }
-    .section-heading h2 {
-      font-size: 2.2rem;
-      font-weight: 600;
+    
+    .promo-strip h3 {
+      font-size: 2rem;
       color: #fff;
       font-family: 'Outfit', sans-serif;
-    }
-    .section-heading p {
-      color: #aaa;
-      font-size: 0.95rem;
-      margin-top: 0.5rem;
-    }
-
-    /* Category Grid */
-    .shop-categories {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1.5rem;
-      padding: 0 2rem;
-    }
-    .cat-box {
-      position: relative;
-      height: 180px;
-      border-radius: 8px;
-      background: #1a1a1a;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      overflow: hidden;
-      border: 1px solid #333;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-    .cat-box:hover {
-      border-color: #d4af37;
-      transform: translateY(-5px);
-    }
-    .cat-img-placeholder {
-      position: absolute;
-      inset: 0;
-      background: #111;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #333;
-      font-size: 0.9rem;
-      border: 1px dashed #444;
-    }
-    .cat-box h3 {
-      position: relative;
-      z-index: 2;
-      font-size: 1.6rem;
-      color: #d4af37;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.8);
-      font-weight: 800;
-      text-transform: uppercase;
-    }
-
-    /* Best Sellers */
-    .posters-grid {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 2rem;
-      padding: 0 2rem;
-    }
-    .poster-card {
-      background: #141414;
-      border-radius: 8px;
-      padding: 1rem;
-      border: 1px solid #222;
-      text-align: center;
-      transition: all 0.3s;
-    }
-    .poster-card:hover {
-      border-color: #555;
-      transform: translateY(-5px);
-    }
-    .poster-img-placeholder {
-      width: 100%;
-      aspect-ratio: 2/3;
-      background: #222;
-      border-radius: 4px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #555;
-      margin-bottom: 1rem;
-      border: 1px dashed #444;
-    }
-    .poster-card h4 {
-      font-size: 1rem;
-      color: #fff;
-      margin-bottom: 0.3rem;
-      font-weight: 600;
-    }
-    .poster-card p.price {
-      color: #d4af37;
-      font-weight: 700;
-      font-size: 1.1rem;
       margin-bottom: 0.5rem;
     }
-    .poster-card .rating {
-      color: #d4af37;
-      font-size: 0.8rem;
-      margin-bottom: 1rem;
+    
+    .promo-strip p {
+      color: #aaa;
+      margin-bottom: 1.5rem;
     }
 
-    /* Media Highlights (Videos/Images) */
-    .media-highlights {
-      background: #111;
-      padding: 4rem 2rem;
-      margin-top: 4rem;
+    /* Shop by Category matching screenshot */
+    .categories {
+      background: #0d0d0f;
+      padding: 5rem 2rem;
     }
-    .media-grid {
-      max-width: 1200px;
-      margin: 0 auto;
+    
+    .cat-grid-custom {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 1.5rem;
+      max-width: 1200px;
+      margin: 0 auto;
     }
-    .media-box {
-      aspect-ratio: 9/16;
-      background: #1a1a1a;
+    
+    .cat-box-premium {
+      background: linear-gradient(145deg, #1f1a14 0%, #111 100%);
+      border: 1px solid #332b1f;
       border-radius: 8px;
+      height: 160px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      color: #555;
-      border: 1px dashed #444;
-      text-align: center;
-      padding: 1rem;
-    }
-    .media-box span {
-      display: block;
-      margin-top: 1rem;
-      font-size: 0.85rem;
-      color: #888;
+      text-decoration: none;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
     }
 
-    /* Other Products Row */
-    .other-products {
-      max-width: 1200px;
-      margin: 4rem auto;
-      padding: 0 2rem;
+    .cat-box-premium:hover {
+      border-color: #e6a822;
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(230, 168, 34, 0.15);
     }
-    .other-grid {
+
+    .cat-box-premium h3 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #e6a822;
+      font-family: 'Playfair Display', serif;
+      z-index: 2;
+    }
+    .cat-box-premium.green h3 { color: #4CAF50; }
+    .cat-box-premium.white h3 { color: #fff; }
+
+    .cat-box-premium .count {
+      font-size: 0.8rem;
+      color: #888;
+      margin-top: 5px;
+      z-index: 2;
+    }
+    
+    /* Best Sellers matching screenshot */
+    .best-sellers-section {
+      background: #f8f8f8; /* Screenshot shows a lighter background for best sellers! */
+      padding: 5rem 2rem;
+    }
+    
+    .bs-heading {
+      text-align: center;
+      font-size: 2.5rem;
+      color: #111;
+      font-family: 'Playfair Display', serif;
+      margin-bottom: 3rem;
+    }
+
+    .bs-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 1.5rem;
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
     }
-    .other-card {
-      background: #141414;
-      border: 1px solid #222;
-      border-radius: 8px;
-      padding: 1rem;
-      text-align: center;
+    
+    .bs-card {
+      background: #fff;
+      border: 1px solid #eee;
+      border-radius: 6px;
+      overflow: hidden;
+      transition: transform 0.3s;
     }
-    .other-card .img-placeholder {
-      width: 100%;
-      aspect-ratio: 1;
-      background: #222;
+    
+    .bs-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    }
+    
+    .bs-img-wrapper {
+      position: relative;
+      aspect-ratio: 2/3;
+      background: #ddd;
+    }
+    
+    .bs-img-wrapper .placeholder {
+      position: absolute;
+      inset: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #555;
-      border-radius: 4px;
-      margin-bottom: 1rem;
-      border: 1px dashed #444;
+      color: #666;
+      font-size: 0.9rem;
+      border: 2px dashed #bbb;
+      margin: 10px;
     }
-    .other-card h4 { font-size: 1rem; margin-bottom: 0.5rem; }
+    
+    .bs-badge {
+      position: absolute;
+      top: 10px; left: 10px;
+      background: #e53935;
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: bold;
+      padding: 2px 8px;
+      border-radius: 3px;
+    }
+
+    .bs-info {
+      padding: 1rem;
+    }
+    
+    .bs-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #111;
+      margin-bottom: 0.5rem;
+      line-height: 1.3;
+    }
+    
+    .bs-rating {
+      color: #fbc02d;
+      font-size: 0.85rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .bs-price {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: #111;
+    }
+
+    /* Media Highlights (Videos/Images) matching screenshot */
+    .media-section {
+      background: #f8f8f8;
+      padding: 2rem 2rem 5rem;
+    }
+    
+    .media-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .media-card {
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+      aspect-ratio: 4/5;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    
+    .media-card .placeholder {
+      position: absolute;
+      inset: 0;
+      background: #ddd;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #666;
+      font-size: 0.9rem;
+    }
+    
+    .media-card .overlay-text {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: linear-gradient(transparent, rgba(0,0,0,0.8));
+      color: #fff;
+      padding: 1.5rem 1rem 1rem;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
   </style>
 </head>
 <body>
 
-  <!-- PROMO BANNER -->
-  <div class="promo-banner">
-    LIMITED TIME OFFER: <span>BUY 2 GET 1 FREE</span> ON ALL METAL POSTERS!
-  </div>
-
-  <!-- NAVBAR -->
-  <nav class="premium-navbar">
-    <div class="nav-left">
-      <a href="index.html" class="logo">CraftedCore</a>
-    </div>
-    <div class="nav-center">
-      <a href="#">Anime</a>
-      <a href="#">Gaming</a>
-      <a href="#">Movies</a>
-      <a href="#">Best Sellers</a>
-      <a href="#">Custom</a>
-    </div>
-    <div class="nav-right">
-      <!-- Search Icon -->
-      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M21.71 20.29L18 16.61A9 9 0 1 0 16.61 18l3.68 3.68a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.39zM11 18a7 7 0 1 1 7-7 7 7 0 0 1-7 7z"/></svg>
-      <!-- Profile/Wallet Icon -->
-      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5zm0-8a3 3 0 1 1-3 3 3 3 0 0 1 3-3zm9 17v-2a7 7 0 0 0-7-7h-4a7 7 0 0 0-7 7v2a1 1 0 0 0 2 0v-2a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v2a1 1 0 0 0 2 0z"/></svg>
-      <!-- Cart Icon -->
-      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1.003 1.003 0 0 0 20 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
+  <!-- ===== NAVBAR (Restored Original) ===== -->
+  <nav class="navbar" id="navbar">
+    <a href="index.html" class="logo-link">
+      <img src="images/logo.png" alt="CraftedCore" class="logo-img" />
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <a href="index.html" class="active" id="close-menu-overlay" onclick="closeMenu()"></a>
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="products.html">Products</a></li>
+      <li><a href="contact.html">Order Now</a></li>
+      <li><a href="https://wa.me/+918320979383" target="_blank" class="nav-wa-mobile">💬 WhatsApp Us</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="https://wa.me/+918320979383" target="_blank" class="btn btn-whatsapp" id="nav-whatsapp-btn" style="padding: 0.6rem 1.5rem; font-size: 0.9rem;">
+        💬 WhatsApp Us
+      </a>
+      <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+      </div>
     </div>
   </nav>
 
-  <!-- HERO SECTION -->
-  <section class="premium-hero">
-    <div class="hero-placeholder-img">
-      [ Upload Main Hero Image Here ]
-    </div>
-    <div class="hero-overlay"></div>
-    
-    <div class="hero-content-inner">
-      <h1>Turn Your Walls<br/><span>Into Statements</span></h1>
-      <div class="trust-badge">
-        <span>⭐ 4.9/5 Rating</span> | <span>Over 1 Million Walls Upgraded</span>
+  <!-- ===== HERO SECTION (Matched to Screenshot) ===== -->
+  <section class="hero" id="hero">
+    <div class="hero-content">
+      <h1 class="hero-title">
+        Turn Your Walls<br />
+        <span class="statement">Into Statements.</span>
+      </h1>
+      <p class="hero-subtitle">
+        Premium metallic prints and custom designs. No framing needed, magnetically mounted. Discover the future of wall art.
+      </p>
+      <div class="hero-actions">
+        <a href="#categories" class="btn-gold">Explore Collection</a>
       </div>
-      <button class="btn-gold">Design Your Custom Poster</button>
     </div>
   </section>
 
-  <!-- SHOP BY CATEGORY -->
-  <div class="section-heading">
-    <h2>Shop by Category</h2>
-    <p>Discover our wide range of premium collections</p>
-  </div>
-  
-  <div class="shop-categories">
-    <div class="cat-box">
-      <div class="cat-img-placeholder">[ Category Image ]</div>
-      <h3>Anime</h3>
-    </div>
-    <div class="cat-box">
-      <div class="cat-img-placeholder">[ Category Image ]</div>
-      <h3>Indian Gods</h3>
-    </div>
-    <div class="cat-box">
-      <div class="cat-img-placeholder">[ Category Image ]</div>
-      <h3>Sports</h3>
-    </div>
-    <div class="cat-box">
-      <div class="cat-img-placeholder">[ Category Image ]</div>
-      <h3>Super Heroes</h3>
-    </div>
-    <div class="cat-box">
-      <div class="cat-img-placeholder">[ Category Image ]</div>
-      <h3>Cars</h3>
-    </div>
-    <div class="cat-box">
-      <div class="cat-img-placeholder">[ Category Image ]</div>
-      <h3>Bikes</h3>
-    </div>
-    <div class="cat-box">
-      <div class="cat-img-placeholder">[ Category Image ]</div>
-      <h3>Movies</h3>
-    </div>
-    <div class="cat-box">
-      <div class="cat-img-placeholder">[ Category Image ]</div>
-      <h3>Nature</h3>
-    </div>
+  <!-- ===== DESIGN CUSTOM POSTER (Matched to Screenshot) ===== -->
+  <div class="promo-strip">
+    <h3>Design Your Custom Poster</h3>
+    <p>Upload your own photo, art, or design and we'll print it on premium metal.</p>
+    <a href="contact.html" class="btn-gold" style="padding: 0.8rem 1.5rem; font-size: 0.9rem;">Start Designing</a>
   </div>
 
-  <!-- BEST SELLERS -->
-  <div class="section-heading">
-    <h2>Best Sellers</h2>
-    <p>The community's absolute favorites</p>
-  </div>
+  <!-- ===== SHOP BY CATEGORY (Matched to Screenshot) ===== -->
+  <section class="categories" id="categories">
+    <h2 style="text-align: center; color: #fff; font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 3rem;">Shop by Category</h2>
+    
+    <div class="cat-grid-custom">
+      <a href="products.html" class="cat-box-premium">
+        <h3>Best Sellers</h3>
+        <span class="count">Explore 50+</span>
+      </a>
+      <a href="products.html?category=anime" class="cat-box-premium white">
+        <h3>Anime</h3>
+        <span class="count">Explore 120+</span>
+      </a>
+      <a href="products.html?category=god" class="cat-box-premium">
+        <h3>Indian Gods</h3>
+        <span class="count">Explore 40+</span>
+      </a>
+      <a href="products.html?category=sports" class="cat-box-premium">
+        <h3>Sports</h3>
+        <span class="count">Explore 35+</span>
+      </a>
+      <a href="products.html?category=superheroes" class="cat-box-premium">
+        <h3>Super Heroes</h3>
+        <span class="count">Explore 80+</span>
+      </a>
+      <a href="products.html?category=cars" class="cat-box-premium">
+        <h3>Cars</h3>
+        <span class="count">Explore 60+</span>
+      </a>
+      <a href="products.html?category=bikes" class="cat-box-premium">
+        <h3>Bikes</h3>
+        <span class="count">Explore 55+</span>
+      </a>
+      <a href="products.html?category=nature" class="cat-box-premium green">
+        <h3>Nature</h3>
+        <span class="count">Explore 90+</span>
+      </a>
+    </div>
+  </section>
 
-  <div class="posters-grid">
-    <!-- Item 1 -->
-    <div class="poster-card">
-      <div class="poster-img-placeholder">[ Poster Image ]</div>
-      <h4>Gojo Domain Expansion</h4>
-      <div class="rating">★★★★★ (1.2k)</div>
-      <p class="price">From ₹999</p>
-      <button class="btn-gold" style="width:100%; padding: 0.5rem; font-size:0.9rem;">Quick Add</button>
+  <!-- ===== BEST SELLERS (Matched to Screenshot light theme grid) ===== -->
+  <section class="best-sellers-section">
+    <h2 class="bs-heading">Best Sellers</h2>
+    
+    <div class="bs-grid">
+      <!-- Card 1 -->
+      <div class="bs-card">
+        <div class="bs-img-wrapper">
+          <div class="bs-badge">Sale</div>
+          <div class="placeholder">[ Image: Dark Knight ]</div>
+        </div>
+        <div class="bs-info">
+          <h4 class="bs-title">The Dark Knight Returns</h4>
+          <div class="bs-rating">★★★★★ (2.1k)</div>
+          <div class="bs-price">₹999</div>
+        </div>
+      </div>
+      <!-- Card 2 -->
+      <div class="bs-card">
+        <div class="bs-img-wrapper">
+          <div class="bs-badge">Sale</div>
+          <div class="placeholder">[ Image: Samurai ]</div>
+        </div>
+        <div class="bs-info">
+          <h4 class="bs-title">Lone Samurai Sunset</h4>
+          <div class="bs-rating">★★★★★ (1.8k)</div>
+          <div class="bs-price">₹999</div>
+        </div>
+      </div>
+      <!-- Card 3 -->
+      <div class="bs-card">
+        <div class="bs-img-wrapper">
+          <div class="bs-badge">Sale</div>
+          <div class="placeholder">[ Image: Iron Man ]</div>
+        </div>
+        <div class="bs-info">
+          <h4 class="bs-title">Iron Man Infinity</h4>
+          <div class="bs-rating">★★★★★ (3.4k)</div>
+          <div class="bs-price">₹999</div>
+        </div>
+      </div>
+      <!-- Card 4 -->
+      <div class="bs-card">
+        <div class="bs-img-wrapper">
+          <div class="bs-badge">Sale</div>
+          <div class="placeholder">[ Image: Goku ]</div>
+        </div>
+        <div class="bs-info">
+          <h4 class="bs-title">Goku Ultra Instinct</h4>
+          <div class="bs-rating">★★★★★ (4.2k)</div>
+          <div class="bs-price">₹999</div>
+        </div>
+      </div>
+      <!-- Row 2 -->
+      <div class="bs-card">
+        <div class="bs-img-wrapper">
+          <div class="bs-badge">Sale</div>
+          <div class="placeholder">[ Image: Anime Girl ]</div>
+        </div>
+        <div class="bs-info">
+          <h4 class="bs-title">Neon Tokyo Dreams</h4>
+          <div class="bs-rating">★★★★★ (950)</div>
+          <div class="bs-price">₹999</div>
+        </div>
+      </div>
+      <div class="bs-card">
+        <div class="bs-img-wrapper">
+          <div class="bs-badge">Sale</div>
+          <div class="placeholder">[ Image: Mahadev ]</div>
+        </div>
+        <div class="bs-info">
+          <h4 class="bs-title">Mahadev Cosmic</h4>
+          <div class="bs-rating">★★★★★ (1.5k)</div>
+          <div class="bs-price">₹999</div>
+        </div>
+      </div>
+      <div class="bs-card">
+        <div class="bs-img-wrapper">
+          <div class="bs-badge">Sale</div>
+          <div class="placeholder">[ Image: Sports ]</div>
+        </div>
+        <div class="bs-info">
+          <h4 class="bs-title">Basketball Legend</h4>
+          <div class="bs-rating">★★★★★ (1.1k)</div>
+          <div class="bs-price">₹999</div>
+        </div>
+      </div>
+      <div class="bs-card">
+        <div class="bs-img-wrapper">
+          <div class="bs-badge">Sale</div>
+          <div class="placeholder">[ Image: Demon Slayer ]</div>
+        </div>
+        <div class="bs-info">
+          <h4 class="bs-title">Demon Slayer Flame</h4>
+          <div class="bs-rating">★★★★★ (2.8k)</div>
+          <div class="bs-price">₹999</div>
+        </div>
+      </div>
     </div>
-    <!-- Item 2 -->
-    <div class="poster-card">
-      <div class="poster-img-placeholder">[ Poster Image ]</div>
-      <h4>Mahadev Cosmic Form</h4>
-      <div class="rating">★★★★★ (980)</div>
-      <p class="price">From ₹999</p>
-      <button class="btn-gold" style="width:100%; padding: 0.5rem; font-size:0.9rem;">Quick Add</button>
-    </div>
-    <!-- Item 3 -->
-    <div class="poster-card">
-      <div class="poster-img-placeholder">[ Poster Image ]</div>
-      <h4>Cyberpunk 2077 Night City</h4>
-      <div class="rating">★★★★★ (850)</div>
-      <p class="price">From ₹999</p>
-      <button class="btn-gold" style="width:100%; padding: 0.5rem; font-size:0.9rem;">Quick Add</button>
-    </div>
-    <!-- Item 4 -->
-    <div class="poster-card">
-      <div class="poster-img-placeholder">[ Poster Image ]</div>
-      <h4>Iron Man Mark 85</h4>
-      <div class="rating">★★★★★ (2.1k)</div>
-      <p class="price">From ₹999</p>
-      <button class="btn-gold" style="width:100%; padding: 0.5rem; font-size:0.9rem;">Quick Add</button>
-    </div>
-  </div>
+  </section>
 
-  <!-- VIDEO / IMAGE HIGHLIGHTS (Placeholders) -->
-  <div class="media-highlights">
-    <div class="section-heading" style="margin-top:0;">
-      <h2>How To Mount / Customer Love</h2>
-      <p>Real reviews and setup guides</p>
-    </div>
+  <!-- ===== VIDEO / CUSTOMER MEDIA (Matched to screenshot) ===== -->
+  <section class="media-section">
     <div class="media-grid">
-      <div class="media-box">
-        ▶️
-        <span>[ Video Placeholder: How to Mount ]</span>
+      <div class="media-card">
+        <div class="placeholder">▶️ [ Video: How to Mount ]</div>
+        <div class="overlay-text">How to mount your poster</div>
       </div>
-      <div class="media-box">
-        📸
-        <span>[ Image Placeholder: Customer Review 1 ]</span>
+      <div class="media-card">
+        <div class="placeholder">📸 [ Image: Customer 1 ]</div>
+        <div class="overlay-text">Customer Review #1</div>
       </div>
-      <div class="media-box">
-        📸
-        <span>[ Image Placeholder: Customer Review 2 ]</span>
+      <div class="media-card">
+        <div class="placeholder">📸 [ Image: Customer 2 ]</div>
+        <div class="overlay-text">Customer Review #2</div>
       </div>
-      <div class="media-box">
-        ▶️
-        <span>[ Video Placeholder: Room Setup ]</span>
+      <div class="media-card">
+        <div class="placeholder">▶️ [ Video: Setup ]</div>
+        <div class="overlay-text">Room Setup Inspiration</div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- OTHER PRODUCTS (Wallets, Lockets, etc. as requested) -->
-  <div class="other-products">
-    <div class="section-heading" style="margin-top:0;">
-      <h2>Explore More Custom Accessories</h2>
-      <p>Premium customized gifts & accessories</p>
-    </div>
-    <div class="other-grid">
-      <div class="other-card">
-        <div class="img-placeholder">[ Wallet Image ]</div>
-        <h4>Custom Leather Wallet</h4>
-        <button class="btn-gold" style="width:100%; padding: 0.5rem; font-size:0.9rem; background: #333; color:#fff;">View Options</button>
+  <!-- ===== OTHER PRODUCTS (Preserved from original request) ===== -->
+  <section style="background: #0d0d0f; padding: 5rem 2rem;">
+    <h2 style="text-align: center; color: #fff; font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 3rem;">Explore Other Accessories</h2>
+    <div class="bs-grid" style="grid-template-columns: repeat(4, 1fr);">
+      <div class="bs-card" style="background:#1a1a1a; border-color:#333;">
+        <div class="bs-img-wrapper"><div class="placeholder" style="border-color:#444; color:#aaa;">[ Wallet Image ]</div></div>
+        <div class="bs-info"><h4 class="bs-title" style="color:#fff;">Leather Wallets</h4><div class="bs-price" style="color:#e6a822;">From ₹499</div></div>
       </div>
-      <div class="other-card">
-        <div class="img-placeholder">[ Bottle Image ]</div>
-        <h4>Engraved Temp Bottle</h4>
-        <button class="btn-gold" style="width:100%; padding: 0.5rem; font-size:0.9rem; background: #333; color:#fff;">View Options</button>
+      <div class="bs-card" style="background:#1a1a1a; border-color:#333;">
+        <div class="bs-img-wrapper"><div class="placeholder" style="border-color:#444; color:#aaa;">[ Bottle Image ]</div></div>
+        <div class="bs-info"><h4 class="bs-title" style="color:#fff;">Custom Bottles</h4><div class="bs-price" style="color:#e6a822;">From ₹499</div></div>
       </div>
-      <div class="other-card">
-        <div class="img-placeholder">[ Locket Image ]</div>
-        <h4>4D Bar Pendant Locket</h4>
-        <button class="btn-gold" style="width:100%; padding: 0.5rem; font-size:0.9rem; background: #333; color:#fff;">View Options</button>
+      <div class="bs-card" style="background:#1a1a1a; border-color:#333;">
+        <div class="bs-img-wrapper"><div class="placeholder" style="border-color:#444; color:#aaa;">[ Locket Image ]</div></div>
+        <div class="bs-info"><h4 class="bs-title" style="color:#fff;">4D Lockets</h4><div class="bs-price" style="color:#e6a822;">From ₹299</div></div>
       </div>
-      <div class="other-card">
-        <div class="img-placeholder">[ Keychain Image ]</div>
-        <h4>Metal Photo Keychain</h4>
-        <button class="btn-gold" style="width:100%; padding: 0.5rem; font-size:0.9rem; background: #333; color:#fff;">View Options</button>
+      <div class="bs-card" style="background:#1a1a1a; border-color:#333;">
+        <div class="bs-img-wrapper"><div class="placeholder" style="border-color:#444; color:#aaa;">[ Keychain Image ]</div></div>
+        <div class="bs-info"><h4 class="bs-title" style="color:#fff;">Keychains</h4><div class="bs-price" style="color:#e6a822;">From ₹99</div></div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- FOOTER -->
-  <footer style="background: #050505; border-top: 1px solid #1a1a1a; padding: 4rem 2rem; text-align: center;">
-    <h2 style="font-family: 'Playfair Display', serif; margin-bottom: 1rem;">CraftedCore</h2>
-    <p style="color: #666; max-width: 500px; margin: 0 auto 2rem; font-size: 0.9rem;">
-      Premium custom merchandise crafted with passion. Your imagination, our craftsmanship — brought together for something truly special.
-    </p>
-    <div style="color: #444; font-size: 0.8rem;">
-      © 2026 CraftedCore. All rights reserved.
+  <!-- ===== FOOTER (Restored Original) ===== -->
+  <footer id="footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="logo-link">
+          <img src="images/logo.png" alt="CraftedCore" class="logo-img footer-logo" />
+        </a>
+        <p>Premium custom merchandise crafted with passion. Your imagination, our craftsmanship — brought together for something truly special.</p>
+        <div class="footer-social">
+          <a href="https://wa.me/+918320979383" target="_blank" class="social-btn wa-btn" id="footer-wa" title="WhatsApp">
+            <svg class="social-svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12.012 2c-5.506 0-9.989 4.478-9.989 9.984 0 1.758.459 3.474 1.33 4.982L2 22l5.176-1.348a9.982 9.982 0 004.836 1.251h.004c5.506 0 9.989-4.478 9.989-9.984 0-2.668-1.039-5.176-2.927-7.063C17.189 3.039 14.68 2 12.012 2zm.004 16.326h-.003a8.31 8.31 0 01-4.238-1.163l-.304-.18-3.149.821.838-3.067-.198-.314a8.275 8.275 0 01-1.272-4.437c0-4.577 3.724-8.301 8.306-8.301 2.217 0 4.301.865 5.869 2.434a8.261 8.261 0 012.43 5.867c0 4.578-3.725 8.302-8.279 8.302zm4.551-6.216c-.249-.125-1.477-.729-1.706-.812-.228-.083-.395-.125-.561.125-.166.249-.644.812-.789.978-.145.166-.291.187-.54.062a6.837 6.837 0 01-2.008-1.238 7.55 7.55 0 01-1.39-1.73c-.145-.249-.016-.384.109-.508.113-.112.249-.291.374-.436.125-.145.166-.249.249-.415.083-.166.042-.312-.021-.436-.062-.125-.561-1.352-.769-1.85-.202-.486-.407-.42-.561-.428l-.478-.009c-.166 0-.436.062-.664.312-.228.249-.873.852-.873 2.079 0 1.226.893 2.41 1.018 2.577.125.166 1.757 2.684 4.257 3.764.595.257 1.06.41 1.422.525.597.19 1.14.163 1.57.099.479-.071 1.477-.603 1.684-1.184.208-.582.208-1.08.145-1.184-.063-.104-.229-.166-.478-.291z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Products</h4>
+        <ul>
+          <li><a href="products.html">All Products</a></li>
+        </ul>
+      </div>
     </div>
   </footer>
 
-  <script src="js/db.js?v=26"></script>
-  <script src="js/main.js?v=26"></script>
+  <script src="js/db.js?v=27"></script>
+  <script src="js/main.js?v=27"></script>
 </body>
 </html>
