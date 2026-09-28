@@ -3,481 +3,502 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CraftedCore — Premium Custom Products</title>
-  <meta name="description" content="CraftedCore — Premium custom products including t-shirts, mugs, bottles, wallets, keychains, lockets, and posters. Crafted just for you." />
-  <link rel="stylesheet" href="css/style.css?v=23" />
+  <title>Premium Posters - Turn Your Walls Into Statements</title>
+  <meta name="description" content="Premium custom posters, metal posters, anime, gods, and more. Upgrade your walls today." />
+  <link rel="stylesheet" href="css/style.css?v=26" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <style>
+    /* Additional Custom Styles for the New Premium Layout */
+    body {
+      background-color: #0d0d0d;
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+    }
+    
+    /* Top Banner Promo */
+    .promo-banner {
+      background: #000;
+      color: #aaa;
+      text-align: center;
+      padding: 8px;
+      font-size: 0.85rem;
+      border-bottom: 1px solid #222;
+    }
+    .promo-banner span { color: #fff; font-weight: 600; }
+
+    /* Custom Navbar */
+    .premium-navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 3rem;
+      background: #050505;
+      border-bottom: 1px solid #1a1a1a;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .nav-left .logo { font-size: 1.5rem; font-weight: 800; font-family: 'Playfair Display', serif; }
+    .nav-center { display: flex; gap: 2rem; }
+    .nav-center a { color: #ccc; font-size: 0.9rem; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; transition: color 0.3s; }
+    .nav-center a:hover { color: #d4af37; }
+    .nav-right { display: flex; gap: 1.5rem; align-items: center; }
+    .nav-icon { width: 20px; height: 20px; fill: #fff; cursor: pointer; transition: fill 0.3s; }
+    .nav-icon:hover { fill: #d4af37; }
+
+    /* Hero Section */
+    .premium-hero {
+      position: relative;
+      width: 100%;
+      height: 70vh;
+      min-height: 500px;
+      display: flex;
+      align-items: center;
+      padding: 0 5rem;
+      background: #111; /* Fallback */
+      overflow: hidden;
+    }
+    .hero-placeholder-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #1c1c1c, #0a0a0a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: #444;
+      z-index: 0;
+      border: 2px dashed #333;
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.2) 60%, transparent 100%);
+      z-index: 1;
+    }
+    .hero-content-inner {
+      position: relative;
+      z-index: 2;
+      max-width: 600px;
+    }
+    .hero-content-inner h1 {
+      font-size: 4rem;
+      line-height: 1.1;
+      margin-bottom: 1rem;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+    }
+    .hero-content-inner h1 span {
+      font-style: italic;
+      font-weight: 300;
+      color: #d4af37;
+    }
+    .trust-badge {
+      font-size: 0.85rem;
+      color: #aaa;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-gold {
+      background: #d4af37;
+      color: #000;
+      padding: 1rem 2.5rem;
+      font-weight: 700;
+      font-size: 1rem;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.3s;
+    }
+    .btn-gold:hover {
+      background: #e6c555;
+      transform: translateY(-2px);
+    }
+
+    /* Section Headings */
+    .section-heading {
+      text-align: center;
+      margin: 4rem 0 2rem;
+    }
+    .section-heading h2 {
+      font-size: 2.2rem;
+      font-weight: 600;
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+    }
+    .section-heading p {
+      color: #aaa;
+      font-size: 0.95rem;
+      margin-top: 0.5rem;
+    }
+
+    /* Category Grid */
+    .shop-categories {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      padding: 0 2rem;
+    }
+    .cat-box {
+      position: relative;
+      height: 180px;
+      border-radius: 8px;
+      background: #1a1a1a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow: hidden;
+      border: 1px solid #333;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .cat-box:hover {
+      border-color: #d4af37;
+      transform: translateY(-5px);
+    }
+    .cat-img-placeholder {
+      position: absolute;
+      inset: 0;
+      background: #111;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #333;
+      font-size: 0.9rem;
+      border: 1px dashed #444;
+    }
+    .cat-box h3 {
+      position: relative;
+      z-index: 2;
+      font-size: 1.6rem;
+      color: #d4af37;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    /* Best Sellers */
+    .posters-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+      padding: 0 2rem;
+    }
+    .poster-card {
+      background: #141414;
+      border-radius: 8px;
+      padding: 1rem;
+      border: 1px solid #222;
+      text-align: center;
+      transition: all 0.3s;
+    }
+    .poster-card:hover {
+      border-color: #555;
+      transform: translateY(-5px);
+    }
+    .poster-img-placeholder {
+      width: 100%;
+      aspect-ratio: 2/3;
+      background: #222;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #555;
+      margin-bottom: 1rem;
+      border: 1px dashed #444;
+    }
+    .poster-card h4 {
+      font-size: 1rem;
+      color: #fff;
+      margin-bottom: 0.3rem;
+      font-weight: 600;
+    }
+    .poster-card p.price {
+      color: #d4af37;
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+    .poster-card .rating {
+      color: #d4af37;
+      font-size: 0.8rem;
+      margin-bottom: 1rem;
+    }
+
+    /* Media Highlights (Videos/Images) */
+    .media-highlights {
+      background: #111;
+      padding: 4rem 2rem;
+      margin-top: 4rem;
+    }
+    .media-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+    }
+    .media-box {
+      aspect-ratio: 9/16;
+      background: #1a1a1a;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #555;
+      border: 1px dashed #444;
+      text-align: center;
+      padding: 1rem;
+    }
+    .media-box span {
+      display: block;
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      color: #888;
+    }
+
+    /* Other Products Row */
+    .other-products {
+      max-width: 1200px;
+      margin: 4rem auto;
+      padding: 0 2rem;
+    }
+    .other-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+    }
+    .other-card {
+      background: #141414;
+      border: 1px solid #222;
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+    }
+    .other-card .img-placeholder {
+      width: 100%;
+      aspect-ratio: 1;
+      background: #222;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #555;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+      border: 1px dashed #444;
+    }
+    .other-card h4 { font-size: 1rem; margin-bottom: 0.5rem; }
+  </style>
 </head>
 <body>
 
-  <!-- ===== NAVBAR ===== -->
-  <nav class="navbar" id="navbar">
-    <a href="index.html" class="logo-link">
-      <img src="images/logo.png" alt="CraftedCore" class="logo-img" />
-    </a>
-    <ul class="nav-links" id="navLinks">
-      <a href="index.html" class="active" id="close-menu-overlay" onclick="closeMenu()"></a>
-      <li><a href="index.html" class="active">Home</a></li>
-      <li><a href="products.html">Products</a></li>
-      <li><a href="contact.html">Order Now</a></li>
-      <li><a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20want%20to%20place%20a%20custom%20order." target="_blank" class="nav-wa-mobile">💬 WhatsApp Us</a></li>
-    </ul>
-    <div class="nav-cta">
-      <a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20want%20to%20place%20a%20custom%20order." target="_blank" class="btn btn-primary" id="nav-whatsapp-btn">
-        <svg class="social-svg" viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12.012 2c-5.506 0-9.989 4.478-9.989 9.984 0 1.758.459 3.474 1.33 4.982L2 22l5.176-1.348a9.982 9.982 0 004.836 1.251h.004c5.506 0 9.989-4.478 9.989-9.984 0-2.668-1.039-5.176-2.927-7.063C17.189 3.039 14.68 2 12.012 2zm.004 16.326h-.003a8.31 8.31 0 01-4.238-1.163l-.304-.18-3.149.821.838-3.067-.198-.314a8.275 8.275 0 01-1.272-4.437c0-4.577 3.724-8.301 8.306-8.301 2.217 0 4.301.865 5.869 2.434a8.261 8.261 0 012.43 5.867c0 4.578-3.725 8.302-8.279 8.302zm4.551-6.216c-.249-.125-1.477-.729-1.706-.812-.228-.083-.395-.125-.561.125-.166.249-.644.812-.789.978-.145.166-.291.187-.54.062a6.837 6.837 0 01-2.008-1.238 7.55 7.55 0 01-1.39-1.73c-.145-.249-.016-.384.109-.508.113-.112.249-.291.374-.436.125-.145.166-.249.249-.415.083-.166.042-.312-.021-.436-.062-.125-.561-1.352-.769-1.85-.202-.486-.407-.42-.561-.428l-.478-.009c-.166 0-.436.062-.664.312-.228.249-.873.852-.873 2.079 0 1.226.893 2.41 1.018 2.577.125.166 1.757 2.684 4.257 3.764.595.257 1.06.41 1.422.525.597.19 1.14.163 1.57.099.479-.071 1.477-.603 1.684-1.184.208-.582.208-1.08.145-1.184-.063-.104-.229-.166-.478-.291z"/></svg>
-        WhatsApp Us
-      </a>
-      <div class="hamburger" id="hamburger" onclick="toggleMenu()">
-        <span></span><span></span><span></span>
-      </div>
+  <!-- PROMO BANNER -->
+  <div class="promo-banner">
+    LIMITED TIME OFFER: <span>BUY 2 GET 1 FREE</span> ON ALL METAL POSTERS!
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="premium-navbar">
+    <div class="nav-left">
+      <a href="index.html" class="logo">CraftedCore</a>
+    </div>
+    <div class="nav-center">
+      <a href="#">Anime</a>
+      <a href="#">Gaming</a>
+      <a href="#">Movies</a>
+      <a href="#">Best Sellers</a>
+      <a href="#">Custom</a>
+    </div>
+    <div class="nav-right">
+      <!-- Search Icon -->
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M21.71 20.29L18 16.61A9 9 0 1 0 16.61 18l3.68 3.68a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.39zM11 18a7 7 0 1 1 7-7 7 7 0 0 1-7 7z"/></svg>
+      <!-- Profile/Wallet Icon -->
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5zm0-8a3 3 0 1 1-3 3 3 3 0 0 1 3-3zm9 17v-2a7 7 0 0 0-7-7h-4a7 7 0 0 0-7 7v2a1 1 0 0 0 2 0v-2a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v2a1 1 0 0 0 2 0z"/></svg>
+      <!-- Cart Icon -->
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1.003 1.003 0 0 0 20 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
     </div>
   </nav>
 
-  <!-- ===== HERO ===== -->
-  <section class="hero" id="hero">
-    <div class="hero-bg"></div>
-    <div class="hero-grid"></div>
-    <div class="hero-content">
-      <div class="hero-text">
-        <div class="hero-badge">
-          <span></span> Premium Custom Merchandise
-        </div>
-        <h1 class="hero-title">
-          Upgrade Your Walls,<br />
-          <span class="gold-text">Premium Metal Posters</span>
-        </h1>
-        <p class="hero-desc">
-          Vibrant, damage-free, and magnetically mounted. Bring your passions to life with our exclusive metal art collections. (Also offering custom tees, mugs & more!)
-        </p>
-        <div class="hero-actions">
-          <a href="products.html" class="btn btn-primary" id="hero-explore-btn">✨ Explore Products</a>
-          <a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20want%20to%20know%20more%20about%20your%20custom%20products." target="_blank" class="btn btn-outline" id="hero-chat-btn">💬 Chat With Us</a>
-        </div>
-        <div class="hero-stats">
-          <div class="stat-item">
-            <div class="stat-number">500+</div>
-            <div class="stat-label">Happy Customers</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-number">7+</div>
-            <div class="stat-label">Product Types</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-number">100%</div>
-            <div class="stat-label">Custom Made</div>
-          </div>
-        </div>
+  <!-- HERO SECTION -->
+  <section class="premium-hero">
+    <div class="hero-placeholder-img">
+      [ Upload Main Hero Image Here ]
+    </div>
+    <div class="hero-overlay"></div>
+    
+    <div class="hero-content-inner">
+      <h1>Turn Your Walls<br/><span>Into Statements</span></h1>
+      <div class="trust-badge">
+        <span>⭐ 4.9/5 Rating</span> | <span>Over 1 Million Walls Upgraded</span>
       </div>
-      <div class="hero-visual">
-        <div class="hero-glow"></div>
-        <div class="hero-image-wrap animate-float">
-          <img src="images/hero_metal_poster.jpg" alt="CraftedCore Premium Metal Posters" />
-        </div>
-      </div>
+      <button class="btn-gold">Design Your Custom Poster</button>
     </div>
   </section>
 
-  <!-- ===== FEATURED PRODUCTS ===== -->
-  <section class="products-section" id="featured">
-    <div class="container">
-      <div class="section-header fade-in">
-        <span class="section-label">Featured</span>
-        <h2 class="section-title">Best <span>Sellers</span></h2>
-        <p class="section-subtitle">Our most loved custom products — ordered by hundreds of happy customers</p>
+  <!-- SHOP BY CATEGORY -->
+  <div class="section-heading">
+    <h2>Shop by Category</h2>
+    <p>Discover our wide range of premium collections</p>
+  </div>
+  
+  <div class="shop-categories">
+    <div class="cat-box">
+      <div class="cat-img-placeholder">[ Category Image ]</div>
+      <h3>Anime</h3>
+    </div>
+    <div class="cat-box">
+      <div class="cat-img-placeholder">[ Category Image ]</div>
+      <h3>Indian Gods</h3>
+    </div>
+    <div class="cat-box">
+      <div class="cat-img-placeholder">[ Category Image ]</div>
+      <h3>Sports</h3>
+    </div>
+    <div class="cat-box">
+      <div class="cat-img-placeholder">[ Category Image ]</div>
+      <h3>Super Heroes</h3>
+    </div>
+    <div class="cat-box">
+      <div class="cat-img-placeholder">[ Category Image ]</div>
+      <h3>Cars</h3>
+    </div>
+    <div class="cat-box">
+      <div class="cat-img-placeholder">[ Category Image ]</div>
+      <h3>Bikes</h3>
+    </div>
+    <div class="cat-box">
+      <div class="cat-img-placeholder">[ Category Image ]</div>
+      <h3>Movies</h3>
+    </div>
+    <div class="cat-box">
+      <div class="cat-img-placeholder">[ Category Image ]</div>
+      <h3>Nature</h3>
+    </div>
+  </div>
+
+  <!-- BEST SELLERS -->
+  <div class="section-heading">
+    <h2>Best Sellers</h2>
+    <p>The community's absolute favorites</p>
+  </div>
+
+  <div class="posters-grid">
+    <!-- Item 1 -->
+    <div class="poster-card">
+      <div class="poster-img-placeholder">[ Poster Image ]</div>
+      <h4>Gojo Domain Expansion</h4>
+      <div class="rating">★★★★★ (1.2k)</div>
+      <p class="price">From ₹999</p>
+      <button class="btn-gold" style="width:100%; padding: 0.5rem; font-size:0.9rem;">Quick Add</button>
+    </div>
+    <!-- Item 2 -->
+    <div class="poster-card">
+      <div class="poster-img-placeholder">[ Poster Image ]</div>
+      <h4>Mahadev Cosmic Form</h4>
+      <div class="rating">★★★★★ (980)</div>
+      <p class="price">From ₹999</p>
+      <button class="btn-gold" style="width:100%; padding: 0.5rem; font-size:0.9rem;">Quick Add</button>
+    </div>
+    <!-- Item 3 -->
+    <div class="poster-card">
+      <div class="poster-img-placeholder">[ Poster Image ]</div>
+      <h4>Cyberpunk 2077 Night City</h4>
+      <div class="rating">★★★★★ (850)</div>
+      <p class="price">From ₹999</p>
+      <button class="btn-gold" style="width:100%; padding: 0.5rem; font-size:0.9rem;">Quick Add</button>
+    </div>
+    <!-- Item 4 -->
+    <div class="poster-card">
+      <div class="poster-img-placeholder">[ Poster Image ]</div>
+      <h4>Iron Man Mark 85</h4>
+      <div class="rating">★★★★★ (2.1k)</div>
+      <p class="price">From ₹999</p>
+      <button class="btn-gold" style="width:100%; padding: 0.5rem; font-size:0.9rem;">Quick Add</button>
+    </div>
+  </div>
+
+  <!-- VIDEO / IMAGE HIGHLIGHTS (Placeholders) -->
+  <div class="media-highlights">
+    <div class="section-heading" style="margin-top:0;">
+      <h2>How To Mount / Customer Love</h2>
+      <p>Real reviews and setup guides</p>
+    </div>
+    <div class="media-grid">
+      <div class="media-box">
+        ▶️
+        <span>[ Video Placeholder: How to Mount ]</span>
       </div>
-      <div class="product-grid">
-
-        <!-- Metal Poster - Anime -->
-        <div class="product-card fade-in" id="prod-metal-anime">
-          <div class="product-image-wrap">
-            <span class="product-badge">🔥 Top Seller</span>
-            <img src="images/metal_poster_anime.jpg" alt="Anime Metal Poster" />
-            <div class="product-overlay">
-              <a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20want%20to%20order%20an%20Anime%20Metal%20Poster." target="_blank" class="btn btn-whatsapp" style="width:100%;justify-content:center;">💬 Order on WhatsApp</a>
-            </div>
-          </div>
-          <div class="product-info">
-            <div class="product-category">Metal Posters</div>
-            <div class="product-name">Anime Collection</div>
-            <div class="product-desc">Vibrant anime artwork on premium brushed metal. Magnetic mount included.</div>
-            <div class="product-footer">
-              <div class="product-price"><span class="from">From </span>₹999</div>
-              <a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20want%20to%20order%20an%20Anime%20Metal%20Poster." target="_blank" class="order-btn" id="order-metal-anime">💬 Order</a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Metal Poster - Gaming -->
-        <div class="product-card fade-in" id="prod-metal-gaming">
-          <div class="product-image-wrap">
-            <span class="product-badge">⚡ Cyberpunk</span>
-            <img src="images/metal_poster_gaming.jpg" alt="Gaming Metal Poster" />
-            <div class="product-overlay">
-              <a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20want%20to%20order%20a%20Gaming%20Metal%20Poster." target="_blank" class="btn btn-whatsapp" style="width:100%;justify-content:center;">💬 Order on WhatsApp</a>
-            </div>
-          </div>
-          <div class="product-info">
-            <div class="product-category">Metal Posters</div>
-            <div class="product-name">Gaming Collection</div>
-            <div class="product-desc">Level up your setup with neon cyberpunk vibes on solid metal.</div>
-            <div class="product-footer">
-              <div class="product-price"><span class="from">From </span>₹999</div>
-              <a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20want%20to%20order%20a%20Gaming%20Metal%20Poster." target="_blank" class="order-btn" id="order-metal-gaming">💬 Order</a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Bottle -->
-        <div class="product-card fade-in" id="prod-bottle">
-          <div class="product-image-wrap">
-            <span class="product-badge">⚡ Trending</span>
-            <img src="images/bottle_1.webp" alt="Custom Bottle" />
-            <div class="product-overlay">
-              <a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20want%20to%20order%20a%20Custom%20Bottle.%20Please%20guide%20me." target="_blank" class="btn btn-whatsapp" style="width:100%;justify-content:center;">💬 Order on WhatsApp</a>
-            </div>
-          </div>
-          <div class="product-info">
-            <div class="product-category">Bottles</div>
-            <div class="product-name">Custom Insulated Bottle</div>
-            <div class="product-desc">Premium stainless steel bottle with custom engraved name & design.</div>
-            <div class="product-footer">
-              <div class="product-price"><span class="from">From </span>₹499</div>
-              <a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20want%20to%20order%20a%20Custom%20Bottle." target="_blank" class="order-btn" id="order-bottle">💬 Order</a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Locket -->
-        <div class="product-card fade-in" id="prod-locket">
-          <div class="product-image-wrap">
-            <span class="product-badge">✨ Engraved</span>
-            <img src="images/locket_bar.webp" alt="Custom Locket" />
-            <div class="product-overlay">
-              <a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20want%20to%20order%20a%20Custom%20Locket.%20Please%20guide%20me." target="_blank" class="btn btn-whatsapp" style="width:100%;justify-content:center;">💬 Order on WhatsApp</a>
-            </div>
-          </div>
-          <div class="product-info">
-            <div class="product-category">Lockets</div>
-            <div class="product-name">Custom 4D Bar Pendant</div>
-            <div class="product-desc">Personalized 4D bar locket engraved with names on all 4 sides.</div>
-            <div class="product-footer">
-              <div class="product-price"><span class="from">From </span>₹299</div>
-              <a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20want%20to%20order%20a%20Custom%20Locket." target="_blank" class="order-btn" id="order-locket">💬 Order</a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Wallet -->
-        <div class="product-card fade-in" id="prod-wallet">
-          <div class="product-image-wrap">
-            <span class="product-badge">💎 Premium</span>
-            <img src="images/wallet_combo.jpg" alt="Custom Wallet" />
-            <div class="product-overlay">
-              <a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20want%20to%20order%20a%20Custom%20Wallet.%20Please%20guide%20me." target="_blank" class="btn btn-whatsapp" style="width:100%;justify-content:center;">💬 Order on WhatsApp</a>
-            </div>
-          </div>
-          <div class="product-info">
-            <div class="product-category">Wallets</div>
-            <div class="product-name">Custom Leather Wallet Combo</div>
-            <div class="product-desc">Genuine leather wallet with personalized name & charm engraving.</div>
-            <div class="product-footer">
-              <div class="product-price"><span class="from">From </span>₹499</div>
-              <a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20want%20to%20order%20a%20Custom%20Wallet." target="_blank" class="order-btn" id="order-wallet">💬 Order</a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Keychain -->
-        <div class="product-card fade-in" id="prod-keychain">
-          <div class="product-image-wrap" style="background: #1a1a1a; display:flex; align-items:center; justify-content:center;">
-            <span class="product-badge">🔑 Popular</span>
-            <div style="font-size: 8rem; text-align:center; padding: 2rem;">🔑</div>
-            <div class="product-overlay">
-              <a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20want%20to%20order%20a%20Custom%20Keychain.%20Please%20guide%20me." target="_blank" class="btn btn-whatsapp" style="width:100%;justify-content:center;">💬 Order on WhatsApp</a>
-            </div>
-          </div>
-          <div class="product-info">
-            <div class="product-category">Keychains</div>
-            <div class="product-name">Custom Metal Keychain</div>
-            <div class="product-desc">Personalized keychains with name, photo, or custom design engraved.</div>
-            <div class="product-footer">
-              <div class="product-price"><span class="from">From </span>₹99</div>
-              <a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20want%20to%20order%20a%20Custom%20Keychain." target="_blank" class="order-btn" id="order-keychain">💬 Order</a>
-            </div>
-          </div>
-        </div>
-
+      <div class="media-box">
+        📸
+        <span>[ Image Placeholder: Customer Review 1 ]</span>
       </div>
-      <div style="text-align:center; margin-top: 3rem;">
-        <a href="products.html" class="btn btn-outline" id="view-all-btn">View All Products →</a>
+      <div class="media-box">
+        📸
+        <span>[ Image Placeholder: Customer Review 2 ]</span>
+      </div>
+      <div class="media-box">
+        ▶️
+        <span>[ Video Placeholder: Room Setup ]</span>
       </div>
     </div>
-  </section>
+  </div>
 
-  <!-- ===== CATEGORIES ===== -->
-  <section class="categories" id="categories">
-    <div class="container">
-      <div class="section-header fade-in">
-        <span class="section-label">Browse</span>
-        <h2 class="section-title">Shop by <span>Category</span></h2>
-        <p class="section-subtitle">Discover our wide range of customizable products</p>
+  <!-- OTHER PRODUCTS (Wallets, Lockets, etc. as requested) -->
+  <div class="other-products">
+    <div class="section-heading" style="margin-top:0;">
+      <h2>Explore More Custom Accessories</h2>
+      <p>Premium customized gifts & accessories</p>
+    </div>
+    <div class="other-grid">
+      <div class="other-card">
+        <div class="img-placeholder">[ Wallet Image ]</div>
+        <h4>Custom Leather Wallet</h4>
+        <button class="btn-gold" style="width:100%; padding: 0.5rem; font-size:0.9rem; background: #333; color:#fff;">View Options</button>
       </div>
-      <div class="category-grid">
-        <a href="products.html?category=anime" class="category-card fade-in" id="cat-anime">
-          <div class="category-icon">🎌</div>
-          <div class="category-name">Anime</div>
-          <div class="category-count">Top Tier</div>
-        </a>
-        <a href="products.html?category=god" class="category-card fade-in" id="cat-god">
-          <div class="category-icon">🕉️</div>
-          <div class="category-name">Divine</div>
-          <div class="category-count">Peaceful</div>
-        </a>
-        <a href="products.html?category=quotes" class="category-card fade-in" id="cat-quotes">
-          <div class="category-icon">💬</div>
-          <div class="category-name">Quotes</div>
-          <div class="category-count">Motivational</div>
-        </a>
-        <a href="products.html?category=gaming" class="category-card fade-in" id="cat-gaming">
-          <div class="category-icon">🎮</div>
-          <div class="category-name">Gaming</div>
-          <div class="category-count">Cyberpunk</div>
-        </a>
-        <a href="products.html?category=cars" class="category-card fade-in" id="cat-cars">
-          <div class="category-icon">🏎️</div>
-          <div class="category-name">Supercars</div>
-          <div class="category-count">Adrenaline</div>
-        </a>
-        <a href="products.html?category=dark" class="category-card fade-in" id="cat-dark">
-          <div class="category-icon">💀</div>
-          <div class="category-name">Dark Arts</div>
-          <div class="category-count">Gothic</div>
-        </a>
-        <a href="products.html?category=custom" class="category-card fade-in" id="cat-custom">
-          <div class="category-icon">✨</div>
-          <div class="category-name">Custom</div>
-          <div class="category-count">Your Design</div>
-        </a>
+      <div class="other-card">
+        <div class="img-placeholder">[ Bottle Image ]</div>
+        <h4>Engraved Temp Bottle</h4>
+        <button class="btn-gold" style="width:100%; padding: 0.5rem; font-size:0.9rem; background: #333; color:#fff;">View Options</button>
+      </div>
+      <div class="other-card">
+        <div class="img-placeholder">[ Locket Image ]</div>
+        <h4>4D Bar Pendant Locket</h4>
+        <button class="btn-gold" style="width:100%; padding: 0.5rem; font-size:0.9rem; background: #333; color:#fff;">View Options</button>
+      </div>
+      <div class="other-card">
+        <div class="img-placeholder">[ Keychain Image ]</div>
+        <h4>Metal Photo Keychain</h4>
+        <button class="btn-gold" style="width:100%; padding: 0.5rem; font-size:0.9rem; background: #333; color:#fff;">View Options</button>
       </div>
     </div>
-  </section>
+  </div>
 
-  <!-- ===== USP SECTION ===== -->
-  <section class="usp-section" id="why-us">
-    <div class="container">
-      <div class="section-header fade-in">
-        <span class="section-label">Why CraftedCore</span>
-        <h2 class="section-title">What Makes Us <span>Different</span></h2>
-        <p class="section-subtitle">Premium quality. Personal touch. Every single time.</p>
-      </div>
-      <div class="usp-grid">
-        <div class="usp-card fade-in">
-          <span class="usp-icon">🎨</span>
-          <div class="usp-title">100% Custom Designs</div>
-          <div class="usp-desc">Your design, your vision. We bring exactly what you imagine to life.</div>
-        </div>
-        <div class="usp-card fade-in">
-          <span class="usp-icon">⚡</span>
-          <div class="usp-title">Fast Delivery</div>
-          <div class="usp-desc">Quick turnaround times. Your custom product delivered to your doorstep.</div>
-        </div>
-        <div class="usp-card fade-in">
-          <span class="usp-icon">💎</span>
-          <div class="usp-title">Premium Quality</div>
-          <div class="usp-desc">We use only the best materials. Long-lasting prints and premium finishes.</div>
-        </div>
-        <div class="usp-card fade-in">
-          <span class="usp-icon">💬</span>
-          <div class="usp-title">WhatsApp Support</div>
-          <div class="usp-desc">Direct contact. Easy ordering. Real-time updates on your order status.</div>
-        </div>
-        <div class="usp-card fade-in">
-          <span class="usp-icon">🎁</span>
-          <div class="usp-title">Perfect for Gifts</div>
-          <div class="usp-desc">Surprise your loved ones with a truly personal and memorable gift.</div>
-        </div>
-        <div class="usp-card fade-in">
-          <span class="usp-icon">💰</span>
-          <div class="usp-title">Best Prices</div>
-          <div class="usp-desc">Premium quality at affordable prices. No compromise on either end.</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== TESTIMONIALS ===== -->
-  <section class="testimonials" id="testimonials">
-    <div class="container">
-      <div class="section-header fade-in">
-        <span class="section-label">Reviews</span>
-        <h2 class="section-title">Happy <span>Customers</span></h2>
-        <p class="section-subtitle">What people say about CraftedCore</p>
-      </div>
-      <div class="testimonial-grid">
-        <div class="testimonial-card fade-in">
-          <div class="stars">★★★★★</div>
-          <p class="testimonial-text">"Ordered a custom t-shirt for my brother's birthday and he absolutely loved it! The print quality was amazing and delivery was super fast. Will definitely order again!"</p>
-          <div class="testimonial-author">
-            <div class="author-avatar">R</div>
-            <div>
-              <div class="author-name">Rahul Sharma</div>
-              <div class="author-location">Mumbai, Maharashtra</div>
-            </div>
-          </div>
-        </div>
-        <div class="testimonial-card fade-in">
-          <div class="stars">★★★★★</div>
-          <p class="testimonial-text">"Got a custom mug with our couple photo for our anniversary. CraftedCore made it exactly how I wanted. The quality was better than expected. Highly recommend!"</p>
-          <div class="testimonial-author">
-            <div class="author-avatar">P</div>
-            <div>
-              <div class="author-name">Priya Patel</div>
-              <div class="author-location">Surat, Gujarat</div>
-            </div>
-          </div>
-        </div>
-        <div class="testimonial-card fade-in">
-          <div class="stars">★★★★★</div>
-          <p class="testimonial-text">"Best custom merchandise store I've found! Ordered keychains for my whole friend group. Affordable prices and top-notch quality. Will be ordering again soon!"</p>
-          <div class="testimonial-author">
-            <div class="author-avatar">A</div>
-            <div>
-              <div class="author-name">Arjun Singh</div>
-              <div class="author-location">Jaipur, Rajasthan</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== CTA SECTION ===== -->
-  <section class="cta-section" id="cta">
-    <div class="container">
-      <div class="cta-box fade-in">
-        <span class="section-label">Get Started</span>
-        <h2 class="cta-title">Ready to Create Something <span style="color:var(--gold)">Amazing?</span></h2>
-        <p class="cta-desc">Message us on WhatsApp with your idea — we'll handle the rest and make it perfect for you.</p>
-        <a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20want%20to%20place%20a%20custom%20order.%20Please%20guide%20me." target="_blank" class="btn btn-whatsapp" id="cta-whatsapp-btn">
-          💬 Start Your Order on WhatsApp
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== FOOTER ===== -->
-  <footer id="footer">
-    <div class="footer-grid">
-      <div class="footer-brand">
-        <a href="index.html" class="logo-link">
-          <img src="images/logo.png" alt="CraftedCore" class="logo-img footer-logo" />
-        </a>
-        <p>Premium custom merchandise crafted with passion. Your imagination, our craftsmanship — brought together for something truly special.</p>
-        <div class="footer-social">
-          <a href="https://wa.me/+918320979383" target="_blank" class="social-btn wa-btn" id="footer-wa" title="WhatsApp">
-            <svg class="social-svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12.012 2c-5.506 0-9.989 4.478-9.989 9.984 0 1.758.459 3.474 1.33 4.982L2 22l5.176-1.348a9.982 9.982 0 004.836 1.251h.004c5.506 0 9.989-4.478 9.989-9.984 0-2.668-1.039-5.176-2.927-7.063C17.189 3.039 14.68 2 12.012 2zm.004 16.326h-.003a8.31 8.31 0 01-4.238-1.163l-.304-.18-3.149.821.838-3.067-.198-.314a8.275 8.275 0 01-1.272-4.437c0-4.577 3.724-8.301 8.306-8.301 2.217 0 4.301.865 5.869 2.434a8.261 8.261 0 012.43 5.867c0 4.578-3.725 8.302-8.279 8.302zm4.551-6.216c-.249-.125-1.477-.729-1.706-.812-.228-.083-.395-.125-.561.125-.166.249-.644.812-.789.978-.145.166-.291.187-.54.062a6.837 6.837 0 01-2.008-1.238 7.55 7.55 0 01-1.39-1.73c-.145-.249-.016-.384.109-.508.113-.112.249-.291.374-.436.125-.145.166-.249.249-.415.083-.166.042-.312-.021-.436-.062-.125-.561-1.352-.769-1.85-.202-.486-.407-.42-.561-.428l-.478-.009c-.166 0-.436.062-.664.312-.228.249-.873.852-.873 2.079 0 1.226.893 2.41 1.018 2.577.125.166 1.757 2.684 4.257 3.764.595.257 1.06.41 1.422.525.597.19 1.14.163 1.57.099.479-.071 1.477-.603 1.684-1.184.208-.582.208-1.08.145-1.184-.063-.104-.229-.166-.478-.291z"/></svg>
-          </a>
-          <a href="https://www.instagram.com/crafted_core_/" target="_blank" class="social-btn ig-btn" id="footer-ig" title="Instagram @crafted_core_">
-            <svg class="social-svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-          </a>
-        </div>
-      </div>
-      <div class="footer-col">
-        <h4>Products</h4>
-        <ul>
-          <li><a href="products.html?category=tshirts">T-Shirts</a></li>
-          <li><a href="products.html?category=mugs">Mugs</a></li>
-          <li><a href="products.html?category=bottles">Bottles</a></li>
-          <li><a href="products.html?category=wallets">Wallets</a></li>
-          <li><a href="products.html?category=keychains">Keychains</a></li>
-          <li><a href="products.html?category=lockets">Lockets</a></li>
-          <li><a href="products.html?category=posters">Posters</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Quick Links</h4>
-        <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="products.html">All Products</a></li>
-          <li><a href="contact.html">Order Now</a></li>
-          <li><a href="#why-us">Why Us</a></li>
-          <li><a href="#testimonials">Reviews</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Contact</h4>
-        <ul>
-          <li><a href="https://wa.me/+918320979383" target="_blank">📱 +91 83209 79383</a></li>
-          <li><a href="https://www.instagram.com/crafted_core_/" target="_blank">📸 @crafted_core_</a></li>
-          <li><a href="contact.html">📩 Send Message</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>© 2025 CraftedCore. All rights reserved.</p>
-      <p>Made with ❤️ for custom lovers</p>
+  <!-- FOOTER -->
+  <footer style="background: #050505; border-top: 1px solid #1a1a1a; padding: 4rem 2rem; text-align: center;">
+    <h2 style="font-family: 'Playfair Display', serif; margin-bottom: 1rem;">CraftedCore</h2>
+    <p style="color: #666; max-width: 500px; margin: 0 auto 2rem; font-size: 0.9rem;">
+      Premium custom merchandise crafted with passion. Your imagination, our craftsmanship — brought together for something truly special.
+    </p>
+    <div style="color: #444; font-size: 0.8rem;">
+      © 2026 CraftedCore. All rights reserved.
     </div>
   </footer>
 
-  <!-- Floating WhatsApp Button (Mobile Only) -->
-  <a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20want%20to%20place%20a%20custom%20order." target="_blank" class="wa-float" id="wa-float-btn" title="Order on WhatsApp">
-    <svg class="social-svg" viewBox="0 0 24 24" width="28" height="28" fill="#fff"><path d="M12.012 2c-5.506 0-9.989 4.478-9.989 9.984 0 1.758.459 3.474 1.33 4.982L2 22l5.176-1.348a9.982 9.982 0 004.836 1.251h.004c5.506 0 9.989-4.478 9.989-9.984 0-2.668-1.039-5.176-2.927-7.063C17.189 3.039 14.68 2 12.012 2zm.004 16.326h-.003a8.31 8.31 0 01-4.238-1.163l-.304-.18-3.149.821.838-3.067-.198-.314a8.275 8.275 0 01-1.272-4.437c0-4.577 3.724-8.301 8.306-8.301 2.217 0 4.301.865 5.869 2.434a8.261 8.261 0 012.43 5.867c0 4.578-3.725 8.302-8.279 8.302zm4.551-6.216c-.249-.125-1.477-.729-1.706-.812-.228-.083-.395-.125-.561.125-.166.249-.644.812-.789.978-.145.166-.291.187-.54.062a6.837 6.837 0 01-2.008-1.238 7.55 7.55 0 01-1.39-1.73c-.145-.249-.016-.384.109-.508.113-.112.249-.291.374-.436.125-.145.166-.249.249-.415.083-.166.042-.312-.021-.436-.062-.125-.561-1.352-.769-1.85-.202-.486-.407-.42-.561-.428l-.478-.009c-.166 0-.436.062-.664.312-.228.249-.873.852-.873 2.079 0 1.226.893 2.41 1.018 2.577.125.166 1.757 2.684 4.257 3.764.595.257 1.06.41 1.422.525.597.19 1.14.163 1.57.099.479-.071 1.477-.603 1.684-1.184.208-.582.208-1.08.145-1.184-.063-.104-.229-.166-.478-.291z"/></svg>
-  </a>
-
-<!-- ===== QUICK VIEW MODAL ===== -->
-  <div class="modal-bd" id="qvModal">
-    <div class="modal" style="max-width: 600px;">
-      <div class="modal-hdr">
-        <div class="modal-title" id="qvTitle">Product Options</div>
-        <button class="modal-x" onclick="closeQV()">✕</button>
-      </div>
-      <div class="modal-body" style="padding: 1rem;">
-        <div style="display:flex; gap: 1rem; flex-wrap: wrap;">
-          <div style="flex: 1 1 200px; max-width: 300px; margin: 0 auto;">
-            <img id="qvImg" style="width: 100%; border-radius: var(--r); aspect-ratio: 1/1; object-fit: cover;" />
-          </div>
-          <div style="flex: 2 1 250px;">
-            <h3 id="qvName" style="margin-bottom: 0.5rem; font-size: 1.2rem;"></h3>
-            <p id="qvDesc" style="font-size: 0.9rem; color: var(--text2); margin-bottom: 1rem; line-height: 1.4;"></p>
-            
-            <div id="qvColorWrap" style="display: none; margin-bottom: 1rem;">
-              <label style="font-weight: 600; display: block; margin-bottom: 0.3rem;">Select Color:</label>
-              <div id="qvColors" style="display: flex; gap: 0.5rem; flex-wrap: wrap;"></div>
-            </div>
-
-            <div id="qvCustWrap" style="display: none; margin-bottom: 1rem;">
-              <label style="font-weight: 600; display: block; margin-bottom: 0.3rem;">Customization Options:</label>
-              <div id="qvCusts" style="display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.95rem;"></div>
-            </div>
-            
-            <div style="margin-top: 1rem;">
-              <div style="font-weight: 800; font-size: 1.2rem; margin-bottom: 0.5rem;" id="qvPrice"></div>
-              <button class="btn btn-whatsapp" id="qvBtn" style="width: 100%; justify-content: center; font-size: 1rem;">🛍️ Confirm Add to Cart</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-<!-- ===== PAYMENT QR MODAL ===== -->
-  <div class="modal-bd" id="qrModal">
-    <div class="modal" style="max-width: 400px; text-align: center;">
-      <div class="modal-hdr">
-        <div class="modal-title">Complete Payment</div>
-        <button class="modal-x" onclick="closeQR()">✕</button>
-      </div>
-      <div class="modal-body" style="padding: 1.5rem;">
-        <p style="margin-bottom: 1rem; color: var(--text2);">Scan this QR code using Google Pay, PhonePe, Paytm or any UPI app to make the payment.</p>
-        <img src="images/qr_code.png" alt="Payment QR Code" style="width: 250px; height: 250px; border-radius: 12px; margin-bottom: 1.5rem; object-fit: contain; background: white; padding: 10px;" />
-        <p style="margin-bottom: 1.5rem; color: var(--text2); font-size: 0.9rem;">After successful payment, take a screenshot and send it to us on WhatsApp to confirm your order.</p>
-        <button class="btn btn-whatsapp" id="qrWaBtn" style="width: 100%; justify-content: center; font-size: 1rem;">📸 Send Screenshot on WhatsApp</button>
-      </div>
-    </div>
-  </div>
-
-  <script src="js/db.js?v=25"></script>
-  <script src="js/main.js?v=25"></script>
+  <script src="js/db.js?v=26"></script>
+  <script src="js/main.js?v=26"></script>
 </body>
 </html>
