@@ -541,7 +541,24 @@
             <div class="card">
               <div class="card-title">💬 Step 7: Master WhatsApp & Footer Settings</div>
               <div class="fg"><label>Master WhatsApp Number</label><input type="text" class="fctl" id="waNum" placeholder="+918320979383" style="font-size:1.1rem;font-weight:700;" /></div>
-              <div class="fg"><label>Footer About Bio</label><textarea class="fctl" id="ftAbout" placeholder="Premium custom merchandise crafted with passion..."></textarea></div>
+              
+              <div class="fg" style="margin-top: 1rem; border-top: 1px solid var(--border); padding-top: 1rem;">
+                <label>💳 Payment QR Code</label>
+                <div class="img-upload" id="qrUA" ondragover="onDrag(event,'qrUA')" ondragleave="offDrag('qrUA')" ondrop="onDropQR(event)">
+                  <input type="file" id="qrFile" accept="image/*" onchange="qrUpload(this.files[0])" />
+                  <div class="up-icon" id="qrUIcon">📸</div>
+                  <div class="up-text" id="qrUText">Click or drag Payment QR image</div>
+                  <img id="qrPre" class="img-pre" style="max-height:120px;object-fit:contain;" />
+                  <div class="prog-wrap" id="qrPW"><div class="prog-bar" id="qrPB"></div></div>
+                </div>
+                <input type="hidden" id="qrImgUrl" />
+                <span class="url-tog" onclick="toggleEl('qrUrlIn')">Or paste image URL</span>
+                <input type="text" class="fctl" id="qrUrlIn" placeholder="https://..." style="display:none;margin-top:.4rem;" oninput="previewQRUrl(this.value)" />
+              </div>
+
+              <div class="fg" style="margin-top: 1rem; border-top: 1px solid var(--border); padding-top: 1rem;">
+                <label>Footer About Bio</label><textarea class="fctl" id="ftAbout" placeholder="Premium custom merchandise crafted with passion..."></textarea>
+              </div>
               <div class="fr2">
                 <div class="fg"><label>Instagram Link</label><input type="text" class="fctl" id="bInstaVal" placeholder="https://instagram.com/crafted_core_" /></div>
                 <div class="fg"><label>Footer Tagline</label><input type="text" class="fctl" id="ftTagline" placeholder="Made with ❤️ for custom lovers" /></div>
@@ -1692,6 +1709,12 @@ async function loadEditor() {
     if (s.footer_about)       document.getElementById('ftAbout').value = s.footer_about;
     if (s.biz_insta)          document.getElementById('bInstaVal').value = s.biz_insta;
     if (s.biz_tagline)        document.getElementById('ftTagline').value = s.biz_tagline;
+    if (s.payment_qr_url) {
+      document.getElementById('qrImgUrl').value = s.payment_qr_url;
+      const qp = document.getElementById('qrPre');
+      qp.src = s.payment_qr_url;
+      qp.style.display = 'block';
+    }
     updAnnLbl();
   } catch(e) {}
 }
@@ -1765,11 +1788,12 @@ async function saveWAFooter() {
   try {
     await SiteSettings.setMultiple({
       whatsapp_number: n,
+      payment_qr_url: document.getElementById('qrImgUrl').value.trim() || document.getElementById('qrUrlIn').value.trim(),
       footer_about: document.getElementById('ftAbout').value.trim(),
       biz_insta: document.getElementById('bInstaVal').value.trim(),
       biz_tagline: document.getElementById('ftTagline').value.trim()
     });
-    toast('✅ Step 7: WhatsApp & Footer Saved!', 'success');
+    toast('✅ Step 7: WhatsApp, QR & Footer Saved!', 'success');
   } catch(e) { toast('❌ Error', 'error'); }
 }
 
@@ -1847,6 +1871,7 @@ function offDrag(id)    { document.getElementById(id).classList.remove('drag'); 
 function onDropProd(e)  { e.preventDefault(); offDrag('pUA'); const f=e.dataTransfer.files[0]; if(f) prodUpload(f); }
 function onDropHero(e)  { e.preventDefault(); offDrag('heroUA'); const f=e.dataTransfer.files[0]; if(f) heroUpload(f); }
 function onDropLogo(e)  { e.preventDefault(); offDrag('logoUA'); const f=e.dataTransfer.files[0]; if(f) logoUpload(f); }
+function onDropQR(e)    { e.preventDefault(); offDrag('qrUA'); const f=e.dataTransfer.files[0]; if(f) qrUpload(f); }
 function onDropCat(e)   { e.preventDefault(); offDrag('cUA'); const f=e.dataTransfer.files[0]; if(f) catUpload(f); }
 function toggleEl(id)   { const el=document.getElementById(id); el.style.display = el.style.display==='none'?'block':'none'; }
 function previewProdUrl(url) {
@@ -1913,7 +1938,8 @@ function mainPGal(i) {
 }
 function previewHeroUrl(url) { document.getElementById('heroImgUrl').value = url; const img=document.getElementById('heroPre'); img.src=url; img.style.display=url?'block':'none'; }
 function previewLogoUrl(url) { document.getElementById('logoImgUrl').value = url; const img=document.getElementById('logoPre'); img.src=url; img.style.display=url?'block':'none'; }
-function previewCatUrl(url) { document.getElementById('cmEmoji').value = url; const img=document.getElementById('cPre'); img.src=url; img.style.display=url?'block':'none'; }
+function previewQRUrl(url) { document.getElementById('qrImgUrl').value = url; const img=document.getElementById('qrPre'); img.src=url; img.style.display=url?'block':'none'; }
+function previewCatUrl(url) { document.getElementById('cmEmoji').value = url; const img=document.getElementById('cPre'); img.style.display=url?'block':'none'; }
 
 let cropper = null;
 let currentCropTarget = '';
@@ -2023,6 +2049,19 @@ async function logoUpload(file) {
     document.getElementById('logoImgUrl').value = url;
     document.getElementById('logoPW').style.display = 'none';
     toast('✅ Logo uploaded!', 'success');
+  } catch(e) { toast('❌ Upload failed', 'error'); }
+}
+
+async function qrUpload(file) {
+  if (!file) return;
+  const preview = document.getElementById('qrPre');
+  const fr = new FileReader(); fr.onload = e => { preview.src = e.target.result; preview.style.display = 'block'; }; fr.readAsDataURL(file);
+  document.getElementById('qrPW').style.display = 'block';
+  try {
+    const url = await uploadImage(file, pct => { document.getElementById('qrPB').style.width = pct + '%'; });
+    document.getElementById('qrImgUrl').value = url;
+    document.getElementById('qrPW').style.display = 'none';
+    toast('✅ QR Code uploaded!', 'success');
   } catch(e) { toast('❌ Upload failed', 'error'); }
 }
 
