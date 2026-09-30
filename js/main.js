@@ -1,5 +1,50 @@
 // ===== CraftedCore - Main JavaScript =====
 
+// ===== Image Protection (Anti-Download) =====
+(function() {
+  // Block right-click on images
+  document.addEventListener('contextmenu', function(e) {
+    if (e.target.tagName === 'IMG' || e.target.closest('.product-image-wrap, .prod-img-wrap, .hero-image-wrap')) {
+      e.preventDefault();
+      return false;
+    }
+  });
+
+  // Block drag on images
+  document.addEventListener('dragstart', function(e) {
+    if (e.target.tagName === 'IMG') {
+      e.preventDefault();
+      return false;
+    }
+  });
+
+  // Block Ctrl+S (save page) and Ctrl+U (view source) on product pages
+  document.addEventListener('keydown', function(e) {
+    if (e.ctrlKey && (e.key === 's' || e.key === 'S' || e.key === 'u' || e.key === 'U')) {
+      e.preventDefault();
+      return false;
+    }
+  });
+
+  // Block long-press on mobile (prevents "Save Image" popup)
+  let longPressTimer;
+  document.addEventListener('touchstart', function(e) {
+    if (e.target.tagName === 'IMG' || e.target.closest('.product-image-wrap, .prod-img-wrap')) {
+      longPressTimer = setTimeout(function() {
+        e.preventDefault();
+      }, 500);
+    }
+  }, { passive: false });
+
+  document.addEventListener('touchend', function() {
+    clearTimeout(longPressTimer);
+  });
+
+  document.addEventListener('touchmove', function() {
+    clearTimeout(longPressTimer);
+  });
+})();
+
 // ===== Navbar Scroll Effect =====
 const navbar = document.getElementById('navbar');
 if (navbar) {

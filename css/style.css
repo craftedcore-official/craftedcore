@@ -53,6 +53,57 @@ a { text-decoration: none; color: inherit; }
 img { max-width: 100%; display: block; }
 ul { list-style: none; }
 
+/* ===== Image Protection (Anti-Download) ===== */
+.product-image-wrap,
+.prod-img-wrap,
+.hero-image-wrap,
+.gal-thumb {
+  position: relative;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Transparent overlay to block right-click save */
+.product-image-wrap::after,
+.prod-img-wrap::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: transparent;
+  pointer-events: auto;
+}
+
+/* Let clickable elements inside still work */
+.product-image-wrap a,
+.product-image-wrap button,
+.product-image-wrap .product-overlay,
+.product-image-wrap .product-badge,
+.prod-img-wrap .gal-nav {
+  position: relative;
+  z-index: 3;
+}
+
+/* Prevent image dragging and selection */
+.product-image-wrap img,
+.prod-img-wrap img,
+.hero-image-wrap img,
+.gal-thumb img {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  pointer-events: none;
+  -webkit-touch-callout: none;
+}
+
 /* ===== Scrollbar ===== */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--bg-primary); }
