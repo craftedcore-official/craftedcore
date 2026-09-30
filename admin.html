@@ -809,6 +809,11 @@ create policy "Public Settings" on site_settings for all using (true) with check
         <div class="bdg-presets" id="colorPresetsCont" style="margin-top:0.4rem;"></div>
       </div>
       <div class="fg">
+        <label>Sub-category / Tags</label>
+        <div style="font-size:0.75rem;color:var(--text2);margin-bottom:0.4rem;">Comma separated (e.g. Anime, Spiritual, Quotes) for sub-filters.</div>
+        <input type="text" class="fctl" id="pTags" placeholder="Anime, Spiritual..." />
+      </div>
+      <div class="fg">
         <label>Customization Options</label>
         <div style="font-size:0.75rem;color:var(--text2);margin-bottom:0.4rem;">Type options separated by commas. Add extra price in brackets, e.g. <code>Gift Wrap (+50)</code>.</div>
         <div style="display:flex; gap:0.5rem; align-items:center;">
@@ -1289,7 +1294,7 @@ async function togFeat(id, val) {
 }
 
 function openProdModal() {
-  ['pmId','pName','pPrice','pBadge','pDesc','pWA','pImgUrl','pColors','pCustOptions'].forEach(id => document.getElementById(id).value = '');
+  ['pmId','pName','pPrice','pBadge','pDesc','pWA','pImgUrl','pColors','pCustOptions','pTags'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('pCat').value = '';
   document.getElementById('pFeat').checked = false;
   window.pgImageColors = {};
@@ -1324,6 +1329,7 @@ function editProd(id) {
     if (cust.uvdtf_photo) oldOpts.push('UVDTF Photo');
   }
   document.getElementById('pCustOptions').value = oldOpts.join(', ');
+  document.getElementById('pTags').value = cust.tags || '';
   window.pgImageColors = cust.image_colors || {};
 
   renderPGallery();
@@ -1340,7 +1346,8 @@ async function saveProd() {
   
   const cust = {
     options: document.getElementById('pCustOptions').value.trim(),
-    image_colors: window.pgImageColors || {}
+    image_colors: window.pgImageColors || {},
+    tags: document.getElementById('pTags').value.trim()
   };
   
   const data = {

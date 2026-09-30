@@ -128,10 +128,10 @@ function initScrollAnimations() {
   fadeElements.forEach(el => observer.observe(el));
 }
 
-// ===== Product Filter =====
+// ===== Product Filter (with Sub-categories) =====
 function filterProducts(category) {
   const cards = document.querySelectorAll('.product-card[data-category]');
-  const buttons = document.querySelectorAll('.filter-btn');
+  const buttons = document.querySelectorAll('#filterTabs .filter-btn');
 
   // Update active button
   buttons.forEach(btn => {
@@ -141,15 +141,49 @@ function filterProducts(category) {
     }
   });
 
+  let uniqueTags = new Set();
+
   // Filter cards
   cards.forEach(card => {
     if (category === 'all' || card.dataset.category === category) {
       card.style.display = 'block';
       card.style.animation = 'fadeInUp 0.4s ease forwards';
+      card.dataset.visible = 'true';
+      // Extract tags
+      const tags = (card.dataset.tags || '').split(',').map(t => t.trim()).filter(t => t);
+      tags.forEach(t => { if (t) uniqueTags.add(t); });
     } else {
       card.style.display = 'none';
+      card.dataset.visible = 'false';
     }
   });
+
+  // Render Sub-filters (Tags)
+  let subFilterCont = document.getElementById('subFilterTabs');
+  if (!subFilterCont) {
+    subFilterCont = document.createElement('div');
+    subFilterCont.id = 'subFilterTabs';
+    subFilterCont.className = 'filter-tabs sub-filter-tabs';
+    subFilterCont.style.marginTop = '1rem';
+    const mainTabs = document.getElementById('filterTabs');
+    if (mainTabs) mainTabs.parentNode.insertBefore(subFilterCont, mainTabs.nextSibling);
+  }
+
+  if (uniqueTags.size > 0 && category !== 'all') {
+    let subHtml = `<button class="filter-btn active" data-subfilter="all" onclick="filterSubProducts('all')">🌟 All in this category</button>`;
+    Array.from(uniqueTags).forEach(tag => {
+      // capitalize first letter
+      const capTag = tag.charAt(0).toUpperCase() + tag.slice(1);
+      subHtml += `<button class="filter-btn" data-subfilter="${tag}" onclick="filterSubProducts('${tag}')">✨ ${capTag}</button>`;
+    });
+    subFilterCont.innerHTML = subHtml;
+    subFilterCont.style.display = 'flex';
+  } else {
+    if (subFilterCont) {
+      subFilterCont.style.display = 'none';
+      subFilterCont.innerHTML = '';
+    }
+  }
 
   // Scroll to product grid
   const grid = document.getElementById('productGrid') || document.getElementById('all-products');
@@ -158,6 +192,33 @@ function filterProducts(category) {
       grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 100);
   }
+}
+
+function filterSubProducts(tag) {
+  const cards = document.querySelectorAll('.product-card[data-visible="true"]');
+  const subBtns = document.querySelectorAll('#subFilterTabs .filter-btn');
+
+  subBtns.forEach(btn => {
+    btn.classList.remove('active');
+    if (btn.dataset.subfilter === tag) btn.classList.add('active');
+  });
+
+  cards.forEach(card => {
+    if (tag === 'all') {
+      card.style.display = 'block';
+      card.style.animation = 'none'; // reset
+      setTimeout(() => card.style.animation = 'fadeInUp 0.4s ease forwards', 10);
+    } else {
+      const pTags = (card.dataset.tags || '').split(',').map(t => t.trim().toLowerCase());
+      if (pTags.includes(tag.toLowerCase())) {
+        card.style.display = 'block';
+        card.style.animation = 'none';
+        setTimeout(() => card.style.animation = 'fadeInUp 0.4s ease forwards', 10);
+      } else {
+        card.style.display = 'none';
+      }
+    }
+  });
 }
 
 // ===== Typing Effect for Hero =====
