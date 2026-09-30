@@ -185,7 +185,7 @@ function createGoldParticles() {
   const hero = document.getElementById('hero');
   if (!hero) return;
 
-  const colors = ['rgba(0, 240, 255,', 'rgba(255, 0, 229,', 'rgba(162, 0, 255,'];
+  const colors = ['rgba(212, 175, 55,', 'rgba(200, 138, 88,', 'rgba(170, 135, 41,'];
 
   for (let i = 0; i < 20; i++) {
     const particle = document.createElement('div');
@@ -556,6 +556,7 @@ function updateCartUI() {
     total += itemTotal;
     
     let optionsHtml = '';
+    if (item.size) optionsHtml += `<div style="font-size:0.8rem;color:var(--copper-light);">Size: ${item.size}</div>`;
     if (item.color) optionsHtml += `<div style="font-size:0.8rem;color:var(--gold);">Color: ${item.color}</div>`;
     if (item.custs && item.custs.length > 0) optionsHtml += `<div style="font-size:0.8rem;color:var(--text2);">${item.custs.join(', ')}</div>`;
 
@@ -725,6 +726,7 @@ async function submitCartCheckout() {
     let msg = `Hi Crafted Core! 👋\n\nA new order has been successfully placed on your website.\n\n📦 *ORDER DETAILS*\n━━━━━━━━━━━━━━━━━━\n🆔 *Order ID:* #${orderId}\n\n🛍️ *Items*\n`;
     shoppingCart.forEach(item => {
       msg += `• ${item.qty} × ${item.name}\n`;
+      if (item.size) msg += `Size: ${item.size}\n`;
       if (item.color) msg += `Color: ${item.color}\n`;
       if (item.custs && item.custs.length > 0) msg += `Cust: ${item.custs.join(', ')}\n`;
       if (item.img) {

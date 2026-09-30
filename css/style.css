@@ -902,6 +902,14 @@ footer {
   100% { background-position: 200% center; }
 }
 
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+
 .animate-fadeInUp { animation: fadeInUp 0.7s ease forwards; }
 .animate-float { animation: float 4s ease-in-out infinite; }
 
@@ -1446,5 +1454,109 @@ footer {
 @media (max-width: 768px) {
   .cart-float-btn { width: 44px; height: 44px; bottom: 80px; font-size: 1.1rem; }
   .wa-float { width: 44px; height: 44px; bottom: 1.2rem; font-size: 1.1rem; }
+}
+
+/* ===== Size Selector (Oversize Tees) ===== */
+.size-selector { margin-bottom: 1.5rem; }
+.size-selector .prod-opt-lbl { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.5rem; }
+.size-selector .prod-opt-lbl .size-required { color: #ff5555; font-size: 0.8rem; font-weight: 400; }
+
+.size-btns { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.size-btn {
+  min-width: 48px;
+  height: 44px;
+  padding: 0.4rem 1rem;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  background: rgba(255,255,255,0.03);
+  color: var(--text-secondary);
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.size-btn:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: rgba(212,175,55,0.08);
+}
+.size-btn.active {
+  border-color: var(--gold);
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+  color: #0F0E12;
+  font-weight: 800;
+  box-shadow: 0 4px 15px rgba(212,175,55,0.35);
+}
+
+/* Size Chart Toggle */
+.size-chart-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: none;
+  border: none;
+  color: var(--gold);
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.3rem 0;
+  margin-top: 0.6rem;
+  transition: all 0.2s ease;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.size-chart-toggle:hover { color: var(--gold-light); }
+
+/* Size Chart Table */
+.size-chart-wrap {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, opacity 0.3s ease;
+  opacity: 0;
+  margin-top: 0.5rem;
+}
+.size-chart-wrap.open {
+  max-height: 500px;
+  opacity: 1;
+}
+.size-chart {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  font-size: 0.85rem;
+}
+.size-chart thead { background: linear-gradient(135deg, rgba(212,175,55,0.15), rgba(200,138,88,0.1)); }
+.size-chart th {
+  padding: 0.7rem 0.5rem;
+  text-align: center;
+  font-weight: 700;
+  color: var(--gold);
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+}
+.size-chart td {
+  padding: 0.6rem 0.5rem;
+  text-align: center;
+  color: var(--text-secondary);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  font-size: 0.82rem;
+}
+.size-chart tbody tr:hover { background: rgba(212,175,55,0.05); }
+.size-chart tbody tr:last-child td { border-bottom: none; }
+.size-chart .chart-size-label { font-weight: 700; color: var(--text-primary); }
+
+@media (max-width: 480px) {
+  .size-btn { min-width: 42px; height: 40px; font-size: 0.82rem; padding: 0.3rem 0.7rem; }
+  .size-chart { font-size: 0.75rem; }
+  .size-chart th, .size-chart td { padding: 0.5rem 0.3rem; }
 }
 

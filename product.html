@@ -100,6 +100,39 @@
           <div class="prod-custs" id="pgCusts"></div>
         </div>
 
+        <!-- Size Selector (Oversize Tees Only) -->
+        <div id="pgSizeWrap" class="size-selector" style="display: none;">
+          <label class="prod-opt-lbl">📏 Select Size: <span class="size-required">*Required</span></label>
+          <div class="size-btns" id="pgSizes">
+            <button class="size-btn" onclick="selSize(this)" data-size="S">S</button>
+            <button class="size-btn" onclick="selSize(this)" data-size="M">M</button>
+            <button class="size-btn" onclick="selSize(this)" data-size="L">L</button>
+            <button class="size-btn" onclick="selSize(this)" data-size="XL">XL</button>
+            <button class="size-btn" onclick="selSize(this)" data-size="XXL">XXL</button>
+          </div>
+          <button class="size-chart-toggle" onclick="toggleSizeChart()">📐 View Size Chart</button>
+          <div class="size-chart-wrap" id="sizeChartWrap">
+            <table class="size-chart">
+              <thead>
+                <tr>
+                  <th>Size</th>
+                  <th>Chest (in)</th>
+                  <th>Length (in)</th>
+                  <th>Sleeve (in)</th>
+                  <th>Shoulder (in)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td class="chart-size-label">S</td><td>40</td><td>27</td><td>9</td><td>21</td></tr>
+                <tr><td class="chart-size-label">M</td><td>42</td><td>28</td><td>9.5</td><td>22</td></tr>
+                <tr><td class="chart-size-label">L</td><td>44</td><td>29</td><td>10</td><td>23</td></tr>
+                <tr><td class="chart-size-label">XL</td><td>46</td><td>30</td><td>10.5</td><td>24</td></tr>
+                <tr><td class="chart-size-label">XXL</td><td>48</td><td>31</td><td>11</td><td>25</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
         <button class="btn btn-whatsapp" id="pgAddBtn" style="width: 100%; justify-content: center; padding: 1.2rem; font-size: 1.1rem; border-radius: var(--r);">🛍️ Add to Cart</button>
       </div>
     </div>
@@ -443,10 +476,36 @@
       }
       if (hasCust) custWrap.style.display = 'block';
 
+      // Show size selector only for "oversize-tees" category
+      const isOversizeTees = (p.category_slug || '').toLowerCase() === 'oversize-tees';
+      window.pgNeedsSize = isOversizeTees;
+      if (isOversizeTees) {
+        document.getElementById('pgSizeWrap').style.display = 'block';
+      }
+
       document.getElementById('pgAddBtn').onclick = () => {
+        // Validate size for oversize-tees
+        if (window.pgNeedsSize) {
+          const activeSize = document.querySelector('#pgSizes .size-btn.active');
+          if (!activeSize) {
+            showToast('⚠️ Please select a size first!');
+            document.getElementById('pgSizeWrap').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            // Briefly highlight the size buttons
+            document.getElementById('pgSizes').style.animation = 'shake 0.5s ease';
+            setTimeout(() => { document.getElementById('pgSizes').style.animation = ''; }, 500);
+            return;
+          }
+        }
+
         let color = '';
         const activeColor = document.querySelector('#pgColors .color-btn.active');
         if (activeColor) color = activeColor.textContent;
+        
+        let selectedSize = '';
+        if (window.pgNeedsSize) {
+          const activeSize = document.querySelector('#pgSizes .size-btn.active');
+          if (activeSize) selectedSize = activeSize.getAttribute('data-size');
+        }
         
         let cartImg = window.pgImages && window.pgImages.length > 0 ? window.pgImages[0] : '';
         if (color && window.pgImageColorsMap && window.pgImages) {
@@ -467,13 +526,13 @@
         
         const finalPrice = (parseFloat(p.price) || 0) + extraPrice;
         
-        const cartItemId = `${p.id}-${color}-${custs.join('-')}`;
+        const cartItemId = `${p.id}-${color}-${selectedSize}-${custs.join('-')}`;
         const existing = shoppingCart.find(item => item.cartItemId === cartItemId);
         if (existing) {
           existing.qty += 1;
         } else {
           shoppingCart.push({ 
-            id: p.id, cartItemId, name: p.name, price: finalPrice, img: cartImg, qty: 1, color, custs
+            id: p.id, cartItemId, name: p.name, price: finalPrice, img: cartImg, qty: 1, color, size: selectedSize, custs
           });
         }
         saveCart();
@@ -487,6 +546,17 @@
         document.getElementById('recGrid').innerHTML = recs.map(r => productCardHTML(r)).join('');
       }
     });
+
+    // ===== Size Selector Functions =====
+    function selSize(btn) {
+      document.querySelectorAll('#pgSizes .size-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    function toggleSizeChart() {
+      const wrap = document.getElementById('sizeChartWrap');
+      wrap.classList.toggle('open');
+    }
 
     function selColor(btn) {
       document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
