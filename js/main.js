@@ -729,12 +729,8 @@ async function submitCartCheckout() {
       if (item.size) msg += `Size: ${item.size}\n`;
       if (item.color) msg += `Color: ${item.color}\n`;
       if (item.custs && item.custs.length > 0) msg += `Cust: ${item.custs.join(', ')}\n`;
-      if (item.img) {
-        try {
-          let absoluteImg = new URL(item.img, document.baseURI).href;
-          msg += `Image: ${absoluteImg}\n`;
-        } catch(e) { msg += `Image: ${item.img}\n`; }
-      }
+      const siteBase = window.location.origin + window.location.pathname.replace(/[^\/]*$/, '');
+      msg += `🔗 Product: ${siteBase}product.html?id=${item.id}\n`;
       msg += `Item Total: ₹${item.price * item.qty}\n\n`;
     });
     
