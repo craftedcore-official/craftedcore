@@ -347,7 +347,7 @@
           <button class="btn btn-primary" onclick="openOrderModal()">➕ Create Manual Order</button>
         </div>
         <div class="table-card">
-          <div class="table-tb">
+          <div class="table-tb" style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
             <input type="text" class="srch-in" placeholder="🔍 Search customer or product..." oninput="srchOrders(this.value)" />
             <select class="fil-sel" id="orderStatusFil" onchange="filOrders(this.value)">
               <option value="">All Statuses</option>
@@ -356,6 +356,12 @@
               <option value="completed">Completed</option>
               <option value="cancelled">Cancelled</option>
             </select>
+            <div id="orderBulkActions" style="display:none; gap: 0.5rem; margin-left: auto; align-items: center;">
+              <span style="font-size: 0.8rem; color: var(--text3); font-weight: 600; margin-right: 0.5rem;">Bulk Action:</span>
+              <button class="btn btn-primary btn-sm" onclick="bulkOrderAction('completed')" style="background: #106634; border-color: #106634; padding: 0.4rem 0.8rem;">✅ Successful</button>
+              <button class="btn btn-primary btn-sm" onclick="bulkOrderAction('pending')" style="background: #C88A58; border-color: #C88A58; padding: 0.4rem 0.8rem;">⏳ Pending</button>
+              <button class="btn btn-primary btn-sm" onclick="bulkOrderAction('delete')" style="background: #cc3333; border-color: #cc3333; padding: 0.4rem 0.8rem;">🗑️ Delete</button>
+            </div>
           </div>
           <div id="ordersTbl"><div class="loading-ov"><div class="spinner"></div></div></div>
         </div>
@@ -1125,6 +1131,7 @@ async function loadOrders() {
 function renderOrders(os) {
   if (!os.length) {
     document.getElementById('ordersTbl').innerHTML = `<div class="empty"><div class="empty-icon">🛒</div>No orders recorded yet.<br/><br/><button class="btn btn-primary" onclick="openOrderModal()">➕ Create First Order</button></div>`;
+    toggleOrderBulk();
     return;
   }
   const rows = os.map(o => {
@@ -1132,6 +1139,7 @@ function renderOrders(os) {
     const statusLabel = o.status.charAt(0).toUpperCase() + o.status.slice(1);
     return `
     <tr>
+      <td style="width: 40px; text-align: center;"><input type="checkbox" class="order-chk" value="${o.id}" onchange="toggleOrderBulk()" style="cursor:pointer;" /></td>
       <td><b>#${o.id}</b></td>
       <td><div class="prod-n">${o.customer_name}</div><div style="font-size:.76rem;color:var(--text3);">${o.customer_phone||'No phone'}</div></td>
       <td>${o.product_name||'Custom Order'}</td>
@@ -1144,9 +1152,50 @@ function renderOrders(os) {
   }).join('');
   document.getElementById('ordersTbl').innerHTML = `
     <table>
-      <thead><tr><th>ID</th><th>Customer</th><th>Product</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead>
+      <thead><tr><th style="width: 40px; text-align: center;"><input type="checkbox" id="orderChkAll" onchange="toggleAllOrders(this.checked)" style="cursor:pointer;" /></th><th>ID</th><th>Customer</th><th>Product</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead>
       <tbody>${rows}</tbody>
     </table>`;
+  toggleOrderBulk();
+}
+
+function toggleAllOrders(checked) {
+  document.querySelectorAll('.order-chk').forEach(cb => cb.checked = checked);
+  toggleOrderBulk();
+}
+function toggleOrderBulk() {
+  const chkd = document.querySelectorAll('.order-chk:checked');
+  const bulkActs = document.getElementById('orderBulkActions');
+  if (bulkActs) {
+    if (chkd.length > 0) {
+      bulkActs.style.display = 'flex';
+    } else {
+      bulkActs.style.display = 'none';
+      const chkAll = document.getElementById('orderChkAll');
+      if (chkAll) chkAll.checked = false;
+    }
+  }
+}
+async function bulkOrderAction(action) {
+  const chkd = document.querySelectorAll('.order-chk:checked');
+  if (!chkd.length) return;
+  const verb = action === 'delete' ? 'delete' : (action === 'completed' ? 'mark as successful' : 'mark as pending');
+  if (!confirm(`Are you sure you want to ${verb} ${chkd.length} selected order(s)?`)) return;
+  
+  const btn = document.activeElement;
+  const origText = btn.innerHTML;
+  btn.innerHTML = `<span class="spinner" style="width:14px;height:14px;border-width:2px;margin-right:5px;"></span> wait...`;
+  btn.disabled = true;
+  
+  const ids = Array.from(chkd).map(cb => cb.value);
+  for (let id of ids) {
+    if (action === 'delete') {
+      await Orders.delete(id);
+    } else {
+      await Orders.updateStatus(id, action);
+    }
+  }
+  toast(`Bulk action applied to ${ids.length} order(s).`, 'success');
+  loadOrders();
 }
 
 function viewOrderDetails(id) {

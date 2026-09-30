@@ -64,7 +64,7 @@ function cacheGet(k) {
   } catch(e) { return null; }
 }
 function cacheClear() {
-  ['cc_products', 'cc_categories', 'cc_settings'].forEach(k => { try { localStorage.removeItem(k); } catch(e) {} });
+  ['cc_products', 'cc_categories', 'cc_settings_v2'].forEach(k => { try { localStorage.removeItem(k); } catch(e) {} });
 }
 
 // ── Products API ──────────────────────────────────────────────
@@ -141,11 +141,11 @@ const SiteSettings = {
     return this._ok;
   },
   async getAll() {
-    const c = cacheGet('cc_settings'); if (c) return c;
+    const c = cacheGet('cc_settings_v2'); if (c) return c;
     try {
       const d = await dbFetch('site_settings?select=*');
       const o = {}; (d || []).forEach(r => { o[r.key] = r.value; });
-      cacheSet('cc_settings', o); return o;
+      cacheSet('cc_settings_v2', o); return o;
     } catch(e) { return {}; }
   },
   async get(key) {
@@ -187,8 +187,14 @@ async function uploadImage(file, onProgress) {
 // ── Product Card HTML Generator ───────────────────────────────
 function productCardHTML(p) {
   const safeName = (p.name || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+  let tags = '';
+  try {
+    const cust = p.customizations ? JSON.parse(p.customizations) : {};
+    if (cust.tags) tags = cust.tags.toLowerCase();
+  } catch(e) {}
+  
   return `
-  <div class="product-card" data-category="${p.category_slug || 'all'}" id="prod-${p.id}">
+  <div class="product-card" data-category="${p.category_slug || 'all'}" data-tags="${tags}" id="prod-${p.id}">
     <div class="product-image-wrap">
       ${p.badge ? `<span class="product-badge">${p.badge}</span>` : ''}
       <a href="product.html?id=${p.id}">
@@ -300,6 +306,25 @@ async function applyDynamicSettings() {
         : s.announcement_text)
         + `<button onclick="this.parentElement.remove()" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:#fff;font-size:1.3rem;cursor:pointer">×</button>`;
       document.body.prepend(bar);
+    }
+
+    // 9. Payment QR Code & UPI Link
+    if (s.payment_qr_url) {
+      const qrImgList = document.querySelectorAll('#qrModal img');
+      qrImgList.forEach(img => img.src = s.payment_qr_url);
+    }
+    if (s.upi_id) {
+      document.querySelectorAll('#qrModal .modal-body').forEach(body => {
+        if (!body.querySelector('#upiDirectBtn')) {
+          const biz = s.brand_name || 'CraftedCore';
+          const upiUrl = `upi://pay?pa=${s.upi_id}&pn=${encodeURIComponent(biz)}&cu=INR`;
+          
+          const btnHtml = `<a href="${upiUrl}" id="upiDirectBtn" class="btn btn-primary" style="display:flex; width: 100%; justify-content: center; font-size: 1rem; margin-bottom: 0.8rem; background: #5f259f; text-decoration: none; align-items: center; gap: 8px;">⚡ Pay via UPI App (PhonePe/GPay)</a>`;
+          
+          const waBtn = body.querySelector('#qrWaBtn');
+          if (waBtn) waBtn.insertAdjacentHTML('beforebegin', btnHtml);
+        }
+      });
     }
   } catch(e) { /* Silently use static fallback */ }
 }
