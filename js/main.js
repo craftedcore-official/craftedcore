@@ -340,6 +340,16 @@ async function loadDynamicProducts() {
     productGrid.innerHTML = html;
     initProductCardEffects();
     injectSEOData(products);
+    
+    // Re-apply filter after dynamic load so sub-categories show up correctly
+    setTimeout(() => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const cat = urlParams.get('category');
+      const currentActive = document.querySelector('#filterTabs .filter-btn.active');
+      const activeFilter = cat || (currentActive ? currentActive.dataset.filter : 'all');
+      if (typeof filterProducts === 'function') filterProducts(activeFilter);
+    }, 100);
+    
   } catch (e) {
     console.log('Using static fallback products');
   }
