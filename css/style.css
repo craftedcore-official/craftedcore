@@ -11,25 +11,25 @@
   --bg-card: #18181F;
   --bg-card-hover: #20202A;
   
-  /* Theme Palette (Neon Cyberpunk / Gaming) */
-  --copper: #00F0FF; /* Cyan */
-  --copper-light: #5CE1E6;
-  --copper-dark: #00A6B2;
-  --copper-glow: rgba(0, 240, 255, 0.25);
+  /* Theme Palette (Dark Gold / Copper) */
+  --copper: #C88A58;
+  --copper-light: #E2B38F;
+  --copper-dark: #A0673A;
+  --copper-glow: rgba(200, 138, 88, 0.25);
   
-  --gold: #00F0FF; /* Kept as alias for easier refactoring */
-  --gold-light: #FF00E5; /* Magenta */
-  --gold-dark: #A200FF; /* Purple */
+  --gold: #D4AF37;
+  --gold-light: #F4E29F;
+  --gold-dark: #AA8729;
   
   --text-primary: #F7F7FA;
   --text-secondary: #B0B0C0;
   --text-muted: #6E6E82;
   
-  --border: rgba(0, 240, 255, 0.22);
+  --border: rgba(212, 175, 55, 0.22);
   --border-light: rgba(255, 255, 255, 0.08);
   --glass: rgba(255, 255, 255, 0.03);
   
-  --shadow-copper: 0 10px 30px rgba(0, 240, 255, 0.15);
+  --shadow-copper: 0 10px 30px rgba(200, 138, 88, 0.15);
   --shadow-card: 0 12px 40px rgba(0,0,0,0.6);
   --radius: 16px;
   --radius-sm: 10px;
@@ -107,16 +107,16 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; line-height: 1.2; }
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #00F0FF 0%, #A200FF 100%);
-  color: #fff;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--copper) 100%);
+  color: #0F0E12;
   font-weight: 700;
-  box-shadow: 0 4px 25px rgba(0, 240, 255, 0.45);
+  box-shadow: 0 4px 25px rgba(212, 175, 55, 0.45);
 }
 
 .btn-primary:hover {
   transform: translateY(-3px);
-  box-shadow: 0 10px 35px rgba(0, 240, 255, 0.65);
-  background: linear-gradient(135deg, #5CE1E6 0%, #FF00E5 100%);
+  box-shadow: 0 10px 35px rgba(212, 175, 55, 0.65);
+  background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 100%);
 }
 
 .btn-outline {
