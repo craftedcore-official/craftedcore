@@ -455,6 +455,31 @@ async function loadDynamicReviews() {
   } catch(e) {}
 }
 
+// ===== Delivery Zones (Pincode-based) =====
+const DELIVERY_ZONES = [
+  { label: 'Gujarat', prefixes: ['36','37','38','39'], charge: 40, days: 2 },
+  { label: 'Rajasthan', prefixes: ['30','31','32','33','34'], charge: 80, days: 4 },
+  { label: 'Madhya Pradesh', prefixes: ['45','46','47','48'], charge: 80, days: 4 },
+  { label: 'Maharashtra', prefixes: ['40','41','42','43','44'], charge: 80, days: 4 },
+];
+const DEFAULT_DELIVERY = { label: 'Rest of India', charge: 120, days: 7 };
+const UPI_ID = '8320979383@ibl';
+const UPI_NAME = 'CraftedCore';
+
+function getDeliveryInfo(pincode) {
+  const prefix = (pincode || '').trim().substring(0, 2);
+  if (!prefix || prefix.length < 2 || !/^\d{6}$/.test((pincode||'').trim())) return null;
+  for (const zone of DELIVERY_ZONES) {
+    if (zone.prefixes.includes(prefix)) return zone;
+  }
+  return DEFAULT_DELIVERY;
+}
+
+// Store current draft order info
+let currentDraftOrderId = null;
+let currentDraftWaMsg = '';
+let currentDraftDelivery = null;
+
 // ===== Shopping Cart Logic =====
 let shoppingCart = JSON.parse(localStorage.getItem('cc_cart')) || [];
 
@@ -765,7 +790,24 @@ function injectCartUI() {
       
       <div style="margin-bottom:1rem;">
         <label style="display:block; font-size:0.85rem; margin-bottom:0.4rem; color:#bbb;">Pincode *</label>
-        <input type="text" id="foPincode" style="width:100%; padding:0.8rem; background:rgba(0,0,0,0.4); border:1px solid #444; border-radius:6px; color:white; font-size:0.95rem; outline:none; transition:border 0.2s;" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='#444'" placeholder="e.g. 110001" />
+        <input type="text" id="foPincode" maxlength="6" style="width:100%; padding:0.8rem; background:rgba(0,0,0,0.4); border:1px solid #444; border-radius:6px; color:white; font-size:0.95rem; outline:none; transition:border 0.2s;" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='#444'" placeholder="e.g. 380001" oninput="updateDeliveryPreview()" />
+      </div>
+
+      <!-- Delivery Info Preview -->
+      <div id="foDeliveryPreview" style="display:none; margin-bottom:1.5rem; background:rgba(212,175,55,0.08); border:1px solid rgba(212,175,55,0.25); border-radius:10px; padding:1rem 1.2rem;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+          <span style="color:var(--text2); font-size:0.9rem;">📍 <span id="foDeliveryZone">—</span></span>
+          <span style="color:var(--gold); font-weight:700; font-size:0.95rem;">🚚 <span id="foDeliveryDays">—</span></span>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="color:var(--text2); font-size:0.9rem;">Delivery Charge:</span>
+          <span style="color:white; font-weight:700;">₹<span id="foDeliveryCharge">0</span></span>
+        </div>
+        <hr style="border:none; border-top:1px solid rgba(255,255,255,0.08); margin:0.7rem 0;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="color:white; font-weight:700; font-size:1.05rem;">Grand Total:</span>
+          <span style="color:var(--gold); font-weight:800; font-size:1.15rem;">₹<span id="foGrandTotal">0</span></span>
+        </div>
       </div>
       
       <div style="margin-bottom:1.5rem;">
@@ -773,12 +815,68 @@ function injectCartUI() {
         <textarea id="foNotes" style="width:100%; padding:0.8rem; background:rgba(0,0,0,0.4); border:1px solid #444; border-radius:6px; color:white; font-size:0.95rem; min-height:60px; resize:vertical; outline:none; transition:border 0.2s;" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='#444'" placeholder="Any special instructions..."></textarea>
       </div>
       
-      <button onclick="submitCartCheckout()" class="btn btn-primary" style="width:100%; justify-content:center; padding:1rem; font-size:1.1rem; font-weight:bold; letter-spacing:0.5px; border-radius:8px;" id="foSubmitBtn">🛍️ Place Order & WhatsApp</button>
+      <button onclick="submitCartCheckout()" class="btn btn-primary" style="width:100%; justify-content:center; padding:1rem; font-size:1.1rem; font-weight:bold; letter-spacing:0.5px; border-radius:8px;" id="foSubmitBtn">💳 Proceed to Payment</button>
       <div id="foError" style="color:#ff5555; font-size:0.9rem; margin-top:1rem; text-align:center; display:none; font-weight:500;"></div>
+    </div>
+  </div>
+
+  <!-- UPI Payment Modal -->
+  <div class="modal-bd" id="upiPayModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; align-items:center; justify-content:center; padding:1rem; overflow-y:auto;">
+    <div class="modal" style="background:var(--bg-secondary); border:1px solid rgba(212,175,55,0.3); border-radius:16px; width:100%; max-width:440px; padding:2rem; position:relative; box-shadow:0 20px 60px rgba(0,0,0,0.8); margin:auto; text-align:center;">
+      <button onclick="closeUpiModal()" style="position:absolute; top:1rem; right:1.2rem; background:none; border:none; color:#aaa; font-size:1.8rem; cursor:pointer;" onmouseover="this.style.color='white'" onmouseout="this.style.color='#aaa'">&times;</button>
+      
+      <div style="font-size:1.5rem; margin-bottom:0.3rem;">💳</div>
+      <h2 style="color:var(--gold); font-size:1.4rem; font-weight:700; margin-bottom:0.3rem;">Complete Payment</h2>
+      <p style="color:var(--text2); font-size:0.85rem; margin-bottom:1.5rem;">Order <span id="upiOrderId" style="color:var(--gold);">#—</span></p>
+      
+      <!-- Amount Display -->
+      <div style="background:rgba(212,175,55,0.1); border:1px solid rgba(212,175,55,0.3); border-radius:12px; padding:1.2rem; margin-bottom:1.5rem;">
+        <div id="upiAmountBreakdown" style="font-size:0.85rem; color:var(--text2); margin-bottom:0.5rem;"></div>
+        <div style="font-size:2rem; font-weight:900; color:var(--gold);">₹<span id="upiAmount">0</span></div>
+        <div style="font-size:0.8rem; color:var(--text3); margin-top:0.3rem;">Total Amount to Pay</div>
+      </div>
+
+      <!-- UPI Pay Button (Mobile deep link) -->
+      <a id="upiDeepLink" href="#" target="_blank" style="display:flex; align-items:center; justify-content:center; gap:0.6rem; width:100%; padding:1rem; background:linear-gradient(135deg, #5F259F, #7B42B8); color:white; font-size:1.05rem; font-weight:700; border-radius:10px; text-decoration:none; margin-bottom:0.8rem; transition:opacity 0.2s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+        📱 Pay with PhonePe / GPay / UPI
+      </a>
+
+      <!-- QR Code for Desktop -->
+      <div style="margin-bottom:1rem;">
+        <p style="font-size:0.8rem; color:var(--text3); margin-bottom:0.8rem;">Or scan this QR code with any UPI app</p>
+        <img id="upiQrImg" src="" alt="UPI QR Code" style="width:200px; height:200px; border-radius:10px; background:white; padding:8px; object-fit:contain;" />
+      </div>
+
+      <hr style="border:none; border-top:1px solid rgba(255,255,255,0.08); margin:1rem 0;">
+
+      <p style="color:var(--text2); font-size:0.85rem; margin-bottom:1rem;">✅ After payment, take a <strong style="color:white;">screenshot</strong> and send it on WhatsApp to confirm your order.</p>
+      
+      <button id="upiWaSendBtn" onclick="confirmOrderViaWhatsApp()" class="btn btn-whatsapp" style="width:100%; justify-content:center; font-size:1rem; padding:0.9rem; border-radius:10px;">📸 Send Screenshot on WhatsApp</button>
     </div>
   </div>`;
   document.body.insertAdjacentHTML('beforeend', html);
   updateCartUI();
+}
+
+// Delivery preview updater (called on pincode input)
+function updateDeliveryPreview() {
+  const pincode = document.getElementById('foPincode').value.trim();
+  const preview = document.getElementById('foDeliveryPreview');
+  const info = getDeliveryInfo(pincode);
+  
+  if (!info) {
+    preview.style.display = 'none';
+    return;
+  }
+  
+  const itemsTotal = shoppingCart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+  const grandTotal = itemsTotal + info.charge;
+  
+  document.getElementById('foDeliveryZone').textContent = info.label;
+  document.getElementById('foDeliveryDays').textContent = `${info.days} days`;
+  document.getElementById('foDeliveryCharge').textContent = info.charge;
+  document.getElementById('foGrandTotal').textContent = grandTotal;
+  preview.style.display = 'block';
 }
 
 function openCheckoutFromCart() {
@@ -817,37 +915,49 @@ async function submitCartCheckout() {
     return;
   }
   
+  if (!/^\d{6}$/.test(pincode)) {
+    err.textContent = 'Please enter a valid 6-digit pincode.';
+    err.style.display = 'block';
+    return;
+  }
+  
   btn.disabled = true;
   btn.textContent = 'Processing...';
   
-  const totalAmount = shoppingCart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+  const itemsTotal = shoppingCart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+  const deliveryInfo = getDeliveryInfo(pincode) || DEFAULT_DELIVERY;
+  const grandTotal = itemsTotal + deliveryInfo.charge;
   const combinedProductName = shoppingCart.map(item => `${item.name} (x${item.qty})`).join(', ');
   
-  // Combine all details into the DB notes field so it's readable in the admin panel
-  const dbNotes = `Email: ${email}\nPincode: ${pincode}\nAddress: ${address}\nNotes: ${notes}`;
+  // Combine all details into the DB notes field
+  const dbNotes = `Email: ${email}\nPincode: ${pincode}\nAddress: ${address}\nDelivery Zone: ${deliveryInfo.label}\nDelivery Charge: ₹${deliveryInfo.charge}\nEstimated: ${deliveryInfo.days} days\nNotes: ${notes}`;
   
   try {
+    // Save order as DRAFT — will become 'pending' only after WhatsApp confirmation
     const res = await Orders.create({
       customer_name: name,
       customer_phone: phone,
       product_name: combinedProductName,
-      amount: totalAmount,
-      status: 'pending',
+      amount: grandTotal,
+      status: 'draft',
       notes: dbNotes
     });
     
     const orderId = (res && res.length > 0) ? res[0].id : 'NEW';
-    const waNum = ((window._siteSettings || {}).whatsapp_number || '+918320979383').replace(/[^\d+]/g, '');
+    currentDraftOrderId = orderId;
+    currentDraftDelivery = deliveryInfo;
     
-    let msg = `Hi Crafted Core! 👋\n\nA new order has been successfully placed on your website.\n\n📦 *ORDER DETAILS*\n━━━━━━━━━━━━━━━━━━\n🆔 *Order ID:* #${orderId}\n\n🛍️ *Items*\n`;
+    // Build WhatsApp message (stored for later when user confirms)
+    const waNum = ((window._siteSettings || {}).whatsapp_number || '+918320979383').replace(/[^\d+]/g, '');
+    let msg = `Hi Crafted Core! 👋\n\nA new order has been placed + payment screenshot attached.\n\n📦 *ORDER DETAILS*\n━━━━━━━━━━━━━━━━━━\n🆔 *Order ID:* #${orderId}\n\n🛍️ *Items*\n`;
     shoppingCart.forEach(item => {
       msg += `• ${item.qty} × ${item.name}\n`;
-      if (item.size) msg += `Size: ${item.size}\n`;
-      if (item.color) msg += `Color: ${item.color}\n`;
-      if (item.custs && item.custs.length > 0) msg += `Cust: ${item.custs.join(', ')}\n`;
+      if (item.size) msg += `  Size: ${item.size}\n`;
+      if (item.color) msg += `  Color: ${item.color}\n`;
+      if (item.custs && item.custs.length > 0) msg += `  Cust: ${item.custs.join(', ')}\n`;
       const siteBase = window.location.origin + window.location.pathname.replace(/[^\/]*$/, '');
-      msg += `🔗 Product: ${siteBase}product.html?id=${item.id}\n`;
-      msg += `Item Total: ₹${item.price * item.qty}\n\n`;
+      msg += `  🔗 Product: ${siteBase}product.html?id=${item.id}\n`;
+      msg += `  Item Total: ₹${item.price * item.qty}\n\n`;
     });
     
     msg += `👤 *CUSTOMER DETAILS*\n`;
@@ -855,23 +965,85 @@ async function submitCartCheckout() {
     msg += `Phone: ${phone}\n`;
     msg += `Email: ${email}\n\n`;
     msg += `📍 *DELIVERY ADDRESS*\n${address}\nPincode: ${pincode}\n`;
+    msg += `\n🚚 *DELIVERY*\n`;
+    msg += `Zone: ${deliveryInfo.label}\n`;
+    msg += `Charge: ₹${deliveryInfo.charge}\n`;
+    msg += `Estimated: ${deliveryInfo.days} days\n`;
     
     if (notes) msg += `\n📝 *Notes:* ${notes}\n`;
     
-    msg += `\n💰 *TOTAL:* ₹${totalAmount}\n\n━━━━━━━━━━━━━━━━━━\n✅ Order placed successfully.\n\nPlease review the order details and process it accordingly.`;
+    msg += `\n💰 *BILL SUMMARY*\n`;
+    msg += `Items Total: ₹${itemsTotal}\n`;
+    msg += `Delivery: ₹${deliveryInfo.charge}\n`;
+    msg += `*GRAND TOTAL: ₹${grandTotal}*\n`;
+    msg += `\n━━━━━━━━━━━━━━━━━━\n📸 Payment screenshot attached.\n✅ Please review and process.`;
     
-    shoppingCart = [];
-    saveCart();
+    currentDraftWaMsg = `https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`;
     
+    // Close checkout modal, open UPI payment modal
     document.getElementById('frontOrderModal').style.display = 'none';
-    openQR(`https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`);
+    openUpiPayModal(orderId, itemsTotal, deliveryInfo.charge, grandTotal);
+    
+    btn.disabled = false;
+    btn.textContent = '💳 Proceed to Payment';
     
   } catch(e) {
     err.textContent = 'Something went wrong. Please try again.';
     err.style.display = 'block';
     btn.disabled = false;
-    btn.textContent = '🛍️ Place Order & WhatsApp';
+    btn.textContent = '💳 Proceed to Payment';
   }
+}
+
+// Open UPI Payment Modal with dynamic amount
+function openUpiPayModal(orderId, itemsTotal, deliveryCharge, grandTotal) {
+  document.getElementById('upiOrderId').textContent = '#' + orderId;
+  document.getElementById('upiAmount').textContent = grandTotal;
+  document.getElementById('upiAmountBreakdown').innerHTML = `Items: ₹${itemsTotal} + Delivery: ₹${deliveryCharge}`;
+  
+  // UPI deep link
+  const upiUrl = `upi://pay?pa=${UPI_ID}&pn=${encodeURIComponent(UPI_NAME)}&am=${grandTotal}&cu=INR&tn=${encodeURIComponent('Order #' + orderId)}`;
+  document.getElementById('upiDeepLink').href = upiUrl;
+  
+  // Dynamic QR code via free API
+  const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiUrl)}`;
+  document.getElementById('upiQrImg').src = qrApiUrl;
+  
+  const modal = document.getElementById('upiPayModal');
+  modal.style.display = 'flex';
+  modal.style.opacity = '0';
+  setTimeout(() => { modal.style.transition = 'opacity 0.25s'; modal.style.opacity = '1'; }, 10);
+}
+
+function closeUpiModal() {
+  document.getElementById('upiPayModal').style.display = 'none';
+}
+
+// Confirm order via WhatsApp — updates draft to pending
+async function confirmOrderViaWhatsApp() {
+  try {
+    // Update order status from 'draft' to 'pending'
+    if (currentDraftOrderId && currentDraftOrderId !== 'NEW') {
+      await Orders.updateStatus(currentDraftOrderId, 'pending');
+    }
+  } catch(e) {
+    console.log('Could not update order status:', e);
+  }
+  
+  // Clear cart now that order is confirmed
+  shoppingCart = [];
+  saveCart();
+  
+  // Close payment modal and open WhatsApp
+  closeUpiModal();
+  if (currentDraftWaMsg) {
+    window.open(currentDraftWaMsg, '_blank');
+  }
+  
+  // Reset draft state
+  currentDraftOrderId = null;
+  currentDraftWaMsg = '';
+  currentDraftDelivery = null;
 }
 
 // ===== Intercept Static WhatsApp Order Clicks to add Image URL & Format =====
@@ -898,11 +1070,13 @@ document.addEventListener('click', (e) => {
   }
 });
 
-// ===== QR Code Modal Logic =====
+// ===== QR Code Modal Logic (Legacy — kept for non-cart flows) =====
 let currentWaLink = '';
 
 window.openQR = function(waLink) {
   currentWaLink = waLink;
+  // For cart checkout, the UPI modal handles everything
+  // This is only used for static WhatsApp order clicks now
   const modal = document.getElementById('qrModal');
   if (modal) {
     modal.style.display = 'flex';
