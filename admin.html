@@ -1307,13 +1307,13 @@ function handleOrderStatusWhatsApp(order, newStatus) {
   const waNum = order.customer_phone.replace(/\\D/g, '');
   if (!waNum) return;
 
-  const E_WAVE = String.fromCodePoint(0x1F44B);
-  const E_TOOLS = String.fromCodePoint(0x1F6E0, 0xFE0F);
-  const E_SPARKLES = String.fromCodePoint(0x2728);
-  const E_HEART = String.fromCodePoint(0x2764, 0xFE0F);
-  const E_TADA = String.fromCodePoint(0x1F389);
-  const E_TRUCK = String.fromCodePoint(0x1F69A);
-  const E_BOX = String.fromCodePoint(0x1F4E6);
+  const E_WAVE = decodeURIComponent("%F0%9F%91%8B");
+  const E_TOOLS = decodeURIComponent("%F0%9F%9B%A0%EF%B8%8F");
+  const E_SPARKLES = decodeURIComponent("%E2%9C%A8");
+  const E_HEART = decodeURIComponent("%E2%9D%A4%EF%B8%8F");
+  const E_TADA = decodeURIComponent("%F0%9F%8E%89");
+  const E_TRUCK = decodeURIComponent("%F0%9F%9A%9A");
+  const E_BOX = decodeURIComponent("%F0%9F%93%A6");
 
   if (newStatus === 'processing') {
     msg = `Hi ${order.customer_name}! ${E_WAVE}\n\nWe have received your order *#${order.id}* and we are currently processing it. ${E_TOOLS}${E_SPARKLES}\n\nWe will notify you once it's shipped. Thank you for choosing CraftedCore! ${E_HEART}`;

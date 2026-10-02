@@ -948,10 +948,10 @@ async function submitCartCheckout() {
     currentDraftDelivery = deliveryInfo;
     
     // Build WhatsApp message (stored for later when user confirms)
-    const E_WAVE = String.fromCodePoint(0x1F44B);
-    const E_BOX = String.fromCodePoint(0x1F4E6);
-    const E_ID = String.fromCodePoint(0x1F194);
-    const E_BAG = String.fromCodePoint(0x1F6CD, 0xFE0F);
+    const E_WAVE = decodeURIComponent("%F0%9F%91%8B");
+    const E_BOX = decodeURIComponent("%F0%9F%93%A6");
+    const E_ID = decodeURIComponent("%F0%9F%86%94");
+    const E_BAG = decodeURIComponent("%F0%9F%9B%8D%EF%B8%8F");
     const waNum = ((window._siteSettings || {}).whatsapp_number || '918320979383').replace(/\D/g, '');
     let msg = `Hi Crafted Core! ${E_WAVE}\n\nA new order has been placed + payment screenshot attached.\n\n${E_BOX} *ORDER DETAILS*\n━━━━━━━━━━━━━━━━━━\n${E_ID} *Order ID:* #${orderId}\n\n${E_BAG} *Items*\n`;
     shoppingCart.forEach(item => {
@@ -960,15 +960,15 @@ async function submitCartCheckout() {
       if (item.color) msg += `  Color: ${item.color}\n`;
       if (item.custs && item.custs.length > 0) msg += `  Cust: ${item.custs.join(', ')}\n`;
       const siteBase = window.location.origin + window.location.pathname.replace(/[^\/]*$/, '');
-      const E_LINK = String.fromCodePoint(0x1F517);
+      const E_LINK = decodeURIComponent("%F0%9F%94%97");
       msg += `  ${E_LINK} Product: ${siteBase}product.html?id=${item.id}\n`;
       msg += `  Item Total: ₹${item.price * item.qty}\n\n`;
     });
     
-    const E_USER = String.fromCodePoint(0x1F464);
-    const E_PIN = String.fromCodePoint(0x1F4CD);
-    const E_TRUCK = String.fromCodePoint(0x1F69A);
-    const E_NOTE = String.fromCodePoint(0x1F4DD);
+    const E_USER = decodeURIComponent("%F0%9F%91%A4");
+    const E_PIN = decodeURIComponent("%F0%9F%93%8D");
+    const E_TRUCK = decodeURIComponent("%F0%9F%9A%9A");
+    const E_NOTE = decodeURIComponent("%F0%9F%93%9D");
     
     msg += `${E_USER} *CUSTOMER DETAILS*\n`;
     msg += `Name: ${name}\n`;
@@ -982,9 +982,9 @@ async function submitCartCheckout() {
     
     if (notes) msg += `\n${E_NOTE} *Notes:* ${notes}\n`;
     
-    const E_MONEY = String.fromCodePoint(0x1F4B0);
-    const E_CAM = String.fromCodePoint(0x1F4F8);
-    const E_CHECK = String.fromCodePoint(0x2705);
+    const E_MONEY = decodeURIComponent("%F0%9F%92%B0");
+    const E_CAM = decodeURIComponent("%F0%9F%93%B8");
+    const E_CHECK = decodeURIComponent("%E2%9C%85");
     
     msg += `\n${E_MONEY} *BILL SUMMARY*\n`;
     msg += `Items Total: ₹${itemsTotal}\n`;
