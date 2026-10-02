@@ -948,7 +948,7 @@ async function submitCartCheckout() {
     currentDraftDelivery = deliveryInfo;
     
     // Build WhatsApp message (stored for later when user confirms)
-    const waNum = ((window._siteSettings || {}).whatsapp_number || '+918320979383').replace(/[^\d+]/g, '');
+    const waNum = ((window._siteSettings || {}).whatsapp_number || '918320979383').replace(/\D/g, '');
     let msg = `Hi Crafted Core! 👋\n\nA new order has been placed + payment screenshot attached.\n\n📦 *ORDER DETAILS*\n━━━━━━━━━━━━━━━━━━\n🆔 *Order ID:* #${orderId}\n\n🛍️ *Items*\n`;
     shoppingCart.forEach(item => {
       msg += `• ${item.qty} × ${item.name}\n`;
@@ -1064,7 +1064,7 @@ document.addEventListener('click', (e) => {
          text += `\n\n*Product Image:* ${imgUrl}`;
       }
       
-      const waNum = ((window._siteSettings || {}).whatsapp_number || '+918320979383').replace(/[^\d+]/g, '');
+      const waNum = ((window._siteSettings || {}).whatsapp_number || '918320979383').replace(/\D/g, '');
       openQR(`https://wa.me/${waNum}?text=${encodeURIComponent(text)}`);
     }
   }
