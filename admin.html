@@ -1308,19 +1308,19 @@ function handleOrderStatusWhatsApp(order, newStatus) {
   if (!waNum) return;
 
   if (newStatus === 'processing') {
-    msg = `Hi ${order.customer_name}! 👋\n\nWe have received your order *#${order.id}* and we are currently processing it. 🛠️✨\n\nWe will notify you once it's shipped. Thank you for choosing CraftedCore! ❤️`;
+    msg = `Hi ${order.customer_name}! \u{1F44B}\n\nWe have received your order *#${order.id}* and we are currently processing it. \u{1F6E0}\u{FE0F}\u{2728}\n\nWe will notify you once it's shipped. Thank you for choosing CraftedCore! \u{2764}\u{FE0F}`;
     window.open(`https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`, '_blank');
   } 
   else if (newStatus === 'completed') {
     const trackingInfo = prompt(`Enter tracking number or link for Order #${order.id}\\n(Leave blank if not applicable):`);
     
-    msg = `Hi ${order.customer_name}! 🎉\n\nThank you for your order and for supporting CraftedCore! ❤️\n\nYour order *#${order.id}* has been successfully completed and shipped. 🚚📦\n`;
+    msg = `Hi ${order.customer_name}! \u{1F389}\n\nThank you for your order and for supporting CraftedCore! \u{2764}\u{FE0F}\n\nYour order *#${order.id}* has been successfully completed and shipped. \u{1F69A}\u{1F4E6}\n`;
     
     if (trackingInfo && trackingInfo.trim() !== '') {
       msg += `\n*Tracking Details:*\n${trackingInfo.trim()}\n`;
     }
     
-    msg += `\nWe hope you love your custom merchandise! Feel free to reach out if you need any assistance. ✨`;
+    msg += `\nWe hope you love your custom merchandise! Feel free to reach out if you need any assistance. \u{2728}`;
     window.open(`https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`, '_blank');
   }
 }
