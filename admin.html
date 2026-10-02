@@ -1317,7 +1317,7 @@ function handleOrderStatusWhatsApp(order, newStatus) {
 
   if (newStatus === 'processing') {
     msg = `Hi ${order.customer_name}! ${E_WAVE}\n\nWe have received your order *#${order.id}* and we are currently processing it. ${E_TOOLS}${E_SPARKLES}\n\nWe will notify you once it's shipped. Thank you for choosing CraftedCore! ${E_HEART}`;
-    window.open(`https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`, '_blank');
+    window.open(`https://api.whatsapp.com/send?phone=${waNum}&text=${encodeURIComponent(msg)}`, '_blank');
   } 
   else if (newStatus === 'completed') {
     const trackingInfo = prompt(`Enter tracking number or link for Order #${order.id}\\n(Leave blank if not applicable):`);
@@ -1329,7 +1329,7 @@ function handleOrderStatusWhatsApp(order, newStatus) {
     }
     
     msg += `\nWe hope you love your custom merchandise! Feel free to reach out if you need any assistance. ${E_SPARKLES}`;
-    window.open(`https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`, '_blank');
+    window.open(`https://api.whatsapp.com/send?phone=${waNum}&text=${encodeURIComponent(msg)}`, '_blank');
   }
 }
 
