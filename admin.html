@@ -1307,20 +1307,28 @@ function handleOrderStatusWhatsApp(order, newStatus) {
   const waNum = order.customer_phone.replace(/\\D/g, '');
   if (!waNum) return;
 
+  const E_WAVE = String.fromCodePoint(0x1F44B);
+  const E_TOOLS = String.fromCodePoint(0x1F6E0, 0xFE0F);
+  const E_SPARKLES = String.fromCodePoint(0x2728);
+  const E_HEART = String.fromCodePoint(0x2764, 0xFE0F);
+  const E_TADA = String.fromCodePoint(0x1F389);
+  const E_TRUCK = String.fromCodePoint(0x1F69A);
+  const E_BOX = String.fromCodePoint(0x1F4E6);
+
   if (newStatus === 'processing') {
-    msg = `Hi ${order.customer_name}! 👋\n\nWe have received your order *#${order.id}* and we are currently processing it. 🛠️✨\n\nWe will notify you once it's shipped. Thank you for choosing CraftedCore! ❤️`;
+    msg = `Hi ${order.customer_name}! ${E_WAVE}\n\nWe have received your order *#${order.id}* and we are currently processing it. ${E_TOOLS}${E_SPARKLES}\n\nWe will notify you once it's shipped. Thank you for choosing CraftedCore! ${E_HEART}`;
     window.open(`https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`, '_blank');
   } 
   else if (newStatus === 'completed') {
     const trackingInfo = prompt(`Enter tracking number or link for Order #${order.id}\\n(Leave blank if not applicable):`);
     
-    msg = `Hi ${order.customer_name}! 🎉\n\nThank you for your order and for supporting CraftedCore! ❤️\n\nYour order *#${order.id}* has been successfully completed and shipped. 🚚📦\n`;
+    msg = `Hi ${order.customer_name}! ${E_TADA}\n\nThank you for your order and for supporting CraftedCore! ${E_HEART}\n\nYour order *#${order.id}* has been successfully completed and shipped. ${E_TRUCK}${E_BOX}\n`;
     
     if (trackingInfo && trackingInfo.trim() !== '') {
       msg += `\n*Tracking Details:*\n${trackingInfo.trim()}\n`;
     }
     
-    msg += `\nWe hope you love your custom merchandise! Feel free to reach out if you need any assistance. ✨`;
+    msg += `\nWe hope you love your custom merchandise! Feel free to reach out if you need any assistance. ${E_SPARKLES}`;
     window.open(`https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`, '_blank');
   }
 }

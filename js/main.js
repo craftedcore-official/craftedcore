@@ -948,35 +948,49 @@ async function submitCartCheckout() {
     currentDraftDelivery = deliveryInfo;
     
     // Build WhatsApp message (stored for later when user confirms)
+    const E_WAVE = String.fromCodePoint(0x1F44B);
+    const E_BOX = String.fromCodePoint(0x1F4E6);
+    const E_ID = String.fromCodePoint(0x1F194);
+    const E_BAG = String.fromCodePoint(0x1F6CD, 0xFE0F);
     const waNum = ((window._siteSettings || {}).whatsapp_number || '918320979383').replace(/\D/g, '');
-    let msg = `Hi Crafted Core! 👋\n\nA new order has been placed + payment screenshot attached.\n\n📦 *ORDER DETAILS*\n━━━━━━━━━━━━━━━━━━\n🆔 *Order ID:* #${orderId}\n\n🛍️ *Items*\n`;
+    let msg = `Hi Crafted Core! ${E_WAVE}\n\nA new order has been placed + payment screenshot attached.\n\n${E_BOX} *ORDER DETAILS*\n━━━━━━━━━━━━━━━━━━\n${E_ID} *Order ID:* #${orderId}\n\n${E_BAG} *Items*\n`;
     shoppingCart.forEach(item => {
       msg += `• ${item.qty} × ${item.name}\n`;
       if (item.size) msg += `  Size: ${item.size}\n`;
       if (item.color) msg += `  Color: ${item.color}\n`;
       if (item.custs && item.custs.length > 0) msg += `  Cust: ${item.custs.join(', ')}\n`;
       const siteBase = window.location.origin + window.location.pathname.replace(/[^\/]*$/, '');
-      msg += `  🔗 Product: ${siteBase}product.html?id=${item.id}\n`;
+      const E_LINK = String.fromCodePoint(0x1F517);
+      msg += `  ${E_LINK} Product: ${siteBase}product.html?id=${item.id}\n`;
       msg += `  Item Total: ₹${item.price * item.qty}\n\n`;
     });
     
-    msg += `👤 *CUSTOMER DETAILS*\n`;
+    const E_USER = String.fromCodePoint(0x1F464);
+    const E_PIN = String.fromCodePoint(0x1F4CD);
+    const E_TRUCK = String.fromCodePoint(0x1F69A);
+    const E_NOTE = String.fromCodePoint(0x1F4DD);
+    
+    msg += `${E_USER} *CUSTOMER DETAILS*\n`;
     msg += `Name: ${name}\n`;
     msg += `Phone: ${phone}\n`;
     msg += `Email: ${email}\n\n`;
-    msg += `📍 *DELIVERY ADDRESS*\n${address}\nPincode: ${pincode}\n`;
-    msg += `\n🚚 *DELIVERY*\n`;
+    msg += `${E_PIN} *DELIVERY ADDRESS*\n${address}\nPincode: ${pincode}\n`;
+    msg += `\n${E_TRUCK} *DELIVERY*\n`;
     msg += `Zone: ${deliveryInfo.label}\n`;
     msg += `Charge: ₹${deliveryInfo.charge}\n`;
     msg += `Estimated: ${deliveryInfo.days} days\n`;
     
-    if (notes) msg += `\n📝 *Notes:* ${notes}\n`;
+    if (notes) msg += `\n${E_NOTE} *Notes:* ${notes}\n`;
     
-    msg += `\n💰 *BILL SUMMARY*\n`;
+    const E_MONEY = String.fromCodePoint(0x1F4B0);
+    const E_CAM = String.fromCodePoint(0x1F4F8);
+    const E_CHECK = String.fromCodePoint(0x2705);
+    
+    msg += `\n${E_MONEY} *BILL SUMMARY*\n`;
     msg += `Items Total: ₹${itemsTotal}\n`;
     msg += `Delivery: ₹${deliveryInfo.charge}\n`;
     msg += `*GRAND TOTAL: ₹${grandTotal}*\n`;
-    msg += `\n━━━━━━━━━━━━━━━━━━\n📸 Payment screenshot attached.\n✅ Please review and process.`;
+    msg += `\n━━━━━━━━━━━━━━━━━━\n${E_CAM} Payment screenshot attached.\n${E_CHECK} Please review and process.`;
     
     currentDraftWaMsg = `https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`;
     
