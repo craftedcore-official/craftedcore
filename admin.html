@@ -135,6 +135,7 @@
     .bdg-proc { background: rgba(85,128,224,.14); color: var(--blue); }
     .bdg-done { background: rgba(37,211,102,.14); color: var(--green); }
     .bdg-canc { background: rgba(224,85,85,.14); color: var(--red); }
+    .bdg-draft { background: transparent; border: 1px solid var(--red); color: var(--yellow); }
     .act-cell { display: flex; gap: .4rem; align-items: center; }
 
     /* === INLINE TOGGLE === */
@@ -1135,7 +1136,7 @@ function renderOrders(os) {
     return;
   }
   const rows = os.map(o => {
-    const stBdg = o.status==='completed'?'bdg-done':o.status==='processing'?'bdg-proc':o.status==='cancelled'?'bdg-canc':'bdg-pend';
+    const stBdg = o.status==='completed'?'bdg-done':o.status==='processing'?'bdg-proc':o.status==='cancelled'?'bdg-canc':o.status==='draft'?'bdg-draft':'bdg-pend';
     const statusLabel = o.status.charAt(0).toUpperCase() + o.status.slice(1);
     return `
     <tr>
