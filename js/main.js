@@ -949,34 +949,34 @@ async function submitCartCheckout() {
     
     // Build WhatsApp message (stored for later when user confirms)
     const waNum = ((window._siteSettings || {}).whatsapp_number || '918320979383').replace(/\D/g, '');
-    let msg = `Hi Crafted Core! \u{1F44B}\n\nA new order has been placed + payment screenshot attached.\n\n\u{1F4E6} *ORDER DETAILS*\n━━━━━━━━━━━━━━━━━━\n\u{1F194} *Order ID:* #${orderId}\n\n\u{1F6CD}\u{FE0F} *Items*\n`;
+    let msg = `Hi Crafted Core! 👋\n\nA new order has been placed + payment screenshot attached.\n\n📦 *ORDER DETAILS*\n━━━━━━━━━━━━━━━━━━\n🆔 *Order ID:* #${orderId}\n\n🛍️ *Items*\n`;
     shoppingCart.forEach(item => {
       msg += `• ${item.qty} × ${item.name}\n`;
       if (item.size) msg += `  Size: ${item.size}\n`;
       if (item.color) msg += `  Color: ${item.color}\n`;
       if (item.custs && item.custs.length > 0) msg += `  Cust: ${item.custs.join(', ')}\n`;
       const siteBase = window.location.origin + window.location.pathname.replace(/[^\/]*$/, '');
-      msg += `  \u{1F517} Product: ${siteBase}product.html?id=${item.id}\n`;
+      msg += `  🔗 Product: ${siteBase}product.html?id=${item.id}\n`;
       msg += `  Item Total: ₹${item.price * item.qty}\n\n`;
     });
     
-    msg += `\u{1F464} *CUSTOMER DETAILS*\n`;
+    msg += `👤 *CUSTOMER DETAILS*\n`;
     msg += `Name: ${name}\n`;
     msg += `Phone: ${phone}\n`;
     msg += `Email: ${email}\n\n`;
-    msg += `\u{1F4CD} *DELIVERY ADDRESS*\n${address}\nPincode: ${pincode}\n`;
-    msg += `\n\u{1F69A} *DELIVERY*\n`;
+    msg += `📍 *DELIVERY ADDRESS*\n${address}\nPincode: ${pincode}\n`;
+    msg += `\n🚚 *DELIVERY*\n`;
     msg += `Zone: ${deliveryInfo.label}\n`;
     msg += `Charge: ₹${deliveryInfo.charge}\n`;
     msg += `Estimated: ${deliveryInfo.days} days\n`;
     
-    if (notes) msg += `\n\u{1F4DD} *Notes:* ${notes}\n`;
+    if (notes) msg += `\n📝 *Notes:* ${notes}\n`;
     
-    msg += `\n\u{1F4B0} *BILL SUMMARY*\n`;
+    msg += `\n💰 *BILL SUMMARY*\n`;
     msg += `Items Total: ₹${itemsTotal}\n`;
     msg += `Delivery: ₹${deliveryInfo.charge}\n`;
     msg += `*GRAND TOTAL: ₹${grandTotal}*\n`;
-    msg += `\n━━━━━━━━━━━━━━━━━━\n\u{1F4F8} Payment screenshot attached.\n\u{2705} Please review and process.`;
+    msg += `\n━━━━━━━━━━━━━━━━━━\n📸 Payment screenshot attached.\n✅ Please review and process.`;
     
     currentDraftWaMsg = `https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`;
     
