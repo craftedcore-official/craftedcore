@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="pageTitle">Category — CraftedCore</title>
+  <meta name="description" id="pageMeta" content="Browse premium custom products from CraftedCore." />
+  <link rel="stylesheet" href="css/style.css?v=33" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <style>
+    /* ═══ CATEGORY HERO — Immersive Full-Width Banner ═══ */
+    .cat-hero {
+      position: relative;
+      min-height: 420px;
+      display: flex;
+      align-items: flex-end;
+      overflow: hidden;
+      background: var(--bg-secondary);
+    }
+    .cat-hero-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+    }
+    .cat-hero-bg img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 8s ease;
+    }
+    .cat-hero:hover .cat-hero-bg img {
+      transform: scale(1.05);
+    }
+    .cat-hero-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      background: linear-gradient(
+        to top,
+        rgba(10, 10, 14, 0.95) 0%,
+        rgba(10, 10, 14, 0.7) 40%,
+        rgba(10, 10, 14, 0.3) 70%,
+        rgba(10, 10, 14, 0.15) 100%
+      );
+    }
+    .cat-hero-content {
+      position: relative;
+      z-index: 3;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 4rem 2rem 3rem;
+    }
+    .cat-hero-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.55);
+      margin-bottom: 1.2rem;
+      font-family: 'Outfit', sans-serif;
+    }
+    .cat-hero-breadcrumb a {
+      color: rgba(255,255,255,0.55);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .cat-hero-breadcrumb a:hover { color: var(--gold); }
+    .cat-hero-breadcrumb .sep { opacity: 0.4; }
+    .cat-hero-breadcrumb .current { color: var(--gold); font-weight: 600; }
+
+    .cat-hero-emoji {
+      font-size: 2.8rem;
+      margin-bottom: 0.8rem;
+      display: inline-block;
+      animation: catEmojiBounce 2s ease-in-out infinite;
+    }
+    @keyframes catEmojiBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+    .cat-hero-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 3rem;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.1;
+      margin-bottom: 0.8rem;
+      letter-spacing: -0.5px;
+    }
+    .cat-hero-title span { color: var(--gold); }
+    .cat-hero-subtitle {
+      font-size: 1.15rem;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.6;
+      max-width: 600px;
+      margin-bottom: 1.2rem;
+    }
+    .cat-hero-desc {
+      font-size: 0.92rem;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.7;
+      max-width: 650px;
+      margin-bottom: 1.5rem;
+    }
+    .cat-hero-stats {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+    .cat-stat {
+      text-align: center;
+    }
+    .cat-stat-num {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--gold);
+      font-family: 'Outfit', sans-serif;
+    }
+    .cat-stat-lbl {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.45);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      font-weight: 600;
+    }
+    .cat-hero-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    /* ═══ CATEGORY PRODUCTS SECTION ═══ */
+    .cat-products-section {
+      padding: 4rem 0;
+      background: var(--bg-primary);
+    }
+    .cat-section-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    .cat-product-count {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(212,175,55,0.08);
+      border: 1px solid rgba(212,175,55,0.15);
+      border-radius: 50px;
+      padding: 0.4rem 1.2rem;
+      font-size: 0.82rem;
+      color: var(--gold);
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    /* ═══ NO PRODUCTS STATE ═══ */
+    .cat-empty {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--text-secondary);
+    }
+    .cat-empty-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+    .cat-empty h3 {
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    /* ═══ DEFAULT HERO PLACEHOLDER ═══ */
+    .cat-hero-placeholder {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    }
+    .cat-hero-placeholder::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 20% 80%, rgba(212,175,55,0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(200,138,88,0.1) 0%, transparent 50%);
+    }
+
+    /* ═══ LOADING STATE ═══ */
+    .cat-loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 300px;
+    }
+
+    /* ═══ RESPONSIVE ═══ */
+    @media (max-width: 768px) {
+      .cat-hero { min-height: 350px; }
+      .cat-hero-content { padding: 3rem 1.2rem 2rem; }
+      .cat-hero-title { font-size: 2rem; }
+      .cat-hero-subtitle { font-size: 1rem; }
+      .cat-hero-desc { font-size: 0.85rem; }
+      .cat-hero-emoji { font-size: 2.2rem; }
+      .cat-hero-stats { gap: 1.5rem; }
+      .cat-stat-num { font-size: 1.3rem; }
+      .cat-hero-actions { flex-direction: column; }
+      .cat-hero-actions .btn { width: 100%; justify-content: center; }
+    }
+    @media (max-width: 480px) {
+      .cat-hero { min-height: 300px; }
+      .cat-hero-title { font-size: 1.6rem; }
+      .cat-hero-subtitle { font-size: 0.9rem; }
+      .cat-hero-stats { gap: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar scrolled" id="navbar">
+    <a href="index.html" class="logo-link">
+      <img src="images/logo.png" alt="CraftedCore" class="logo-img" />
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="products.html">Products</a></li>
+      <li><a href="contact.html">Order Now</a></li>
+      <li><a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20want%20to%20place%20a%20custom%20order." target="_blank" class="nav-wa-mobile">💬 WhatsApp Us</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20want%20to%20place%20a%20custom%20order." target="_blank" class="btn btn-primary" id="nav-whatsapp-btn">
+        <svg class="social-svg" viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12.012 2c-5.506 0-9.989 4.478-9.989 9.984 0 1.758.459 3.474 1.33 4.982L2 22l5.176-1.348a9.982 9.982 0 004.836 1.251h.004c5.506 0 9.989-4.478 9.989-9.984 0-2.668-1.039-5.176-2.927-7.063C17.189 3.039 14.68 2 12.012 2zm.004 16.326h-.003a8.31 8.31 0 01-4.238-1.163l-.304-.18-3.149.821.838-3.067-.198-.314a8.275 8.275 0 01-1.272-4.437c0-4.577 3.724-8.301 8.306-8.301 2.217 0 4.301.865 5.869 2.434a8.261 8.261 0 012.43 5.867c0 4.578-3.725 8.302-8.279 8.302zm4.551-6.216c-.249-.125-1.477-.729-1.706-.812-.228-.083-.395-.125-.561.125-.166.249-.644.812-.789.978-.145.166-.291.187-.54.062a6.837 6.837 0 01-2.008-1.238 7.55 7.55 0 01-1.39-1.73c-.145-.249-.016-.384.109-.508.113-.112.249-.291.374-.436.125-.145.166-.249.249-.415.083-.166.042-.312-.021-.436-.062-.125-.561-1.352-.769-1.85-.202-.486-.407-.42-.561-.428l-.478-.009c-.166 0-.436.062-.664.312-.228.249-.873.852-.873 2.079 0 1.226.893 2.41 1.018 2.577.125.166 1.757 2.684 4.257 3.764.595.257 1.06.41 1.422.525.597.19 1.14.163 1.57.099.479-.071 1.477-.603 1.684-1.184.208-.582.208-1.08.145-1.184-.063-.104-.229-.166-.478-.291z"/></svg>
+        WhatsApp Us
+      </a>
+      <div class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+    </div>
+  </nav>
+
+  <!-- ===== CATEGORY HERO ===== -->
+  <section class="cat-hero" id="catHero">
+    <div class="cat-hero-placeholder" id="catHeroPlaceholder"></div>
+    <div class="cat-hero-bg" id="catHeroBg" style="display:none;">
+      <img id="catHeroImg" src="" alt="" />
+    </div>
+    <div class="cat-hero-overlay"></div>
+    <div class="cat-hero-content">
+      <div class="cat-hero-breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="sep">›</span>
+        <a href="products.html">Products</a>
+        <span class="sep">›</span>
+        <span class="current" id="catBreadcrumb">Category</span>
+      </div>
+      <div class="cat-hero-emoji" id="catEmoji">📦</div>
+      <h1 class="cat-hero-title" id="catTitle">Loading<span>...</span></h1>
+      <p class="cat-hero-subtitle" id="catSubtitle">Discover our premium collection</p>
+      <p class="cat-hero-desc" id="catDesc" style="display:none;"></p>
+      <div class="cat-hero-stats" id="catStats">
+        <div class="cat-stat">
+          <div class="cat-stat-num" id="catCount">—</div>
+          <div class="cat-stat-lbl">Products</div>
+        </div>
+        <div class="cat-stat">
+          <div class="cat-stat-num">⭐</div>
+          <div class="cat-stat-lbl">Premium</div>
+        </div>
+        <div class="cat-stat">
+          <div class="cat-stat-num">🎨</div>
+          <div class="cat-stat-lbl">Custom</div>
+        </div>
+      </div>
+      <div class="cat-hero-actions">
+        <a href="#cat-products" class="btn btn-primary">🛍️ Browse Collection</a>
+        <a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20want%20to%20order%20a%20custom%20product." target="_blank" class="btn btn-outline">💬 Chat With Us</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PRODUCTS GRID ===== -->
+  <section class="cat-products-section" id="cat-products">
+    <div class="container">
+      <div class="cat-section-header">
+        <div class="cat-product-count" id="catProductBadge">
+          <span>📦</span> <span id="catProductCountText">Loading products...</span>
+        </div>
+        <h2 class="section-title" id="catGridTitle">Products in <span id="catGridName">this Category</span></h2>
+      </div>
+      <div class="product-grid" id="catProductGrid">
+        <div class="cat-loading"><div class="spinner" style="width:40px;height:40px;"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CTA ===== -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-box fade-in">
+        <span class="section-label">Custom Order</span>
+        <h2 class="cta-title">Want Something <span style="color:var(--gold)">Custom?</span></h2>
+        <p class="cta-desc">Don't see what you're looking for? We can create anything custom — just tell us your idea on WhatsApp!</p>
+        <a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20have%20a%20custom%20product%20idea.%20Can%20you%20help%20me?" target="_blank" class="btn btn-whatsapp" id="cat-cta-btn">
+          💬 Chat With Us on WhatsApp
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="logo-link">
+          <img src="images/logo.png" alt="CraftedCore" class="logo-img footer-logo" />
+        </a>
+        <p>Premium custom merchandise crafted with passion. Your imagination, our craftsmanship.</p>
+        <div class="footer-social">
+          <a href="https://wa.me/+918320979383" target="_blank" class="social-btn wa-btn" title="WhatsApp">
+            <svg class="social-svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12.012 2c-5.506 0-9.989 4.478-9.989 9.984 0 1.758.459 3.474 1.33 4.982L2 22l5.176-1.348a9.982 9.982 0 004.836 1.251h.004c5.506 0 9.989-4.478 9.989-9.984 0-2.668-1.039-5.176-2.927-7.063C17.189 3.039 14.68 2 12.012 2zm.004 16.326h-.003a8.31 8.31 0 01-4.238-1.163l-.304-.18-3.149.821.838-3.067-.198-.314a8.275 8.275 0 01-1.272-4.437c0-4.577 3.724-8.301 8.306-8.301 2.217 0 4.301.865 5.869 2.434a8.261 8.261 0 012.43 5.867c0 4.578-3.725 8.302-8.279 8.302zm4.551-6.216c-.249-.125-1.477-.729-1.706-.812-.228-.083-.395-.125-.561.125-.166.249-.644.812-.789.978-.145.166-.291.187-.54.062a6.837 6.837 0 01-2.008-1.238 7.55 7.55 0 01-1.39-1.73c-.145-.249-.016-.384.109-.508.113-.112.249-.291.374-.436.125-.145.166-.249.249-.415.083-.166.042-.312-.021-.436-.062-.125-.561-1.352-.769-1.85-.202-.486-.407-.42-.561-.428l-.478-.009c-.166 0-.436.062-.664.312-.228.249-.873.852-.873 2.079 0 1.226.893 2.41 1.018 2.577.125.166 1.757 2.684 4.257 3.764.595.257 1.06.41 1.422.525.597.19 1.14.163 1.57.099.479-.071 1.477-.603 1.684-1.184.208-.582.208-1.08.145-1.184-.063-.104-.229-.166-.478-.291z"/></svg>
+          </a>
+          <a href="https://www.instagram.com/crafted_core_/" target="_blank" class="social-btn ig-btn" title="Instagram @crafted_core_">
+            <svg class="social-svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Products</h4>
+        <ul>
+          <li><a href="products.html">All Products</a></li>
+          <li><a href="category.html?slug=anime">Anime</a></li>
+          <li><a href="category.html?slug=god">Divine</a></li>
+          <li><a href="category.html?slug=gaming">Gaming</a></li>
+          <li><a href="category.html?slug=quotes">Quotes</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="products.html">All Products</a></li>
+          <li><a href="contact.html">Order Now</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="https://wa.me/+918320979383" target="_blank">📱 +91 83209 79383</a></li>
+          <li><a href="https://www.instagram.com/crafted_core_/" target="_blank">📸 @crafted_core_</a></li>
+          <li><a href="contact.html">📩 Send Message</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 CraftedCore. All rights reserved.</p>
+      <p>Made with ❤️ for custom lovers</p>
+    </div>
+  </footer>
+
+  <!-- Floating WhatsApp Button (Mobile Only) -->
+  <a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20want%20to%20place%20a%20custom%20order." target="_blank" class="wa-float" id="wa-float-btn" title="Order on WhatsApp">
+    <svg class="social-svg" viewBox="0 0 24 24" width="28" height="28" fill="#fff"><path d="M12.012 2c-5.506 0-9.989 4.478-9.989 9.984 0 1.758.459 3.474 1.33 4.982L2 22l5.176-1.348a9.982 9.982 0 004.836 1.251h.004c5.506 0 9.989-4.478 9.989-9.984 0-2.668-1.039-5.176-2.927-7.063C17.189 3.039 14.68 2 12.012 2zm.004 16.326h-.003a8.31 8.31 0 01-4.238-1.163l-.304-.18-3.149.821.838-3.067-.198-.314a8.275 8.275 0 01-1.272-4.437c0-4.577 3.724-8.301 8.306-8.301 2.217 0 4.301.865 5.869 2.434a8.261 8.261 0 012.43 5.867c0 4.578-3.725 8.302-8.279 8.302zm4.551-6.216c-.249-.125-1.477-.729-1.706-.812-.228-.083-.395-.125-.561.125-.166.249-.644.812-.789.978-.145.166-.291.187-.54.062a6.837 6.837 0 01-2.008-1.238 7.55 7.55 0 01-1.39-1.73c-.145-.249-.016-.384.109-.508.113-.112.249-.291.374-.436.125-.145.166-.249.249-.415.083-.166.042-.312-.021-.436-.062-.125-.561-1.352-.769-1.85-.202-.486-.407-.42-.561-.428l-.478-.009c-.166 0-.436.062-.664.312-.228.249-.873.852-.873 2.079 0 1.226.893 2.41 1.018 2.577.125.166 1.757 2.684 4.257 3.764.595.257 1.06.41 1.422.525.597.19 1.14.163 1.57.099.479-.071 1.477-.603 1.684-1.184.208-.582.208-1.08.145-1.184-.063-.104-.229-.166-.478-.291z"/></svg>
+  </a>
+
+<!-- ===== QUICK VIEW MODAL ===== -->
+  <div class="modal-bd" id="qvModal">
+    <div class="modal" style="max-width: 600px;">
+      <div class="modal-hdr">
+        <div class="modal-title" id="qvTitle">Product Options</div>
+        <button class="modal-x" onclick="closeQV()">✕</button>
+      </div>
+      <div class="modal-body" style="padding: 1rem;">
+        <div style="display:flex; gap: 1rem; flex-wrap: wrap;">
+          <div style="flex: 1 1 200px; max-width: 300px; margin: 0 auto;">
+            <img id="qvImg" style="width: 100%; border-radius: var(--r); aspect-ratio: 1/1; object-fit: contain;" />
+          </div>
+          <div style="flex: 2 1 250px;">
+            <h3 id="qvName" style="margin-bottom: 0.5rem; font-size: 1.2rem;"></h3>
+            <p id="qvDesc" style="font-size: 0.9rem; color: var(--text2); margin-bottom: 1rem; line-height: 1.4;"></p>
+            <div id="qvColorWrap" style="display: none; margin-bottom: 1rem;">
+              <label style="font-weight: 600; display: block; margin-bottom: 0.3rem;">Select Color:</label>
+              <div id="qvColors" style="display: flex; gap: 0.5rem; flex-wrap: wrap;"></div>
+            </div>
+            <div id="qvCustWrap" style="display: none; margin-bottom: 1rem;">
+              <label style="font-weight: 600; display: block; margin-bottom: 0.3rem;">Customization Options:</label>
+              <div id="qvCusts" style="display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.95rem;"></div>
+            </div>
+            <div style="margin-top: 1rem;">
+              <div style="font-weight: 800; font-size: 1.2rem; margin-bottom: 0.5rem;" id="qvPrice"></div>
+              <button class="btn btn-whatsapp" id="qvBtn" style="width: 100%; justify-content: center; font-size: 1rem;">🛍️ Confirm Add to Cart</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- ===== PAYMENT QR MODAL ===== -->
+  <div class="modal-bd" id="qrModal">
+    <div class="modal" style="max-width: 400px; text-align: center;">
+      <div class="modal-hdr">
+        <div class="modal-title">Complete Payment</div>
+        <button class="modal-x" onclick="closeQR()">✕</button>
+      </div>
+      <div class="modal-body" style="padding: 1.5rem;">
+        <p style="margin-bottom: 1rem; color: var(--text2);">Scan this QR code using Google Pay, PhonePe, Paytm or any UPI app to make the payment.</p>
+        <img src="images/qr_code.png" alt="Payment QR Code" style="width: 250px; height: 250px; border-radius: 12px; margin-bottom: 1.5rem; object-fit: contain; background: white; padding: 10px;" />
+        <p style="margin-bottom: 1.5rem; color: var(--text2); font-size: 0.9rem;">After successful payment, take a screenshot and send it to us on WhatsApp to confirm your order.</p>
+        <button class="btn btn-whatsapp" id="qrWaBtn" style="width: 100%; justify-content: center; font-size: 1rem;">📸 Send Screenshot on WhatsApp</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/db.js?v=26"></script>
+  <script src="js/main_v3.js"></script>
+  <script>
+    // ═══ CATEGORY PAGE LOGIC ═══
+    (async function() {
+      const slug = new URLSearchParams(window.location.search).get('slug');
+      if (!slug) {
+        window.location.href = 'products.html';
+        return;
+      }
+
+      // Default category info (fallbacks)
+      const catDefaults = {
+        'anime':   { emoji: '🎌', name: 'Anime Collection',   subtitle: 'Premium anime artwork on brushed metal — bring your favourite characters to life', color: '#ff6b6b' },
+        'god':     { emoji: '🕉️', name: 'Divine Collection',   subtitle: 'Sacred art and divine aesthetics on premium metal prints for your pooja room & walls', color: '#ffd93d' },
+        'quotes':  { emoji: '💬', name: 'Quotes Collection',   subtitle: 'Motivational and inspirational quotes on premium metal — fuel your hustle everyday', color: '#6bcb77' },
+        'gaming':  { emoji: '🎮', name: 'Gaming Collection',   subtitle: 'Level up your setup with cyberpunk neon gaming art on solid metal posters', color: '#4d96ff' },
+        'cars':    { emoji: '🏎️', name: 'Supercar Collection', subtitle: 'Supercar posters that capture speed, luxury, and adrenaline on premium metal', color: '#ff922b' },
+        'dark':    { emoji: '💀', name: 'Dark Arts Collection', subtitle: 'Gothic and dark aesthetic art on metal — for those who love the shadows', color: '#845ef7' },
+        'custom':  { emoji: '✨', name: 'Custom Collection',   subtitle: 'Your design, your vision — we bring exactly what you imagine to life', color: '#d4af37' },
+        'tshirts': { emoji: '👕', name: 'T-Shirts & Merch',    subtitle: 'Custom printed t-shirts, hoodies and merchandise — wear your personality', color: '#20c997' },
+      };
+
+      const defaults = catDefaults[slug] || { emoji: '📦', name: slug.charAt(0).toUpperCase() + slug.slice(1), subtitle: 'Browse our premium collection', color: '#d4af37' };
+
+      // Set initial values from defaults
+      document.getElementById('catEmoji').textContent = defaults.emoji;
+      document.getElementById('catTitle').innerHTML = defaults.name.replace(/(\w+)$/, '<span>$1</span>');
+      document.getElementById('catSubtitle').textContent = defaults.subtitle;
+      document.getElementById('catBreadcrumb').textContent = defaults.name.split(' ')[0];
+      document.title = `${defaults.name} — CraftedCore`;
+      document.getElementById('pageMeta').content = defaults.subtitle;
+      document.getElementById('catGridName').textContent = defaults.name.split(' ')[0];
+
+      // Load dynamic settings (hero image, title, etc.) from admin
+      try {
+        const settings = await SiteSettings.getAll();
+        const heroImg = settings[`cat_hero_image_${slug}`];
+        const heroTitle = settings[`cat_hero_title_${slug}`];
+        const heroSubtitle = settings[`cat_hero_subtitle_${slug}`];
+        const heroDesc = settings[`cat_hero_desc_${slug}`];
+
+        if (heroImg) {
+          document.getElementById('catHeroPlaceholder').style.display = 'none';
+          const bgEl = document.getElementById('catHeroBg');
+          bgEl.style.display = 'block';
+          document.getElementById('catHeroImg').src = heroImg;
+          document.getElementById('catHeroImg').alt = defaults.name;
+        }
+        if (heroTitle) {
+          document.getElementById('catTitle').innerHTML = heroTitle;
+        }
+        if (heroSubtitle) {
+          document.getElementById('catSubtitle').textContent = heroSubtitle;
+        }
+        if (heroDesc) {
+          const descEl = document.getElementById('catDesc');
+          descEl.textContent = heroDesc;
+          descEl.style.display = 'block';
+        }
+      } catch(e) { /* use defaults */ }
+
+      // Load products for this category
+      try {
+        const allProducts = await Products.getAll();
+        const catProducts = allProducts.filter(p => {
+          const catSlug = (p.category_slug || '').toLowerCase();
+          let tags = '';
+          try {
+            const cust = p.customizations ? JSON.parse(p.customizations) : {};
+            if (cust.tags) tags = cust.tags.toLowerCase();
+          } catch(e) {}
+          return catSlug === slug || tags.includes(slug);
+        });
+
+        // Update count
+        document.getElementById('catCount').textContent = catProducts.length;
+        document.getElementById('catProductCountText').textContent = `${catProducts.length} product${catProducts.length !== 1 ? 's' : ''} found`;
+
+        const grid = document.getElementById('catProductGrid');
+        if (catProducts.length === 0) {
+          grid.innerHTML = `
+            <div class="cat-empty" style="grid-column: 1/-1;">
+              <div class="cat-empty-icon">🔍</div>
+              <h3>No Products Yet</h3>
+              <p>We're adding new products to this category soon! Chat with us for custom orders.</p>
+              <a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20want%20a%20custom%20${encodeURIComponent(defaults.name)}%20product." target="_blank" class="btn btn-whatsapp" style="margin-top: 1rem;">💬 Request Custom Order</a>
+            </div>`;
+        } else {
+          grid.innerHTML = catProducts.map(p => productCardHTML(p)).join('');
+        }
+      } catch(e) {
+        document.getElementById('catProductGrid').innerHTML = `
+          <div class="cat-empty" style="grid-column: 1/-1;">
+            <div class="cat-empty-icon">⚠️</div>
+            <h3>Couldn't Load Products</h3>
+            <p>Please try refreshing the page.</p>
+          </div>`;
+      }
+    })();
+  </script>
+</body>
+</html>
