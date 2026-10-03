@@ -12,10 +12,10 @@
     /* ═══ PREMIUM CATEGORY HERO (SPLIT LAYOUT) ═══ */
     .cat-hero-premium {
       position: relative;
-      padding: 140px 2rem 5rem;
+      padding: 120px 2rem 2.5rem; /* Reduced bottom padding */
       background: var(--bg-primary);
       overflow: hidden;
-      min-height: 50vh;
+      min-height: 40vh; /* Reduced min-height */
       display: flex;
       align-items: center;
     }
@@ -36,7 +36,7 @@
       width: 100%;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 5rem;
+      gap: 3rem; /* Reduced gap between text and image */
       align-items: center;
       position: relative;
       z-index: 10;
@@ -46,7 +46,7 @@
     .cat-hero-text {
       display: flex;
       flex-direction: column;
-      gap: 1.5rem;
+      gap: 1.2rem; /* Reduced gap slightly */
       animation: slideUpFade 0.8s ease-out forwards;
     }
     @keyframes slideUpFade {
@@ -60,6 +60,7 @@
       font-size: 0.85rem;
       color: rgba(255,255,255,0.5);
       font-family: 'Outfit', sans-serif;
+      margin-bottom: -0.5rem; /* pull title closer to breadcrumb */
     }
     .cat-hero-breadcrumb a { color: rgba(255,255,255,0.5); text-decoration: none; transition: color 0.2s; }
     .cat-hero-breadcrumb a:hover { color: var(--gold); }
@@ -68,7 +69,7 @@
 
     .cat-hero-title {
       font-family: 'Outfit', sans-serif;
-      font-size: 4rem;
+      font-size: 3.5rem; /* Slightly smaller to fit better */
       font-weight: 800;
       color: #fff;
       line-height: 1.1;
@@ -77,29 +78,29 @@
     .cat-hero-title span { color: var(--gold); }
     
     .cat-hero-subtitle {
-      font-size: 1.25rem;
+      font-size: 1.15rem;
       color: var(--gold);
       font-weight: 500;
       line-height: 1.5;
-      margin-top: -0.5rem;
+      margin-top: 0.5rem; /* Increased space between title and subtitle */
     }
     .cat-hero-desc {
-      font-size: 1.05rem;
+      font-size: 1rem;
       color: rgba(255,255,255,0.7);
-      line-height: 1.8;
+      line-height: 1.7;
       max-width: 500px;
     }
 
     .cat-hero-stats {
       display: flex;
-      gap: 3rem;
-      margin-top: 1rem;
-      padding-top: 2rem;
+      gap: 2.5rem; /* Reduced gap */
+      margin-top: 0.5rem; /* Reduced margin */
+      padding-top: 1.5rem; /* Reduced padding */
       border-top: 1px solid rgba(255,255,255,0.08);
     }
     .cat-stat { text-align: left; }
     .cat-stat-num {
-      font-size: 1.8rem;
+      font-size: 1.6rem;
       font-weight: 800;
       color: #fff;
       font-family: 'Outfit', sans-serif;
@@ -159,12 +160,12 @@
     
     /* ═══ CATEGORY PRODUCTS SECTION ═══ */
     .cat-products-section {
-      padding: 4rem 0;
+      padding: 2.5rem 0; /* Reduced padding */
       background: var(--bg-primary);
     }
     .cat-section-header {
       text-align: center;
-      margin-bottom: 3rem;
+      margin-bottom: 2rem; /* Reduced margin */
     }
     .cat-product-count {
       display: inline-flex;
@@ -335,7 +336,7 @@
   </section>
 
   <!-- ===== SUBCATEGORIES NAV ===== -->
-  <section id="subcatsSection" style="display:none; padding: 2rem 0; background: var(--bg-secondary);">
+  <section id="subcatsSection" style="display:none; padding: 1.2rem 0; background: var(--bg-secondary);">
     <div class="container">
       <h3 style="font-size: 1.1rem; text-align: center; margin-bottom: 1rem; color: var(--gold);">Shop by Theme</h3>
       <div id="subcatsList" style="display: flex; gap: 0.8rem; justify-content: center; flex-wrap: wrap;">
