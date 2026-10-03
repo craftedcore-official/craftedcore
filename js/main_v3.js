@@ -435,64 +435,43 @@ async function loadDynamicCategories() {
 
   // Update slider if it exists (on index.html)
   if (catSlider) {
-    let html = '';
+    let html = '<div class="category-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap:1rem; width:100%;">';
     if (cats.length > 0) {
       html += cats.map(c => {
-        let imgHtml = `<div style="background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;height:100%;font-size:2rem;">${c.emoji||'📦'}</div>`;
+        let imgHtml = `<div style="background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;height:120px;font-size:3rem;border-radius:12px;margin-bottom:0.5rem;">${c.emoji||'📦'}</div>`;
         if (c.emoji && c.emoji.startsWith('http')) {
-          imgHtml = `<img src="${c.emoji}" alt="${c.name}" onerror="this.style.display='none';this.parentElement.innerHTML='&lt;div style=&quot;background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;height:100%;font-size:2rem;&quot;&gt;📦&lt;/div&gt;'" />`;
+          imgHtml = `<img src="${c.emoji}" alt="${c.name}" style="width:100%; height:120px; object-fit:cover; border-radius:12px; margin-bottom:0.5rem;" onerror="this.style.display='none';this.parentElement.innerHTML='&lt;div style=&quot;background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;height:120px;font-size:3rem;border-radius:12px;margin-bottom:0.5rem;&quot;&gt;📦&lt;/div&gt;'" />`;
         }
         return `
-        <a href="category.html?slug=${c.slug}" class="cat-circle-card fade-in">
-          <div class="cat-circle-img">${imgHtml}</div>
-          <div class="cat-circle-name">${c.name}</div>
+        <a href="category.html?slug=${c.slug}" class="category-card fade-in" style="display:flex; flex-direction:column; background:var(--bg-card); padding:0.8rem; border-radius:16px; border:1px solid var(--border-light); text-decoration:none; color:var(--text-primary); text-align:center; transition:transform 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+          <div>${imgHtml}</div>
+          <div style="font-family:'Outfit',sans-serif; font-weight:600; font-size:0.95rem; margin-top:0.4rem;">${c.name}</div>
         </a>`;
       }).join('');
     } else {
       // Show default custom card if no categories exist
       html += `
-        <a href="products.html" class="cat-circle-card fade-in">
-          <div class="cat-circle-img" style="background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;font-size:2rem;border:1px solid rgba(212,175,55,0.3);">✨</div>
-          <div class="cat-circle-name">Custom Design</div>
+        <a href="products.html" class="category-card fade-in" style="display:flex; flex-direction:column; background:var(--bg-card); padding:0.8rem; border-radius:16px; border:1px solid var(--border-light); text-decoration:none; color:var(--text-primary); text-align:center; transition:transform 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+          <div style="background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;height:120px;font-size:3rem;border-radius:12px;margin-bottom:0.5rem;border:1px solid rgba(212,175,55,0.3);">✨</div>
+          <div style="font-family:'Outfit',sans-serif; font-weight:600; font-size:0.95rem; margin-top:0.4rem;">Custom Design</div>
         </a>`;
     }
     
     // Always add "View All"
     html += `
-      <a href="products.html" class="cat-circle-card fade-in">
-        <div class="cat-circle-img" style="background:#1a1a2e;display:flex;align-items:center;justify-content:center;font-size:1.8rem;border:1px solid var(--gold);box-shadow: 0 0 20px rgba(212,175,55,0.2);">🛍️</div>
-        <div class="cat-circle-name">View All</div>
-      </a>`;
+      <a href="products.html" class="category-card fade-in" style="display:flex; flex-direction:column; background:var(--bg-card); padding:0.8rem; border-radius:16px; border:1px solid var(--border-light); text-decoration:none; color:var(--text-primary); text-align:center; transition:transform 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        <div style="background:#1a1a2e;display:flex;align-items:center;justify-content:center;height:120px;font-size:3rem;border-radius:12px;margin-bottom:0.5rem;border:1px solid var(--gold);box-shadow: 0 0 20px rgba(212,175,55,0.2);">🛍️</div>
+        <div style="font-family:'Outfit',sans-serif; font-weight:600; font-size:0.95rem; margin-top:0.4rem;">View All</div>
+      </a>
+    </div>`;
     
-    catSlider.innerHTML = html;
-    
-    // Auto-slide functionality
-    const sliderWrapper = catSlider.parentElement;
-    if (sliderWrapper) {
-      let slideInterval;
-      
-      const startAutoSlide = () => {
-        if (slideInterval) clearInterval(slideInterval);
-        slideInterval = setInterval(() => {
-          const maxScroll = sliderWrapper.scrollWidth - sliderWrapper.clientWidth;
-          if (sliderWrapper.scrollLeft >= maxScroll - 5 && maxScroll > 0) {
-             // smoothly scroll back to start if at the end
-             sliderWrapper.scrollTo({ left: 0, behavior: 'smooth' });
-          } else if (maxScroll > 0) {
-             sliderWrapper.scrollLeft += 1;
-          }
-        }, 30); // Speed of auto scroll
-      };
-
-      const stopAutoSlide = () => clearInterval(slideInterval);
-
-      setTimeout(startAutoSlide, 1500);
-
-      sliderWrapper.addEventListener('mouseenter', stopAutoSlide);
-      sliderWrapper.addEventListener('mouseleave', startAutoSlide);
-      sliderWrapper.addEventListener('touchstart', stopAutoSlide, { passive: true });
-      sliderWrapper.addEventListener('touchend', startAutoSlide, { passive: true });
+    catSlider.style.display = 'block'; // Ensure no flex conflicts
+    const wrapper = catSlider.parentElement;
+    if (wrapper) {
+      wrapper.style.overflowX = 'hidden';
+      wrapper.style.padding = '0';
     }
+    catSlider.innerHTML = html;
   }
 }
 
