@@ -984,6 +984,12 @@ create policy "Public Settings" on site_settings for all using (true) with check
     <div class="modal-hdr"><div class="modal-title" id="scTitle">Add Subcategory</div><button class="modal-x" onclick="closeM('subcatModal')">✕</button></div>
     <div class="modal-body">
       <input type="hidden" id="scId" />
+      <div class="fg">
+        <label>Parent Main Category *</label>
+        <select class="fctl" id="scParent">
+          <option value="">-- Select Main Category --</option>
+        </select>
+      </div>
       <div class="fg"><label>Name *</label><input type="text" class="fctl" id="scName" placeholder="Anime" oninput="autoSubSlug(this.value)" /></div>
       <div class="fg"><label>Slug *</label><input type="text" class="fctl" id="scSlug" placeholder="anime" /></div>
       
@@ -1752,6 +1758,8 @@ async function loadCatDropdown() {
     _cats = await Categories.getAll();
     const sel = document.getElementById('pCat');
     sel.innerHTML = '<option value="">-- Select Category --</option>' + _cats.map(c => `<option value="${c.slug}">${c.name}</option>`).join('');
+    const scParent = document.getElementById('scParent');
+    if (scParent) scParent.innerHTML = '<option value="">-- Select Main Category --</option>' + _cats.map(c => `<option value="${c.slug}">${c.name}</option>`).join('');
     const fil = document.getElementById('catFil');
     if (fil) fil.innerHTML = '<option value="">All Categories</option>' + _cats.map(c => `<option value="${c.slug}">${c.name}</option>`).join('');
   } catch(e) {}
@@ -1877,11 +1885,14 @@ async function loadSubcats() {
       return;
     }
     
-    let html = `<table class="tbl"><thead><tr><th>Name</th><th>Slug</th><th>Actions</th></tr></thead><tbody>`;
+    let html = `<table class="tbl"><thead><tr><th>Name</th><th>Slug</th><th>Parent</th><th>Actions</th></tr></thead><tbody>`;
     _subcats.forEach(sc => {
+      const parentCat = _cats.find(c => c.slug === sc.parent_slug);
+      const pName = parentCat ? parentCat.name : sc.parent_slug || '-';
       html += `<tr>
         <td style="font-weight:600;">${sc.name}</td>
         <td style="color:var(--text2);">${sc.slug}</td>
+        <td style="color:var(--text2);">${pName}</td>
         <td>
           <button class="btn btn-sm btn-ghost" onclick="editSubcat('${sc.id}')">✏️ Edit</button>
           <button class="btn btn-sm btn-ghost" onclick="delSubcat('${sc.id}')" style="color:var(--primary);">🗑️ Delete</button>
@@ -1919,7 +1930,7 @@ function updatePTags() {
 }
 
 function openSubcatModal() {
-  ['scId','scName','scSlug','scHeroImg','scHeroTitle','scHeroSub','scHeroDesc'].forEach(id => {
+  ['scId','scParent','scName','scSlug','scHeroImg','scHeroTitle','scHeroSub','scHeroDesc'].forEach(id => {
     const el = document.getElementById(id);
     if(el) el.value = '';
   });
@@ -1930,6 +1941,7 @@ function openSubcatModal() {
 async function editSubcat(id) {
   const sc = _subcats.find(x => x.id === id); if (!sc) return;
   document.getElementById('scId').value = sc.id;
+  document.getElementById('scParent').value = sc.parent_slug || '';
   document.getElementById('scName').value = sc.name;
   document.getElementById('scSlug').value = sc.slug;
   
@@ -1954,11 +1966,12 @@ function autoSubSlug(v) {
 async function saveSubcat() {
   const name = document.getElementById('scName').value.trim();
   const slug = document.getElementById('scSlug').value.trim();
-  if (!name || !slug) { toast('❌ Name and Slug are required!', 'error'); return; }
+  const parent_slug = document.getElementById('scParent').value;
+  if (!name || !slug || !parent_slug) { toast('❌ Name, Slug and Parent are required!', 'error'); return; }
   
   try {
     const id = document.getElementById('scId').value;
-    const newSc = { id: id || Date.now().toString(), name, slug };
+    const newSc = { id: id || Date.now().toString(), parent_slug, name, slug };
     
     if (id) {
       const idx = _subcats.findIndex(x => x.id === id);
