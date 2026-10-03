@@ -997,8 +997,17 @@ create policy "Public Settings" on site_settings for all using (true) with check
       <div style="border-top: 1px solid var(--border); margin-top: 1.2rem; padding-top: 1.2rem;">
         <div style="font-weight: 700; font-size: 0.9rem; color: var(--gold); margin-bottom: 0.8rem;">🖼️ Landing Page Hero (Subcategory Page)</div>
         <div class="fg" style="margin-bottom: 0.8rem;">
-          <label>Hero Banner Image URL</label>
-          <input type="text" class="fctl" id="scHeroImg" placeholder="https://..." />
+          <label>Hero Banner Image</label>
+          <div class="img-upload" id="schUA" ondragover="onDrag(event,'schUA')" ondragleave="offDrag('schUA')" ondrop="onDropSubcatHero(event)">
+            <input type="file" id="schFile" accept="image/*" onchange="subcatHeroUpload(this.files[0])" />
+            <div class="up-icon" id="schUIcon">🖼️</div>
+            <div class="up-text" id="schUText">Upload hero banner image</div>
+            <img id="schPre" class="img-pre" />
+            <div class="prog-wrap" id="schPW"><div class="prog-bar" id="schPB"></div></div>
+          </div>
+          <input type="hidden" id="scHeroImg" />
+          <span class="url-tog" onclick="toggleEl('schUrlIn')">Or paste banner URL</span>
+          <input type="text" class="fctl" id="schUrlIn" placeholder="https://..." style="display:none;margin-top:.4rem;" oninput="previewSubcatHeroUrl(this.value)" />
         </div>
         <div class="fg" style="margin-bottom: 0.8rem;">
           <label>Hero Title</label>
@@ -1934,6 +1943,7 @@ function openSubcatModal() {
     const el = document.getElementById(id);
     if(el) el.value = '';
   });
+  document.getElementById('schPre').style.display = 'none';
   document.getElementById('scTitle').textContent = 'Add Subcategory';
   openM('subcatModal');
 }
@@ -1949,6 +1959,12 @@ async function editSubcat(id) {
     const settings = await SiteSettings.getAll();
     const slug = sc.slug;
     document.getElementById('scHeroImg').value = settings[`cat_hero_image_${slug}`] || '';
+    if(settings[`cat_hero_image_${slug}`]) {
+      document.getElementById('schPre').src = settings[`cat_hero_image_${slug}`];
+      document.getElementById('schPre').style.display = 'block';
+    } else {
+      document.getElementById('schPre').style.display = 'none';
+    }
     document.getElementById('scHeroTitle').value = settings[`cat_hero_title_${slug}`] || '';
     document.getElementById('scHeroSub').value = settings[`cat_hero_subtitle_${slug}`] || '';
     document.getElementById('scHeroDesc').value = settings[`cat_hero_desc_${slug}`] || '';
@@ -1961,6 +1977,35 @@ async function editSubcat(id) {
 function autoSubSlug(v) {
   if (!document.getElementById('scId').value)
     document.getElementById('scSlug').value = v.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+function onDropSubcatHero(e) { e.preventDefault(); e.currentTarget.classList.remove('drag-over'); if(e.dataTransfer.files.length) subcatHeroUpload(e.dataTransfer.files[0]); }
+
+function subcatHeroUpload(file) {
+  if (!file) return;
+  const pb = document.getElementById('schPB');
+  document.getElementById('schPW').style.display = 'block';
+  pb.style.width = '0%';
+  
+  uploadImage(file, p => pb.style.width = p + '%').then(url => {
+    document.getElementById('scHeroImg').value = url;
+    document.getElementById('schPre').src = url;
+    document.getElementById('schPre').style.display = 'block';
+    document.getElementById('schPW').style.display = 'none';
+  }).catch(e => {
+    toast('Upload failed', 'error');
+    document.getElementById('schPW').style.display = 'none';
+  });
+}
+
+function previewSubcatHeroUrl(url) {
+  document.getElementById('scHeroImg').value = url;
+  if(url) {
+    document.getElementById('schPre').src = url;
+    document.getElementById('schPre').style.display = 'block';
+  } else {
+    document.getElementById('schPre').style.display = 'none';
+  }
 }
 
 async function saveSubcat() {
