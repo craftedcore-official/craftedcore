@@ -875,7 +875,7 @@ create policy "Public Settings" on site_settings for all using (true) with check
 
 <!-- ═════ CATEGORY MODAL ═════ -->
 <div class="modal-bd" id="catModal">
-  <div class="modal" style="max-width:440px;">
+  <div class="modal" style="max-width:540px;">
     <div class="modal-hdr"><div class="modal-title" id="cmTitle">Add Category</div><button class="modal-x" onclick="closeM('catModal')">✕</button></div>
     <div class="modal-body">
       <input type="hidden" id="cmId" />
@@ -898,6 +898,36 @@ create policy "Public Settings" on site_settings for all using (true) with check
       <div class="fr2">
         <div class="fg"><label>Slug *</label><input type="text" class="fctl" id="cmSlug" placeholder="mugs" /></div>
         <div class="fg"><label>Sort Order</label><input type="number" class="fctl" id="cmOrd" placeholder="1" /></div>
+      </div>
+
+      <!-- ═══ CATEGORY LANDING PAGE HERO SETTINGS ═══ -->
+      <div style="border-top: 1px solid var(--border); margin-top: 1.2rem; padding-top: 1.2rem;">
+        <div style="font-weight: 700; font-size: 0.9rem; color: var(--gold); margin-bottom: 0.8rem;">🖼️ Landing Page Hero (Category Page)</div>
+        <div class="fg" style="margin-bottom: 0.8rem;">
+          <label>Hero Banner Image</label>
+          <div class="img-upload" id="chUA" ondragover="onDrag(event,'chUA')" ondragleave="offDrag('chUA')" ondrop="onDropCatHero(event)">
+            <input type="file" id="chFile" accept="image/*" onchange="catHeroUpload(this.files[0])" />
+            <div class="up-icon" id="chUIcon">🖼️</div>
+            <div class="up-text" id="chUText">Upload hero banner image</div>
+            <img id="chPre" class="img-pre" />
+            <div class="prog-wrap" id="chPW"><div class="prog-bar" id="chPB"></div></div>
+          </div>
+          <input type="hidden" id="cmHeroImg" />
+          <span class="url-tog" onclick="toggleEl('chUrlIn')">Or paste banner URL</span>
+          <input type="text" class="fctl" id="chUrlIn" placeholder="https://..." style="display:none;margin-top:.4rem;" oninput="previewCatHeroUrl(this.value)" />
+        </div>
+        <div class="fg" style="margin-bottom: 0.8rem;">
+          <label>Hero Title</label>
+          <input type="text" class="fctl" id="cmHeroTitle" placeholder="e.g. Anime Collection" />
+        </div>
+        <div class="fg" style="margin-bottom: 0.8rem;">
+          <label>Hero Subtitle</label>
+          <input type="text" class="fctl" id="cmHeroSub" placeholder="e.g. Premium anime artwork on brushed metal" />
+        </div>
+        <div class="fg">
+          <label>Hero Description</label>
+          <textarea class="fctl" id="cmHeroDesc" rows="3" placeholder="Detailed description about this category..."></textarea>
+        </div>
       </div>
     </div>
     <div class="modal-foot">
@@ -1664,13 +1694,17 @@ async function loadCatDropdown() {
 }
 
 function openCatModal() {
-  ['cmId','cmEmoji','cmName','cmSlug','cmOrd','cUrlIn'].forEach(id => document.getElementById(id).value = '');
+  ['cmId','cmEmoji','cmName','cmSlug','cmOrd','cUrlIn','cmHeroImg','chUrlIn','cmHeroTitle','cmHeroSub','cmHeroDesc'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.value = '';
+  });
   document.getElementById('cPre').style.display = 'none';
+  document.getElementById('chPre').style.display = 'none';
   document.getElementById('cmTitle').textContent = 'Add Category';
   openM('catModal');
 }
 
-function editCat(id) {
+async function editCat(id) {
   const c = _cats.find(x => x.id === id); if (!c) return;
   document.getElementById('cmId').value = c.id;
   document.getElementById('cmEmoji').value = c.emoji || '';
@@ -1686,12 +1720,57 @@ function editCat(id) {
     document.getElementById('cPre').style.display = 'none';
   }
   
+  // Load hero settings
+  try {
+    const settings = await SiteSettings.getAll();
+    const slug = c.slug;
+    document.getElementById('cmHeroImg').value = settings[`cat_hero_image_${slug}`] || '';
+    if(settings[`cat_hero_image_${slug}`]) {
+      document.getElementById('chPre').src = settings[`cat_hero_image_${slug}`];
+      document.getElementById('chPre').style.display = 'block';
+    } else {
+      document.getElementById('chPre').style.display = 'none';
+    }
+    document.getElementById('cmHeroTitle').value = settings[`cat_hero_title_${slug}`] || '';
+    document.getElementById('cmHeroSub').value = settings[`cat_hero_subtitle_${slug}`] || '';
+    document.getElementById('cmHeroDesc').value = settings[`cat_hero_desc_${slug}`] || '';
+  } catch(e) {}
+  
   openM('catModal');
 }
 
 function autoSlug(v) {
   if (!document.getElementById('cmId').value)
     document.getElementById('cmSlug').value = v.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+function onDropCatHero(e) { e.preventDefault(); e.currentTarget.classList.remove('drag-over'); if(e.dataTransfer.files.length) catHeroUpload(e.dataTransfer.files[0]); }
+
+function catHeroUpload(file) {
+  if (!file) return;
+  const pb = document.getElementById('chPB');
+  document.getElementById('chPW').style.display = 'block';
+  pb.style.width = '0%';
+  
+  uploadImage(file, p => pb.style.width = p + '%').then(url => {
+    document.getElementById('cmHeroImg').value = url;
+    document.getElementById('chPre').src = url;
+    document.getElementById('chPre').style.display = 'block';
+    document.getElementById('chPW').style.display = 'none';
+  }).catch(e => {
+    toast('Upload failed', 'error');
+    document.getElementById('chPW').style.display = 'none';
+  });
+}
+
+function previewCatHeroUrl(url) {
+  document.getElementById('cmHeroImg').value = url;
+  if(url) {
+    document.getElementById('chPre').src = url;
+    document.getElementById('chPre').style.display = 'block';
+  } else {
+    document.getElementById('chPre').style.display = 'none';
+  }
 }
 
 async function saveCat() {
@@ -1703,6 +1782,15 @@ async function saveCat() {
     const id = document.getElementById('cmId').value;
     if (id) await Categories.update(id, data);
     else    await Categories.create(data);
+    
+    // Save hero settings
+    await SiteSettings.setMultiple({
+      [`cat_hero_image_${slug}`]: document.getElementById('cmHeroImg').value.trim(),
+      [`cat_hero_title_${slug}`]: document.getElementById('cmHeroTitle').value.trim(),
+      [`cat_hero_subtitle_${slug}`]: document.getElementById('cmHeroSub').value.trim(),
+      [`cat_hero_desc_${slug}`]: document.getElementById('cmHeroDesc').value.trim()
+    });
+    
     toast('✅ Category saved!', 'success');
     closeM('catModal');
     loadCats();
