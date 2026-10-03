@@ -433,12 +433,12 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; line-height: 1.2; }
   max-width: 480px;
 }
 
-.hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; }
 
 .hero-trust-badges {
   list-style: none;
   padding: 0;
-  margin: 0 0 3rem 0;
+  margin: 0 0 2rem 0;
   display: flex;
   flex-wrap: wrap;
   gap: 1.2rem;
