@@ -280,6 +280,16 @@
     </div>
   </section>
 
+  <!-- ===== SUBCATEGORIES NAV ===== -->
+  <section id="subcatsSection" style="display:none; padding: 2rem 0; background: var(--bg-secondary);">
+    <div class="container">
+      <h3 style="font-size: 1.1rem; text-align: center; margin-bottom: 1rem; color: var(--gold);">Shop by Theme</h3>
+      <div id="subcatsList" style="display: flex; gap: 0.8rem; justify-content: center; flex-wrap: wrap;">
+        <!-- Subcategory buttons injected here -->
+      </div>
+    </div>
+  </section>
+
   <!-- ===== PRODUCTS GRID ===== -->
   <section class="cat-products-section" id="cat-products">
     <div class="container">
@@ -474,6 +484,21 @@
           descEl.style.display = 'block';
         }
       } catch(e) { /* use defaults */ }
+      
+      // Load subcategories for this category
+      try {
+        const s = await SiteSettings.get('cc_subcats_list');
+        const _subcats = s ? JSON.parse(s) : [];
+        const relatedSubcats = _subcats.filter(sc => sc.parent_slug === slug);
+        if (relatedSubcats.length > 0) {
+          document.getElementById('subcatsSection').style.display = 'block';
+          let scHtml = '';
+          relatedSubcats.forEach(sc => {
+            scHtml += `<a href="category.html?slug=${sc.slug}" class="btn btn-outline" style="border-radius:2rem; padding: 0.5rem 1.2rem;">${sc.name}</a>`;
+          });
+          document.getElementById('subcatsList').innerHTML = scHtml;
+        }
+      } catch(e) {}
 
       // Load products for this category
       try {
