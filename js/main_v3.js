@@ -415,7 +415,13 @@ async function loadDynamicCategories() {
       } catch(e) {}
       
       const html = `<a href="products.html" class="filter-btn active">All</a>` 
-        + cats.map(c => `<a href="category.html?slug=${c.slug}" class="filter-btn">${c.emoji||'📦'} ${c.name}</a>`).join('')
+        + cats.map(c => {
+            let icon = c.emoji || '📦';
+            if (icon.startsWith('http')) {
+              icon = `<img src="${icon}" style="width:18px;height:18px;border-radius:50%;object-fit:cover;vertical-align:middle;display:inline-block;" />`;
+            }
+            return `<a href="category.html?slug=${c.slug}" class="filter-btn">${icon} ${c.name}</a>`;
+          }).join('')
         + scs.map(c => `<a href="category.html?slug=${c.slug}" class="filter-btn">🏷️ ${c.name}</a>`).join('');
       filterTabs.innerHTML = html;
     }
