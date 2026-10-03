@@ -569,7 +569,9 @@
         });
 
         // Update count
-        document.getElementById('catCount').textContent = catProducts.length;
+        if (document.getElementById('catCount')) {
+          document.getElementById('catCount').textContent = catProducts.length;
+        }
         document.getElementById('catProductCountText').textContent = `${catProducts.length} product${catProducts.length !== 1 ? 's' : ''} found`;
 
         const grid = document.getElementById('catProductGrid');
