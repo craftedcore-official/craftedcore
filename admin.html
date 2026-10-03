@@ -324,6 +324,11 @@
         </div>
         <div class="stats-grid">
           <div class="stat-card"><div class="stat-val" id="sO">0</div><div class="stat-lbl">Total Orders</div></div>
+          <div class="stat-card"><div class="stat-val" id="sPending">0</div><div class="stat-lbl">Total Pending</div></div>
+          <div class="stat-card"><div class="stat-val" id="sProc">0</div><div class="stat-lbl">Total Processing</div></div>
+          <div class="stat-card"><div class="stat-val" id="sSuccess">0</div><div class="stat-lbl">Total Successful</div></div>
+          <div class="stat-card"><div class="stat-val" id="sCancel">0</div><div class="stat-lbl">Total Cancel</div></div>
+          <div class="stat-card"><div class="stat-val" id="sDraft">0</div><div class="stat-lbl">Total Draft</div></div>
           <div class="stat-card"><div class="stat-val" id="sP">0</div><div class="stat-lbl">Products</div></div>
           <div class="stat-card"><div class="stat-val" id="sF">0</div><div class="stat-lbl">Featured</div></div>
           <div class="stat-card"><div class="stat-val" id="sC">0</div><div class="stat-lbl">Categories</div></div>
@@ -1104,6 +1109,11 @@ async function loadDash() {
   try {
     const [ps, cs, os] = await Promise.all([Products.getAll(), Categories.getAll(), Orders.getAll()]);
     document.getElementById('sO').textContent = os.length;
+    document.getElementById('sPending').textContent = os.filter(o => o.status === 'pending').length;
+    document.getElementById('sProc').textContent = os.filter(o => o.status === 'processing').length;
+    document.getElementById('sSuccess').textContent = os.filter(o => o.status === 'completed').length;
+    document.getElementById('sCancel').textContent = os.filter(o => o.status === 'cancelled').length;
+    document.getElementById('sDraft').textContent = os.filter(o => o.status === 'draft').length;
     document.getElementById('sP').textContent = ps.length;
     document.getElementById('sF').textContent = ps.filter(p => p.is_featured).length;
     document.getElementById('sC').textContent = cs.length;
