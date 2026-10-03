@@ -601,16 +601,27 @@ section { padding: 6rem 2rem; }
 .product-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(10,10,12,0.85) 0%, transparent 60%);
+  background: linear-gradient(to top, rgba(10,10,12,0.85) 0%, transparent 50%);
   opacity: 0;
   transition: var(--transition);
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  padding: 1.5rem;
+  padding: 1rem;
+}
+
+.product-overlay .btn {
+  width: max-content !important;
+  font-size: 0.85rem;
+  padding: 0.5rem 1.2rem;
+  border-radius: 50px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  transform: translateY(10px);
+  transition: all 0.3s ease;
 }
 
 .product-card:hover .product-overlay { opacity: 1; }
+.product-card:hover .product-overlay .btn { transform: translateY(0); }
 
 .product-info { padding: 1.4rem; }
 .product-category { font-size: 0.72rem; color: var(--copper-light); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.4rem; font-weight: 700; }
