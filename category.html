@@ -12,9 +12,10 @@
     /* ═══ CATEGORY HERO — Immersive Full-Width Banner ═══ */
     .cat-hero {
       position: relative;
-      min-height: 420px;
+      min-height: 480px;
       display: flex;
-      align-items: flex-end;
+      align-items: center;
+      justify-content: center;
       overflow: hidden;
       background: var(--bg-secondary);
     }
@@ -28,42 +29,71 @@
       height: 100%;
       object-fit: cover;
       display: block;
-      transition: transform 8s ease;
+      transition: transform 12s ease;
     }
     .cat-hero:hover .cat-hero-bg img {
-      transform: scale(1.05);
+      transform: scale(1.08);
     }
     .cat-hero-overlay {
       position: absolute;
       inset: 0;
       z-index: 2;
       background: linear-gradient(
-        to top,
-        rgba(10, 10, 14, 0.95) 0%,
-        rgba(10, 10, 14, 0.7) 40%,
-        rgba(10, 10, 14, 0.3) 70%,
-        rgba(10, 10, 14, 0.15) 100%
+        to bottom,
+        rgba(10, 10, 14, 0.7) 0%,
+        rgba(10, 10, 14, 0.3) 30%,
+        rgba(10, 10, 14, 0.4) 70%,
+        var(--bg-primary) 100%
       );
     }
+    
+    @keyframes heroFadeUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
     .cat-hero-content {
       position: relative;
       z-index: 3;
       width: 100%;
       max-width: 1200px;
       margin: 0 auto;
-      padding: 4rem 2rem 3rem;
-    }
-    .cat-hero-breadcrumb {
+      padding: 6rem 2rem 4rem;
       display: flex;
+      flex-direction: column;
       align-items: center;
+      text-align: center;
+    }
+    
+    .cat-hero-glass {
+      background: rgba(20, 20, 25, 0.65);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      padding: 2.5rem;
+      max-width: 800px;
+      width: 100%;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      animation: heroFadeUp 1s ease-out forwards;
+      opacity: 0;
+    }
+
+    .cat-hero-breadcrumb {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       gap: 0.5rem;
-      font-size: 0.82rem;
-      color: rgba(255,255,255,0.55);
-      margin-bottom: 1.2rem;
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 1.5rem;
       font-family: 'Outfit', sans-serif;
+      background: rgba(0,0,0,0.3);
+      padding: 0.4rem 1.2rem;
+      border-radius: 30px;
     }
     .cat-hero-breadcrumb a {
-      color: rgba(255,255,255,0.55);
+      color: rgba(255,255,255,0.6);
       text-decoration: none;
       transition: color 0.2s;
     }
@@ -72,67 +102,70 @@
     .cat-hero-breadcrumb .current { color: var(--gold); font-weight: 600; }
 
     .cat-hero-emoji {
-      font-size: 2.8rem;
-      margin-bottom: 0.8rem;
+      font-size: 3.5rem;
+      margin-bottom: 1rem;
       display: inline-block;
-      animation: catEmojiBounce 2s ease-in-out infinite;
+      animation: catEmojiBounce 3s ease-in-out infinite;
+      filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
     }
     @keyframes catEmojiBounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-6px); }
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-8px) scale(1.05); }
     }
+    
     .cat-hero-title {
       font-family: 'Outfit', sans-serif;
-      font-size: 3rem;
+      font-size: 3.5rem;
       font-weight: 800;
       color: #fff;
       line-height: 1.1;
-      margin-bottom: 0.8rem;
+      margin-bottom: 1rem;
       letter-spacing: -0.5px;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.4);
     }
     .cat-hero-title span { color: var(--gold); }
+    
     .cat-hero-subtitle {
-      font-size: 1.15rem;
-      color: rgba(255,255,255,0.7);
+      font-size: 1.25rem;
+      color: rgba(255,255,255,0.85);
       line-height: 1.6;
-      max-width: 600px;
       margin-bottom: 1.2rem;
+      font-weight: 500;
     }
     .cat-hero-desc {
-      font-size: 0.92rem;
-      color: rgba(255,255,255,0.5);
+      font-size: 1rem;
+      color: rgba(255,255,255,0.65);
       line-height: 1.7;
+      margin: 0 auto 2rem;
       max-width: 650px;
-      margin-bottom: 1.5rem;
     }
     .cat-hero-stats {
       display: flex;
-      gap: 2rem;
+      gap: 3rem;
       align-items: center;
+      justify-content: center;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 1.5rem;
+      margin-top: 1rem;
     }
     .cat-stat {
       text-align: center;
     }
     .cat-stat-num {
-      font-size: 1.6rem;
+      font-size: 1.8rem;
       font-weight: 800;
       color: var(--gold);
       font-family: 'Outfit', sans-serif;
     }
     .cat-stat-lbl {
-      font-size: 0.72rem;
-      color: rgba(255,255,255,0.45);
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.5);
       text-transform: uppercase;
-      letter-spacing: 1.5px;
+      letter-spacing: 2px;
       font-weight: 600;
+      margin-top: 0.2rem;
     }
-    .cat-hero-actions {
-      display: flex;
-      gap: 1rem;
-      margin-top: 1.5rem;
-      flex-wrap: wrap;
-    }
-
+    
     /* ═══ CATEGORY PRODUCTS SECTION ═══ */
     .cat-products-section {
       padding: 4rem 0;
@@ -248,34 +281,36 @@
     </div>
     <div class="cat-hero-overlay"></div>
     <div class="cat-hero-content">
-      <div class="cat-hero-breadcrumb">
-        <a href="index.html">Home</a>
-        <span class="sep">›</span>
-        <a href="products.html">Products</a>
-        <span class="sep">›</span>
-        <span class="current" id="catBreadcrumb">Category</span>
-      </div>
-      <div class="cat-hero-emoji" id="catEmoji">📦</div>
-      <h1 class="cat-hero-title" id="catTitle">Loading<span>...</span></h1>
-      <p class="cat-hero-subtitle" id="catSubtitle">Discover our premium collection</p>
-      <p class="cat-hero-desc" id="catDesc" style="display:none;"></p>
-      <div class="cat-hero-stats" id="catStats">
-        <div class="cat-stat">
-          <div class="cat-stat-num" id="catCount">—</div>
-          <div class="cat-stat-lbl">Products</div>
+      <div class="cat-hero-glass">
+        <div class="cat-hero-breadcrumb">
+          <a href="index.html">Home</a>
+          <span class="sep">›</span>
+          <a href="products.html">Products</a>
+          <span class="sep">›</span>
+          <span class="current" id="catBreadcrumb">Category</span>
         </div>
-        <div class="cat-stat">
-          <div class="cat-stat-num">⭐</div>
-          <div class="cat-stat-lbl">Premium</div>
+        <div class="cat-hero-emoji" id="catEmoji">📦</div>
+        <h1 class="cat-hero-title" id="catTitle">Loading<span>...</span></h1>
+        <p class="cat-hero-subtitle" id="catSubtitle">Discover our premium collection</p>
+        <p class="cat-hero-desc" id="catDesc" style="display:none;"></p>
+        <div class="cat-hero-stats" id="catStats">
+          <div class="cat-stat">
+            <div class="cat-stat-num" id="catCount">—</div>
+            <div class="cat-stat-lbl">Products</div>
+          </div>
+          <div class="cat-stat">
+            <div class="cat-stat-num">⭐</div>
+            <div class="cat-stat-lbl">Premium</div>
+          </div>
+          <div class="cat-stat">
+            <div class="cat-stat-num">🎨</div>
+            <div class="cat-stat-lbl">Custom</div>
+          </div>
         </div>
-        <div class="cat-stat">
-          <div class="cat-stat-num">🎨</div>
-          <div class="cat-stat-lbl">Custom</div>
+        <div class="cat-hero-actions">
+          <a href="#cat-products" class="btn btn-primary">🛍️ Browse Collection</a>
+          <a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20want%20to%20order%20a%20custom%20product." target="_blank" class="btn btn-outline">💬 Chat With Us</a>
         </div>
-      </div>
-      <div class="cat-hero-actions">
-        <a href="#cat-products" class="btn btn-primary">🛍️ Browse Collection</a>
-        <a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20want%20to%20order%20a%20custom%20product." target="_blank" class="btn btn-outline">💬 Chat With Us</a>
       </div>
     </div>
   </section>
