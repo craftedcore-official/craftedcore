@@ -433,7 +433,24 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; line-height: 1.2; }
   max-width: 480px;
 }
 
-.hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 3rem; }
+.hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+
+.hero-trust-badges {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 3rem 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+}
+.hero-trust-badges li {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
 
 .hero-stats {
   display: flex;
