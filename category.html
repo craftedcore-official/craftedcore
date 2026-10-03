@@ -17,7 +17,7 @@
     }
     .cat-banner {
       width: 100%;
-      height: 400px;
+      height: 350px;
       position: relative;
       overflow: hidden;
       background: var(--bg-secondary);
@@ -36,7 +36,7 @@
     .cat-banner-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(to bottom, rgba(10,10,14,0.1) 0%, rgba(10,10,14,0.4) 70%, var(--bg-primary) 100%);
+      background: linear-gradient(to bottom, rgba(10,10,14,0.05) 0%, rgba(10,10,14,0.3) 70%, var(--bg-primary) 100%);
       pointer-events: none;
     }
     .cat-banner-placeholder {
@@ -48,18 +48,11 @@
     .cat-content-wrapper {
       position: relative;
       max-width: 1200px;
-      margin: -120px auto 0;
-      padding: 0 1.5rem;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
       z-index: 10;
     }
-    .cat-hero-glass {
-      background: rgba(22, 22, 26, 0.85);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 24px;
-      padding: 3rem;
-      box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+    .cat-hero-details {
       animation: slideUpFade 0.8s ease-out forwards;
     }
     @keyframes slideUpFade {
@@ -84,35 +77,24 @@
     .cat-title-row {
       display: flex;
       align-items: flex-start;
-      gap: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-    .cat-hero-emoji {
-      font-size: 4rem;
-      line-height: 1;
-      filter: drop-shadow(0 10px 20px rgba(0,0,0,0.4));
-      animation: catEmojiBounce 4s infinite ease-in-out;
-    }
-    @keyframes catEmojiBounce {
-      0%, 100% { transform: translateY(0) rotate(0deg); }
-      50% { transform: translateY(-8px) rotate(5deg); }
+      margin-bottom: 1rem;
     }
     .cat-title-col {
       flex: 1;
     }
     .cat-hero-title {
       font-family: 'Outfit', sans-serif;
-      font-size: 3.2rem;
+      font-size: 3.5rem;
       font-weight: 800;
       color: #fff;
       line-height: 1.1;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.8rem;
       letter-spacing: -0.5px;
     }
     .cat-hero-title span { color: var(--gold); }
     
     .cat-hero-subtitle {
-      font-size: 1.15rem;
+      font-size: 1.25rem;
       color: var(--gold);
       font-weight: 500;
       line-height: 1.5;
@@ -122,7 +104,7 @@
       color: rgba(255,255,255,0.7);
       line-height: 1.7;
       margin-bottom: 2.5rem;
-      max-width: 800px;
+      max-width: 850px;
     }
 
     .cat-hero-bottom {
@@ -130,17 +112,17 @@
       justify-content: space-between;
       align-items: center;
       border-top: 1px solid rgba(255,255,255,0.08);
-      padding-top: 2rem;
+      padding-top: 2.5rem;
       flex-wrap: wrap;
       gap: 2rem;
     }
     .cat-hero-stats {
       display: flex;
-      gap: 3rem;
+      gap: 4rem;
     }
     .cat-stat { text-align: left; }
     .cat-stat-num {
-      font-size: 1.8rem;
+      font-size: 2rem;
       font-weight: 800;
       color: #fff;
       font-family: 'Outfit', sans-serif;
@@ -152,13 +134,16 @@
       text-transform: uppercase;
       letter-spacing: 1.5px;
       font-weight: 600;
-      margin-top: 0.4rem;
+      margin-top: 0.5rem;
     }
     .cat-hero-actions {
       display: flex;
       gap: 1rem;
     }
-      padding: 4rem 0;
+    
+    /* ═══ CATEGORY PRODUCTS SECTION ═══ */
+    .cat-products-section {
+      padding: 2rem 0 4rem;
       background: var(--bg-primary);
     }
     .cat-section-header {
@@ -227,25 +212,21 @@
       .cat-hero-stats { justify-content: space-between; }
     }
     @media (max-width: 768px) {
-      .cat-banner { height: 300px; }
-      .cat-content-wrapper { margin-top: -80px; }
-      .cat-hero-glass { padding: 2rem 1.5rem; border-radius: 20px; }
-      .cat-hero-emoji { font-size: 3rem; }
-      .cat-hero-title { font-size: 2.2rem; }
-      .cat-hero-subtitle { font-size: 1rem; }
+      .cat-banner { height: 280px; }
+      .cat-content-wrapper { padding: 2rem 1.2rem; }
+      .cat-hero-title { font-size: 2.5rem; }
+      .cat-hero-subtitle { font-size: 1.1rem; }
       .cat-hero-desc { font-size: 0.95rem; margin-bottom: 1.5rem; }
-      .cat-stat-num { font-size: 1.4rem; }
+      .cat-stat-num { font-size: 1.6rem; }
       .cat-hero-actions { flex-direction: column; margin-top: 1.5rem; }
       .cat-hero-actions .btn { width: 100%; justify-content: center; }
     }
     @media (max-width: 480px) {
-      .cat-banner { height: 250px; }
-      .cat-content-wrapper { margin-top: -60px; padding: 0 1rem; }
-      .cat-hero-glass { padding: 1.5rem 1rem; }
-      .cat-hero-emoji { font-size: 2.5rem; }
-      .cat-hero-title { font-size: 1.8rem; }
+      .cat-banner { height: 220px; }
+      .cat-content-wrapper { padding: 1.5rem 1rem; }
+      .cat-hero-title { font-size: 2rem; }
       .cat-hero-stats { gap: 1.5rem; }
-      .cat-stat-num { font-size: 1.2rem; }
+      .cat-stat-num { font-size: 1.3rem; }
     }
   </style>
 </head>
@@ -280,7 +261,7 @@
     <div class="cat-banner-placeholder" id="catHeroPlaceholder"></div>
 
     <div class="cat-content-wrapper">
-      <div class="cat-hero-glass">
+      <div class="cat-hero-details">
         <div class="cat-hero-breadcrumb">
           <a href="index.html">Home</a>
           <span class="sep">/</span>
@@ -290,7 +271,6 @@
         </div>
         
         <div class="cat-title-row">
-          <div class="cat-hero-emoji" id="catEmoji">📦</div>
           <div class="cat-title-col">
             <h1 class="cat-hero-title" id="catTitle">Loading<span>...</span></h1>
             <p class="cat-hero-subtitle" id="catSubtitle">Discover our premium collection</p>
@@ -315,8 +295,8 @@
             </div>
           </div>
           <div class="cat-hero-actions">
-            <a href="#cat-products" class="btn btn-primary">🛍️ Browse</a>
-            <a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20want%20to%20order%20a%20custom%20product." target="_blank" class="btn btn-outline">💬 Contact</a>
+            <a href="#cat-products" class="btn btn-primary">🛍️ Browse Collection</a>
+            <a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20want%20to%20order%20a%20custom%20product." target="_blank" class="btn btn-outline">💬 Contact Us</a>
           </div>
         </div>
       </div>
@@ -492,7 +472,6 @@
       const defaults = catDefaults[slug] || { emoji: '📦', name: slug.charAt(0).toUpperCase() + slug.slice(1), subtitle: 'Browse our premium collection', color: '#d4af37' };
 
       // Set initial values from defaults
-      document.getElementById('catEmoji').textContent = defaults.emoji;
       document.getElementById('catTitle').innerHTML = defaults.name.replace(/(\w+)$/, '<span>$1</span>');
       document.getElementById('catSubtitle').textContent = defaults.subtitle;
       document.getElementById('catBreadcrumb').textContent = defaults.name.split(' ')[0];
