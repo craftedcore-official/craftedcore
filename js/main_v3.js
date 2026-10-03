@@ -445,6 +445,36 @@ async function loadDynamicCategories() {
           <div class="cat-circle-name">View All</div>
         </a>`;
       catSlider.innerHTML = html;
+      
+      // Auto-slide functionality
+      const sliderWrapper = catSlider.parentElement;
+      if (sliderWrapper) {
+        let slideInterval;
+        
+        const startAutoSlide = () => {
+          if (slideInterval) clearInterval(slideInterval);
+          slideInterval = setInterval(() => {
+            const maxScroll = sliderWrapper.scrollWidth - sliderWrapper.clientWidth;
+            if (sliderWrapper.scrollLeft >= maxScroll - 5 && maxScroll > 0) {
+               // smoothly scroll back to start if at the end
+               sliderWrapper.scrollTo({ left: 0, behavior: 'smooth' });
+            } else if (maxScroll > 0) {
+               sliderWrapper.scrollLeft += 1;
+            }
+          }, 30); // Speed of auto scroll
+        };
+
+        const stopAutoSlide = () => clearInterval(slideInterval);
+
+        // Wait a little for images to load, then start
+        setTimeout(startAutoSlide, 1500);
+
+        // Stop on touch/hover
+        sliderWrapper.addEventListener('mouseenter', stopAutoSlide);
+        sliderWrapper.addEventListener('mouseleave', startAutoSlide);
+        sliderWrapper.addEventListener('touchstart', stopAutoSlide, { passive: true });
+        sliderWrapper.addEventListener('touchend', startAutoSlide, { passive: true });
+      }
     }
   } catch(e) { console.log('Static fallback categories'); }
 }
