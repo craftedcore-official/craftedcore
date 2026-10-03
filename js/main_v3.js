@@ -427,18 +427,24 @@ async function loadDynamicCategories() {
       filterTabs.innerHTML = html;
     }
 
-    const catGrid = document.querySelector('.category-grid');
-    if (catGrid) {
-      const html = cats.map(c => `
-        <a href="category.html?slug=${c.slug}" class="category-card">
-          <div class="category-icon" style="width:100%;aspect-ratio:1/1;margin:0 auto 0.5rem;padding:0;overflow:hidden;background:transparent;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:3rem;">
+    const catSlider = document.getElementById('categorySlider');
+    if (catSlider) {
+      let html = cats.map(c => `
+        <a href="category.html?slug=${c.slug}" class="cat-circle-card fade-in">
+          <div class="cat-circle-img">
             ${(c.emoji && c.emoji.startsWith('http')) 
-              ? `<img src="${c.emoji}" style="width:100%;height:100%;object-fit:cover;border-radius:12px;" onerror="this.style.display='none';this.parentElement.innerHTML='📦'" />` 
-              : c.emoji||'📦'}
+              ? `<img src="${c.emoji}" alt="${c.name}" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\\'background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;height:100%;font-size:2rem;\\'>📦</div>'" />` 
+              : `<div style="background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;height:100%;font-size:2rem;">${c.emoji||'📦'}</div>`}
           </div>
-          <div class="category-name">${c.name}</div>
-          </a>`).join('');
-      catGrid.innerHTML = html;
+          <div class="cat-circle-name">${c.name}</div>
+        </a>`).join('');
+      
+      html += `
+        <a href="products.html" class="cat-circle-card fade-in">
+          <div class="cat-circle-img" style="background:#1a1a2e;display:flex;align-items:center;justify-content:center;font-size:1.8rem;border:1px solid var(--gold);box-shadow: 0 0 20px rgba(212,175,55,0.2);">✨</div>
+          <div class="cat-circle-name">View All</div>
+        </a>`;
+      catSlider.innerHTML = html;
     }
   } catch(e) { console.log('Static fallback categories'); }
 }
