@@ -83,9 +83,11 @@ const Products = {
 // ── Categories API ────────────────────────────────────────────
 const Categories = {
   async getAll() {
-    const c = cacheGet('cc_categories'); if (c) return c;
+    const c = cacheGet('cc_categories');
+    if (c && c.length > 0) return c; // Only return cache if it actually has items
     const d = await dbFetch('categories?select=*&order=sort_order.asc,name.asc');
-    cacheSet('cc_categories', d); return d || [];
+    if (d && d.length > 0) cacheSet('cc_categories', d); 
+    return d || [];
   },
   async create(c)      { cacheClear(); return dbFetch('categories',              { method: 'POST',  body: JSON.stringify(c) }); },
   async update(id, u)  { cacheClear(); return dbFetch(`categories?id=eq.${id}`, { method: 'PATCH', body: JSON.stringify(u) }); },

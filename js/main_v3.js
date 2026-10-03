@@ -437,15 +437,17 @@ async function loadDynamicCategories() {
   if (catSlider) {
     let html = '';
     if (cats.length > 0) {
-      html += cats.map(c => `
+      html += cats.map(c => {
+        let imgHtml = `<div style="background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;height:100%;font-size:2rem;">${c.emoji||'📦'}</div>`;
+        if (c.emoji && c.emoji.startsWith('http')) {
+          imgHtml = `<img src="${c.emoji}" alt="${c.name}" onerror="this.style.display='none';this.parentElement.innerHTML='&lt;div style=&quot;background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;height:100%;font-size:2rem;&quot;&gt;📦&lt;/div&gt;'" />`;
+        }
+        return `
         <a href="category.html?slug=${c.slug}" class="cat-circle-card fade-in">
-          <div class="cat-circle-img">
-            ${(c.emoji && c.emoji.startsWith('http')) 
-              ? `<img src="${c.emoji}" alt="${c.name}" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\\'background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;height:100%;font-size:2rem;\\'>📦</div>'" />` 
-              : `<div style="background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;height:100%;font-size:2rem;">${c.emoji||'📦'}</div>`}
-          </div>
+          <div class="cat-circle-img">${imgHtml}</div>
           <div class="cat-circle-name">${c.name}</div>
-        </a>`).join('');
+        </a>`;
+      }).join('');
     } else {
       // Show default custom card if no categories exist
       html += `
