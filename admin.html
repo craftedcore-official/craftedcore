@@ -284,7 +284,8 @@
     <div class="sb-lbl">WooCommerce</div>
     <button class="sb-link" id="nav-orders" onclick="showPage('orders',this)"><span class="ic">🛒</span> Orders</button>
     <button class="sb-link" id="nav-products" onclick="showPage('products',this)"><span class="ic">📦</span> Products</button>
-    <button class="sb-link" id="nav-categories" onclick="showPage('categories',this)"><span class="ic">🗂️</span> Categories</button>
+    <button class="sb-link" id="nav-categories" onclick="showPage('categories',this)"><span class="ic">🗂️</span> Main Categories</button>
+    <button class="sb-link" id="nav-subcategories" onclick="showPage('subcategories',this)"><span class="ic">🏷️</span> Subcategories</button>
     <button class="sb-link" id="nav-coupons" onclick="showPage('coupons',this)"><span class="ic">🎟️</span> Coupons</button>
 
     <div class="sb-div"></div>
@@ -393,10 +394,21 @@
       <!-- ═════ CATEGORIES ═════ -->
       <div class="page" id="page-categories">
         <div class="pg-hdr">
-          <div><div class="pg-title">Categories</div><div class="pg-sub">Product categories</div></div>
-          <button class="btn btn-primary" onclick="openCatModal()">➕ Add Category</button>
+          <div><div class="pg-title">Main Categories</div><div class="pg-sub">Product main categories (Mugs, Bottles, etc.)</div></div>
+          <button class="btn btn-primary" onclick="openCatModal()">➕ Add Main Category</button>
         </div>
         <div class="cat-grid" id="catGrid"><div class="loading-ov"><div class="spinner"></div></div></div>
+      </div>
+
+      <!-- ═════ SUBCATEGORIES ═════ -->
+      <div class="page" id="page-subcategories">
+        <div class="pg-hdr">
+          <div><div class="pg-title">Subcategories</div><div class="pg-sub">Thematic tags like Anime, Divine, Quotes</div></div>
+          <button class="btn btn-primary" onclick="openSubcatModal()">➕ Add Subcategory</button>
+        </div>
+        <div class="table-card">
+          <div id="subcatTbl"><div class="loading-ov"><div class="spinner"></div></div></div>
+        </div>
       </div>
 
       <!-- ═════ COUPONS ═════ -->
@@ -844,9 +856,12 @@ create policy "Public Settings" on site_settings for all using (true) with check
         <div class="bdg-presets" id="colorPresetsCont" style="margin-top:0.4rem;"></div>
       </div>
       <div class="fg">
-        <label>Sub-category / Tags</label>
-        <div style="font-size:0.75rem;color:var(--text2);margin-bottom:0.4rem;">Comma separated (e.g. Anime, Spiritual, Quotes) for sub-filters.</div>
-        <input type="text" class="fctl" id="pTags" placeholder="Anime, Spiritual..." />
+        <label>Sub-categories</label>
+        <div style="font-size:0.75rem;color:var(--text2);margin-bottom:0.4rem;">Select the subcategories this product belongs to.</div>
+        <div id="pTagsCheckboxes" style="display:flex; flex-wrap:wrap; gap:0.5rem; background:var(--bg3); padding:0.8rem; border-radius:var(--r); border:1px solid var(--border); max-height:150px; overflow-y:auto;">
+          <!-- Checkboxes will be injected here -->
+        </div>
+        <input type="hidden" id="pTags" />
       </div>
       <div class="fg">
         <label>Customization Options</label>
@@ -963,6 +978,43 @@ create policy "Public Settings" on site_settings for all using (true) with check
   </div>
 </div>
 
+<!-- ═════ SUBCAT MODAL ═════ -->
+<div class="modal-bd" id="subcatModal">
+  <div class="modal" style="max-width:440px;">
+    <div class="modal-hdr"><div class="modal-title" id="scTitle">Add Subcategory</div><button class="modal-x" onclick="closeM('subcatModal')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="scId" />
+      <div class="fg"><label>Name *</label><input type="text" class="fctl" id="scName" placeholder="Anime" oninput="autoSubSlug(this.value)" /></div>
+      <div class="fg"><label>Slug *</label><input type="text" class="fctl" id="scSlug" placeholder="anime" /></div>
+      
+      <!-- ═══ CATEGORY LANDING PAGE HERO SETTINGS ═══ -->
+      <div style="border-top: 1px solid var(--border); margin-top: 1.2rem; padding-top: 1.2rem;">
+        <div style="font-weight: 700; font-size: 0.9rem; color: var(--gold); margin-bottom: 0.8rem;">🖼️ Landing Page Hero (Subcategory Page)</div>
+        <div class="fg" style="margin-bottom: 0.8rem;">
+          <label>Hero Banner Image URL</label>
+          <input type="text" class="fctl" id="scHeroImg" placeholder="https://..." />
+        </div>
+        <div class="fg" style="margin-bottom: 0.8rem;">
+          <label>Hero Title</label>
+          <input type="text" class="fctl" id="scHeroTitle" placeholder="e.g. Anime Collection" />
+        </div>
+        <div class="fg" style="margin-bottom: 0.8rem;">
+          <label>Hero Subtitle</label>
+          <input type="text" class="fctl" id="scHeroSub" placeholder="e.g. Premium anime artwork" />
+        </div>
+        <div class="fg">
+          <label>Hero Description</label>
+          <textarea class="fctl" id="scHeroDesc" rows="3" placeholder="Detailed description about this subcategory..."></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeM('subcatModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveSubcat()">💾 Save Subcategory</button>
+    </div>
+  </div>
+</div>
+
 <!-- ═════ COUPON MODAL ═════ -->
 <div class="modal-bd" id="couponModal">
   <div class="modal" style="max-width:420px;">
@@ -1046,7 +1098,7 @@ create policy "Public Settings" on site_settings for all using (true) with check
 <!-- Image Cropper -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js" ></script>
 
-<script src="js/db.js?v=24"></script>
+<script src="js/db.js?v=34"></script>
 <script>
 // ─── AUTH ────────────────────────────────────────────────────
 function getAdmPass() { 
@@ -1090,7 +1142,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ─── NAV ─────────────────────────────────────────────────────
-const PG_TITLES = { dashboard:'Dashboard', orders:'Orders', products:'Products', categories:'Categories', coupons:'Coupons', reviews:'Reviews', editor:'Website Editor', settings:'Settings' };
+const PG_TITLES = { dashboard:'Dashboard', orders:'Orders', products:'Products', categories:'Categories', subcategories:'Subcategories', coupons:'Coupons', reviews:'Reviews', editor:'Website Editor', settings:'Settings' };
 function showPage(n, btn) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + n).classList.add('active');
@@ -1101,6 +1153,7 @@ function showPage(n, btn) {
   if (n === 'orders')     loadOrders();
   if (n === 'products')   loadProds();
   if (n === 'categories') loadCats();
+  if (n === 'subcategories') loadSubcats();
   if (n === 'coupons')    loadCoupons();
   if (n === 'reviews')    loadReviews();
   if (n === 'editor')     loadEditor();
@@ -1124,6 +1177,7 @@ function closeSB() { document.getElementById('sidebar').classList.remove('open')
 // ─── INIT ────────────────────────────────────────────────────
 async function initAdmin() {
   await loadDash();
+  await loadSubcats();
   await loadCatDropdown();
   await loadPinnedBadges();
   await loadPinnedColors();
@@ -1463,6 +1517,7 @@ function openProdModal() {
   ['pmId','pName','pPrice','pBadge','pDesc','pWA','pImgUrl','pColors','pCustOptions','pTags'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('pCat').value = '';
   document.getElementById('pFeat').checked = false;
+  document.querySelectorAll('.sc-chk').forEach(c => c.checked = false);
   window.pgImageColors = {};
   renderPGallery();
   document.getElementById('pmTitle').textContent = 'Add Product';
@@ -1495,7 +1550,14 @@ function editProd(id) {
     if (cust.uvdtf_photo) oldOpts.push('UVDTF Photo');
   }
   document.getElementById('pCustOptions').value = oldOpts.join(', ');
-  document.getElementById('pTags').value = cust.tags || '';
+  
+  const tagsStr = cust.tags || '';
+  document.getElementById('pTags').value = tagsStr;
+  const tagsArr = tagsStr.split(',').map(t => t.trim().toLowerCase());
+  document.querySelectorAll('.sc-chk').forEach(c => {
+    c.checked = tagsArr.includes(c.value.toLowerCase());
+  });
+  
   window.pgImageColors = cust.image_colors || {};
 
   renderPGallery();
@@ -1509,6 +1571,8 @@ async function saveProd() {
   const cat   = document.getElementById('pCat').value;
   if (!name || !price || !cat) { toast('❌ Name, price & category are required!', 'error'); return; }
   const catObj = _cats.find(c => c.slug === cat);
+  
+  updatePTags();
   
   const cust = {
     options: document.getElementById('pCustOptions').value.trim(),
@@ -1795,6 +1859,136 @@ async function saveCat() {
     closeM('catModal');
     loadCats();
     loadCatDropdown();
+  } catch(e) { toast('❌ Error: ' + e.message, 'error'); }
+}
+
+// ─── SUBCATEGORIES ───────────────────────────────────────────
+let _subcats = [];
+
+async function loadSubcats() {
+  document.getElementById('subcatTbl').innerHTML = '<div class="loading-ov"><div class="spinner"></div></div>';
+  try {
+    const s = await SiteSettings.get('cc_subcats_list');
+    _subcats = s ? JSON.parse(s) : [];
+    
+    if (!_subcats.length) {
+      document.getElementById('subcatTbl').innerHTML = `<div class="empty"><div class="empty-icon">🏷️</div>No subcategories found.<br/><br/><button class="btn btn-primary" onclick="openSubcatModal()">➕ Add Subcategory</button></div>`;
+      renderSubcatCheckboxes();
+      return;
+    }
+    
+    let html = `<table class="tbl"><thead><tr><th>Name</th><th>Slug</th><th>Actions</th></tr></thead><tbody>`;
+    _subcats.forEach(sc => {
+      html += `<tr>
+        <td style="font-weight:600;">${sc.name}</td>
+        <td style="color:var(--text2);">${sc.slug}</td>
+        <td>
+          <button class="btn btn-sm btn-ghost" onclick="editSubcat('${sc.id}')">✏️ Edit</button>
+          <button class="btn btn-sm btn-ghost" onclick="delSubcat('${sc.id}')" style="color:var(--primary);">🗑️ Delete</button>
+        </td>
+      </tr>`;
+    });
+    html += `</tbody></table>`;
+    document.getElementById('subcatTbl').innerHTML = html;
+    renderSubcatCheckboxes();
+  } catch(e) {
+    document.getElementById('subcatTbl').innerHTML = `<div class="empty">❌ Error loading subcategories</div>`;
+  }
+}
+
+function renderSubcatCheckboxes() {
+  const cont = document.getElementById('pTagsCheckboxes');
+  if(!cont) return;
+  if(!_subcats.length) {
+    cont.innerHTML = '<div style="color:var(--text3); font-size:0.85rem;">No subcategories created yet.</div>';
+    return;
+  }
+  let html = '';
+  _subcats.forEach(sc => {
+    html += `<label class="cat-check" style="display:flex; align-items:center; gap:0.3rem; background:var(--bg2); padding:0.3rem 0.6rem; border-radius:1rem; font-size:0.8rem; cursor:pointer; border:1px solid var(--border);">
+      <input type="checkbox" value="${sc.slug}" class="sc-chk" onchange="updatePTags()" /> ${sc.name}
+    </label>`;
+  });
+  cont.innerHTML = html;
+}
+
+function updatePTags() {
+  const chks = document.querySelectorAll('.sc-chk:checked');
+  const arr = Array.from(chks).map(c => c.value);
+  document.getElementById('pTags').value = arr.join(', ');
+}
+
+function openSubcatModal() {
+  ['scId','scName','scSlug','scHeroImg','scHeroTitle','scHeroSub','scHeroDesc'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.value = '';
+  });
+  document.getElementById('scTitle').textContent = 'Add Subcategory';
+  openM('subcatModal');
+}
+
+async function editSubcat(id) {
+  const sc = _subcats.find(x => x.id === id); if (!sc) return;
+  document.getElementById('scId').value = sc.id;
+  document.getElementById('scName').value = sc.name;
+  document.getElementById('scSlug').value = sc.slug;
+  
+  try {
+    const settings = await SiteSettings.getAll();
+    const slug = sc.slug;
+    document.getElementById('scHeroImg').value = settings[`cat_hero_image_${slug}`] || '';
+    document.getElementById('scHeroTitle').value = settings[`cat_hero_title_${slug}`] || '';
+    document.getElementById('scHeroSub').value = settings[`cat_hero_subtitle_${slug}`] || '';
+    document.getElementById('scHeroDesc').value = settings[`cat_hero_desc_${slug}`] || '';
+  } catch(e) {}
+  
+  document.getElementById('scTitle').textContent = 'Edit Subcategory';
+  openM('subcatModal');
+}
+
+function autoSubSlug(v) {
+  if (!document.getElementById('scId').value)
+    document.getElementById('scSlug').value = v.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+async function saveSubcat() {
+  const name = document.getElementById('scName').value.trim();
+  const slug = document.getElementById('scSlug').value.trim();
+  if (!name || !slug) { toast('❌ Name and Slug are required!', 'error'); return; }
+  
+  try {
+    const id = document.getElementById('scId').value;
+    const newSc = { id: id || Date.now().toString(), name, slug };
+    
+    if (id) {
+      const idx = _subcats.findIndex(x => x.id === id);
+      if(idx > -1) _subcats[idx] = newSc;
+    } else {
+      _subcats.push(newSc);
+    }
+    
+    await SiteSettings.set('cc_subcats_list', JSON.stringify(_subcats));
+    
+    await SiteSettings.setMultiple({
+      [`cat_hero_image_${slug}`]: document.getElementById('scHeroImg').value.trim(),
+      [`cat_hero_title_${slug}`]: document.getElementById('scHeroTitle').value.trim(),
+      [`cat_hero_subtitle_${slug}`]: document.getElementById('scHeroSub').value.trim(),
+      [`cat_hero_desc_${slug}`]: document.getElementById('scHeroDesc').value.trim()
+    });
+    
+    toast('✅ Subcategory saved!', 'success');
+    closeM('subcatModal');
+    loadSubcats();
+  } catch(e) { toast('❌ Error: ' + e.message, 'error'); }
+}
+
+async function delSubcat(id) {
+  if(!confirm('Are you sure you want to delete this subcategory?')) return;
+  try {
+    _subcats = _subcats.filter(x => x.id !== id);
+    await SiteSettings.set('cc_subcats_list', JSON.stringify(_subcats));
+    toast('🗑️ Subcategory deleted!', 'success');
+    loadSubcats();
   } catch(e) { toast('❌ Error: ' + e.message, 'error'); }
 }
 
