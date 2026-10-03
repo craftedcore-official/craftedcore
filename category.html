@@ -222,29 +222,43 @@
     }
 
     /* ═══ RESPONSIVE ═══ */
-    @media (max-width: 900px) {
-      .cat-title-row { flex-direction: column; gap: 0.5rem; }
-      .cat-hero-bottom { flex-direction: column; align-items: stretch; }
-      .cat-hero-stats { justify-content: space-between; }
+    @media (max-width: 992px) {
+      .cat-hero-container {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+        text-align: center;
+      }
+      .cat-hero-text {
+        align-items: center;
+      }
+      .cat-hero-desc {
+        text-align: center;
+      }
+      .cat-hero-stats {
+        justify-content: center;
+      }
+      .cat-hero-visual {
+        order: -1; /* Image on top for mobile */
+      }
+      .cat-hero-image-wrap {
+        max-width: 100%;
+        aspect-ratio: 1 / 1;
+      }
     }
     @media (max-width: 768px) {
-      .cat-banner { height: 300px; }
-      .cat-content-wrapper { margin-top: -80px; }
-      .cat-hero-glass { padding: 2rem 1.5rem; border-radius: 20px; }
-      .cat-hero-title { font-size: 2.2rem; }
-      .cat-hero-subtitle { font-size: 1rem; }
-      .cat-hero-desc { font-size: 0.95rem; margin-bottom: 1.5rem; }
-      .cat-stat-num { font-size: 1.4rem; }
-      .cat-hero-actions { flex-direction: column; margin-top: 1.5rem; }
-      .cat-hero-actions .btn { width: 100%; justify-content: center; }
+      .cat-hero-premium { padding: 120px 1.5rem 3rem; }
+      .cat-hero-title { font-size: 2.8rem; }
+      .cat-stat-num { font-size: 1.5rem; }
+      .cat-hero-stats { gap: 2rem; flex-wrap: wrap; }
+      .cat-hero-image-wrap {
+        border-radius: 6px;
+      }
     }
     @media (max-width: 480px) {
-      .cat-banner { height: 250px; }
-      .cat-content-wrapper { margin-top: -60px; padding: 0 1rem; }
-      .cat-hero-glass { padding: 1.5rem 1rem; }
-      .cat-hero-title { font-size: 1.8rem; }
+      .cat-hero-premium { padding: 100px 1.5rem 3rem; }
+      .cat-hero-title { font-size: 2.2rem; }
+      .cat-hero-subtitle { font-size: 1rem; }
       .cat-hero-stats { gap: 1.5rem; }
-      .cat-stat-num { font-size: 1.2rem; }
     }
   </style>
 </head>
