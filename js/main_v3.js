@@ -264,7 +264,8 @@ function initCounters() {
         const number = parseInt(text.replace(/\D/g, ''));
         const suffix = text.replace(/[0-9]/g, '');
         el.dataset.suffix = suffix;
-        animateCounter(el, number);
+        // Slow down the counter to 3000ms (3 seconds) instead of 1500ms
+        animateCounter(el, number, 3500);
         observer.unobserve(el);
       }
     });
