@@ -499,6 +499,9 @@ section { padding: 6rem 2rem; }
   position: relative;
   overflow: hidden;
   backdrop-filter: blur(10px);
+  text-decoration: none;
+  color: inherit;
+  display: block;
 }
 
 .category-card::before {
