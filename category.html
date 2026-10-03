@@ -12,10 +12,10 @@
     /* ═══ PREMIUM CATEGORY HERO (SPLIT LAYOUT) ═══ */
     .cat-hero-premium {
       position: relative;
-      padding: 120px 2rem 2.5rem; /* Reduced bottom padding */
+      padding: 100px 2rem 1rem; /* Highly reduced bottom padding */
       background: var(--bg-primary);
       overflow: hidden;
-      min-height: 40vh; /* Reduced min-height */
+      min-height: 30vh; /* Reduced min-height */
       display: flex;
       align-items: center;
     }
@@ -160,12 +160,12 @@
     
     /* ═══ CATEGORY PRODUCTS SECTION ═══ */
     .cat-products-section {
-      padding: 2.5rem 0; /* Reduced padding */
+      padding: 1.5rem 0; /* Heavily reduced padding */
       background: var(--bg-primary);
     }
     .cat-section-header {
       text-align: center;
-      margin-bottom: 2rem; /* Reduced margin */
+      margin-bottom: 1rem; /* Heavily reduced margin */
     }
     .cat-product-count {
       display: inline-flex;
@@ -247,7 +247,8 @@
       }
     }
     @media (max-width: 768px) {
-      .cat-hero-premium { padding: 120px 1.5rem 3rem; }
+      .cat-hero-premium { padding: 100px 1.5rem 1.5rem; }
+      .cat-hero-container { gap: 2rem; }
       .cat-hero-title { font-size: 2.8rem; }
       .cat-stat-num { font-size: 1.5rem; }
       .cat-hero-stats { gap: 2rem; flex-wrap: wrap; }
@@ -256,7 +257,8 @@
       }
     }
     @media (max-width: 480px) {
-      .cat-hero-premium { padding: 100px 1.5rem 3rem; }
+      .cat-hero-premium { padding: 90px 1rem 1rem; }
+      .cat-hero-container { gap: 1.5rem; }
       .cat-hero-title { font-size: 2.2rem; }
       .cat-hero-subtitle { font-size: 1rem; }
       .cat-hero-stats { gap: 1.5rem; }
@@ -321,9 +323,9 @@
   </section>
 
   <!-- ===== SUBCATEGORIES NAV ===== -->
-  <section id="subcatsSection" style="display:none; padding: 1.2rem 0; background: var(--bg-secondary);">
+  <section id="subcatsSection" style="display:none; padding: 0.5rem 0; background: var(--bg-secondary);">
     <div class="container">
-      <h3 style="font-size: 1.1rem; text-align: center; margin-bottom: 1rem; color: var(--gold);">Shop by Theme</h3>
+      <h3 style="font-size: 1.1rem; text-align: center; margin-bottom: 0.8rem; color: var(--gold);">Shop by Theme</h3>
       <div id="subcatsList" style="display: flex; gap: 0.8rem; justify-content: center; flex-wrap: wrap;">
         <!-- Subcategory buttons injected here -->
       </div>
