@@ -403,33 +403,41 @@ async function loadDynamicFeatured() {
 
 async function loadDynamicCategories() {
   if (typeof Categories === 'undefined') return;
+  const catSlider = document.getElementById('categorySlider');
+  const filterTabs = document.getElementById('filterTabs');
+  
+  let cats = [];
   try {
-    const cats = await Categories.getAll();
-    if (!cats || !cats.length) return;
+    cats = await Categories.getAll();
+  } catch(e) {
+    console.log('Error fetching categories');
+  }
 
-    const filterTabs = document.getElementById('filterTabs');
-    if (filterTabs) {
-      let scs = [];
-      try {
-        const s = await SiteSettings.get('cc_subcats_list');
-        if (s) scs = JSON.parse(s);
-      } catch(e) {}
-      
-      const html = `<a href="products.html" class="filter-btn active">All</a>` 
-        + cats.map(c => {
-            let icon = c.emoji || '📦';
-            if (icon.startsWith('http')) {
-              icon = `<img src="${icon}" style="width:18px;height:18px;border-radius:50%;object-fit:cover;vertical-align:middle;display:inline-block;" />`;
-            }
-            return `<a href="category.html?slug=${c.slug}" class="filter-btn">${icon} ${c.name}</a>`;
-          }).join('')
-        + scs.map(c => `<a href="category.html?slug=${c.slug}" class="filter-btn">🏷️ ${c.name}</a>`).join('');
-      filterTabs.innerHTML = html;
-    }
+  // Update filter tabs if they exist (usually on products.html)
+  if (filterTabs) {
+    let scs = [];
+    try {
+      const s = await SiteSettings.get('cc_subcats_list');
+      if (s) scs = JSON.parse(s);
+    } catch(e) {}
+    
+    const html = `<a href="products.html" class="filter-btn active">All</a>` 
+      + cats.map(c => {
+          let icon = c.emoji || '📦';
+          if (icon.startsWith('http')) {
+            icon = `<img src="${icon}" style="width:18px;height:18px;border-radius:50%;object-fit:cover;vertical-align:middle;display:inline-block;" />`;
+          }
+          return `<a href="category.html?slug=${c.slug}" class="filter-btn">${icon} ${c.name}</a>`;
+        }).join('')
+      + scs.map(c => `<a href="category.html?slug=${c.slug}" class="filter-btn">🏷️ ${c.name}</a>`).join('');
+    filterTabs.innerHTML = html;
+  }
 
-    const catSlider = document.getElementById('categorySlider');
-    if (catSlider) {
-      let html = cats.map(c => `
+  // Update slider if it exists (on index.html)
+  if (catSlider) {
+    let html = '';
+    if (cats.length > 0) {
+      html += cats.map(c => `
         <a href="category.html?slug=${c.slug}" class="cat-circle-card fade-in">
           <div class="cat-circle-img">
             ${(c.emoji && c.emoji.startsWith('http')) 
@@ -438,45 +446,52 @@ async function loadDynamicCategories() {
           </div>
           <div class="cat-circle-name">${c.name}</div>
         </a>`).join('');
-      
+    } else {
+      // Show default custom card if no categories exist
       html += `
         <a href="products.html" class="cat-circle-card fade-in">
-          <div class="cat-circle-img" style="background:#1a1a2e;display:flex;align-items:center;justify-content:center;font-size:1.8rem;border:1px solid var(--gold);box-shadow: 0 0 20px rgba(212,175,55,0.2);">✨</div>
-          <div class="cat-circle-name">View All</div>
+          <div class="cat-circle-img" style="background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;font-size:2rem;border:1px solid rgba(212,175,55,0.3);">✨</div>
+          <div class="cat-circle-name">Custom Design</div>
         </a>`;
-      catSlider.innerHTML = html;
-      
-      // Auto-slide functionality
-      const sliderWrapper = catSlider.parentElement;
-      if (sliderWrapper) {
-        let slideInterval;
-        
-        const startAutoSlide = () => {
-          if (slideInterval) clearInterval(slideInterval);
-          slideInterval = setInterval(() => {
-            const maxScroll = sliderWrapper.scrollWidth - sliderWrapper.clientWidth;
-            if (sliderWrapper.scrollLeft >= maxScroll - 5 && maxScroll > 0) {
-               // smoothly scroll back to start if at the end
-               sliderWrapper.scrollTo({ left: 0, behavior: 'smooth' });
-            } else if (maxScroll > 0) {
-               sliderWrapper.scrollLeft += 1;
-            }
-          }, 30); // Speed of auto scroll
-        };
-
-        const stopAutoSlide = () => clearInterval(slideInterval);
-
-        // Wait a little for images to load, then start
-        setTimeout(startAutoSlide, 1500);
-
-        // Stop on touch/hover
-        sliderWrapper.addEventListener('mouseenter', stopAutoSlide);
-        sliderWrapper.addEventListener('mouseleave', startAutoSlide);
-        sliderWrapper.addEventListener('touchstart', stopAutoSlide, { passive: true });
-        sliderWrapper.addEventListener('touchend', startAutoSlide, { passive: true });
-      }
     }
-  } catch(e) { console.log('Static fallback categories'); }
+    
+    // Always add "View All"
+    html += `
+      <a href="products.html" class="cat-circle-card fade-in">
+        <div class="cat-circle-img" style="background:#1a1a2e;display:flex;align-items:center;justify-content:center;font-size:1.8rem;border:1px solid var(--gold);box-shadow: 0 0 20px rgba(212,175,55,0.2);">🛍️</div>
+        <div class="cat-circle-name">View All</div>
+      </a>`;
+    
+    catSlider.innerHTML = html;
+    
+    // Auto-slide functionality
+    const sliderWrapper = catSlider.parentElement;
+    if (sliderWrapper) {
+      let slideInterval;
+      
+      const startAutoSlide = () => {
+        if (slideInterval) clearInterval(slideInterval);
+        slideInterval = setInterval(() => {
+          const maxScroll = sliderWrapper.scrollWidth - sliderWrapper.clientWidth;
+          if (sliderWrapper.scrollLeft >= maxScroll - 5 && maxScroll > 0) {
+             // smoothly scroll back to start if at the end
+             sliderWrapper.scrollTo({ left: 0, behavior: 'smooth' });
+          } else if (maxScroll > 0) {
+             sliderWrapper.scrollLeft += 1;
+          }
+        }, 30); // Speed of auto scroll
+      };
+
+      const stopAutoSlide = () => clearInterval(slideInterval);
+
+      setTimeout(startAutoSlide, 1500);
+
+      sliderWrapper.addEventListener('mouseenter', stopAutoSlide);
+      sliderWrapper.addEventListener('mouseleave', startAutoSlide);
+      sliderWrapper.addEventListener('touchstart', stopAutoSlide, { passive: true });
+      sliderWrapper.addEventListener('touchend', startAutoSlide, { passive: true });
+    }
+  }
 }
 
 async function loadDynamicReviews() {
