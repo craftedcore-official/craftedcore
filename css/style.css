@@ -681,6 +681,10 @@ section { padding: 6rem 2rem; }
   color: var(--text-secondary);
   font-family: 'Outfit', sans-serif;
   transition: var(--transition);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 
 .filter-btn:hover, .filter-btn.active {
