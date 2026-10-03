@@ -70,9 +70,11 @@ function cacheClear() {
 // ── Products API ──────────────────────────────────────────────
 const Products = {
   async getAll() {
-    const c = cacheGet('cc_products'); if (c) return c;
+    const c = cacheGet('cc_products');
+    if (c && c.length > 0) return c; // Only return cache if it actually has items
     const d = await dbFetch('products?select=*&order=created_at.desc');
-    cacheSet('cc_products', d); return d || [];
+    if (d && d.length > 0) cacheSet('cc_products', d); 
+    return d || [];
   },
   async getFeatured()  { return (await this.getAll()).filter(p => p.is_featured); },
   async create(p)      { cacheClear(); return dbFetch('products',              { method: 'POST',  body: JSON.stringify(p) }); },
