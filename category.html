@@ -497,6 +497,22 @@
             scHtml += `<a href="category.html?slug=${sc.slug}" class="btn btn-outline" style="border-radius:2rem; padding: 0.5rem 1.2rem;">${sc.name}</a>`;
           });
           document.getElementById('subcatsList').innerHTML = scHtml;
+        } else {
+          // Check if current page IS a subcategory
+          const thisSubcat = _subcats.find(sc => sc.slug === slug);
+          if (thisSubcat && thisSubcat.parent_slug) {
+            let parentName = thisSubcat.parent_slug.charAt(0).toUpperCase() + thisSubcat.parent_slug.slice(1);
+            try {
+              if (typeof Categories !== 'undefined') {
+                const cats = await Categories.getAll();
+                const pCat = cats.find(c => c.slug === thisSubcat.parent_slug);
+                if (pCat) parentName = pCat.name;
+              }
+            } catch(e) {}
+            document.getElementById('subcatsSection').style.display = 'block';
+            document.getElementById('subcatsSection').querySelector('h3').textContent = 'Explore More';
+            document.getElementById('subcatsList').innerHTML = `<a href="category.html?slug=${thisSubcat.parent_slug}" class="btn btn-outline" style="border-radius:2rem; padding: 0.5rem 1.2rem;"><i style="margin-right:5px;font-style:normal;">⬅️</i> Check all ${parentName} designs</a>`;
+          }
         }
       } catch(e) {}
 
