@@ -408,8 +408,15 @@ async function loadDynamicCategories() {
 
     const filterTabs = document.getElementById('filterTabs');
     if (filterTabs) {
-      const html = `<button class="filter-btn active" data-filter="all" id="filter-all" onclick="filterProducts('all')">All</button>` 
-        + cats.map(c => `<button class="filter-btn" data-filter="${c.slug}" id="filter-${c.slug}" onclick="filterProducts('${c.slug}')">${c.name}</button>`).join('');
+      let scs = [];
+      try {
+        const s = await SiteSettings.get('cc_subcats_list');
+        if (s) scs = JSON.parse(s);
+      } catch(e) {}
+      
+      const html = `<a href="products.html" class="filter-btn active">All</a>` 
+        + cats.map(c => `<a href="category.html?slug=${c.slug}" class="filter-btn">${c.emoji||'📦'} ${c.name}</a>`).join('')
+        + scs.map(c => `<a href="category.html?slug=${c.slug}" class="filter-btn">🏷️ ${c.name}</a>`).join('');
       filterTabs.innerHTML = html;
     }
 
