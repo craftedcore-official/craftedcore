@@ -466,14 +466,107 @@ async function loadDynamicCategories() {
       <div class="cat-card-name">View All</div>
     </a>`);
 
-    // Duplicate cards for seamless infinite marquee loop
+    // Duplicate cards for seamless infinite marquee loop (Triple for safe drag in both directions)
     const singleSet = allCards.join('');
-    catSlider.innerHTML = singleSet + singleSet;
+    catSlider.innerHTML = singleSet + singleSet + singleSet;
 
-    // Adjust animation speed based on number of items (more items = slower)
-    const totalCards = allCards.length;
-    const speed = Math.max(20, totalCards * 4); // 4 seconds per card
-    catSlider.style.animationDuration = speed + 's';
+    // JS-based Draggable Auto-Scroll
+    const wrapper = catSlider.parentElement;
+    wrapper.style.cursor = 'grab';
+    
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+    let isAutoScrolling = true;
+    let preventClick = false;
+
+    // Mouse Events
+    wrapper.addEventListener('mousedown', (e) => {
+      isDown = true;
+      isAutoScrolling = false;
+      wrapper.style.cursor = 'grabbing';
+      startX = e.pageX - wrapper.offsetLeft;
+      scrollLeft = wrapper.scrollLeft;
+      preventClick = false;
+    });
+    wrapper.addEventListener('mouseleave', () => {
+      isDown = false;
+      wrapper.style.cursor = 'grab';
+      isAutoScrolling = true;
+    });
+    wrapper.addEventListener('mouseup', () => {
+      isDown = false;
+      wrapper.style.cursor = 'grab';
+      isAutoScrolling = true;
+    });
+    wrapper.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - wrapper.offsetLeft;
+      const walk = (x - startX) * 1.5; // scroll speed multiplier
+      wrapper.scrollLeft = scrollLeft - walk;
+      if (Math.abs(walk) > 5) preventClick = true;
+    });
+
+    // Touch Events
+    wrapper.addEventListener('touchstart', (e) => {
+      isDown = true;
+      isAutoScrolling = false;
+      startX = e.touches[0].pageX - wrapper.offsetLeft;
+      scrollLeft = wrapper.scrollLeft;
+      preventClick = false;
+    }, { passive: true });
+    wrapper.addEventListener('touchend', () => {
+      isDown = false;
+      isAutoScrolling = true;
+    });
+    wrapper.addEventListener('touchmove', (e) => {
+      if (!isDown) return;
+      const x = e.touches[0].pageX - wrapper.offsetLeft;
+      const walk = (x - startX) * 1.5;
+      wrapper.scrollLeft = scrollLeft - walk;
+      if (Math.abs(walk) > 5) preventClick = true;
+    }, { passive: true });
+
+    // Prevent links if dragged
+    wrapper.addEventListener('click', (e) => {
+      if (preventClick) e.preventDefault();
+    });
+
+    // Pause auto-scroll on hover
+    wrapper.addEventListener('mouseenter', () => { if (!isDown) isAutoScrolling = false; });
+    wrapper.addEventListener('mouseleave', () => { isAutoScrolling = true; });
+
+    // Auto Scroll Loop
+    let speed = 1; // Auto scroll speed
+    
+    function autoScroll() {
+      if (isAutoScrolling) {
+        wrapper.scrollLeft += speed;
+      }
+      
+      const totalWidth = catSlider.scrollWidth;
+      const setWidth = totalWidth / 3;
+      
+      // Reset logic for infinite loop
+      if (wrapper.scrollLeft >= setWidth * 2) {
+        wrapper.scrollLeft -= setWidth;
+        if (isDown) scrollLeft -= setWidth; // Adjust drag origin
+      } else if (wrapper.scrollLeft <= 0) {
+        wrapper.scrollLeft += setWidth;
+        if (isDown) scrollLeft += setWidth; // Adjust drag origin
+      }
+      
+      requestAnimationFrame(autoScroll);
+    }
+    
+    // Init state
+    requestAnimationFrame(autoScroll);
+    
+    // Give it a tiny delay to ensure DOM is rendered before setting initial scroll
+    setTimeout(() => {
+      wrapper.scrollLeft = catSlider.scrollWidth / 3;
+    }, 50);
   }
 }
 
