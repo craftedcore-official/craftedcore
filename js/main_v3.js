@@ -131,7 +131,7 @@ function initScrollAnimations() {
 // ===== Product Filter (with Sub-categories) =====
 function filterProducts(category) {
   const cards = document.querySelectorAll('.product-card[data-category]');
-  const buttons = document.querySelectorAll('#filterTabs .filter-btn');
+  const buttons = document.querySelectorAll('#filterTabs .filter-btn, #catGridBoxes .category-card-box');
 
   // Update active button
   buttons.forEach(btn => {
@@ -421,16 +421,45 @@ async function loadDynamicCategories() {
       if (s) scs = JSON.parse(s);
     } catch(e) {}
     
-    const html = `<a href="products.html" class="filter-btn active">All</a>` 
+    const html = `<a href="#" onclick="filterProducts('all'); return false;" class="filter-btn active" data-filter="all">All</a>` 
       + cats.map(c => {
           let icon = c.emoji || '📦';
           if (icon.startsWith('http')) {
             icon = `<img src="${icon}" style="width:18px;height:18px;border-radius:50%;object-fit:cover;vertical-align:middle;display:inline-block;" />`;
           }
-          return `<a href="category.html?slug=${c.slug}" class="filter-btn">${icon} ${c.name}</a>`;
+          return `<a href="#" onclick="filterProducts('${c.slug}'); return false;" class="filter-btn" data-filter="${c.slug}">${icon} ${c.name}</a>`;
         }).join('')
-      + scs.map(c => `<a href="category.html?slug=${c.slug}" class="filter-btn">🏷️ ${c.name}</a>`).join('');
+      + scs.map(c => `<a href="#" onclick="filterSubProducts('${c.slug}'); return false;" class="filter-btn" data-filter="${c.slug}">🏷️ ${c.name}</a>`).join('');
     filterTabs.innerHTML = html;
+  }
+
+  const catGridBoxes = document.getElementById('catGridBoxes');
+  if (catGridBoxes) {
+    let scs = [];
+    try {
+      const s = await SiteSettings.get('cc_subcats_list');
+      if (s) scs = JSON.parse(s);
+    } catch(e) {}
+    
+    const html = `<a href="#" onclick="filterProducts('all'); return false;" class="category-card-box active" data-filter="all">
+        <div class="cat-icon">🌟</div>
+        <div class="cat-name">All Products</div>
+      </a>` 
+      + cats.map(c => {
+          let icon = c.emoji || '📦';
+          if (icon.startsWith('http')) {
+            icon = `<img src="${icon}" />`;
+          }
+          return `<a href="#" onclick="filterProducts('${c.slug}'); return false;" class="category-card-box" data-filter="${c.slug}">
+            <div class="cat-icon">${icon}</div>
+            <div class="cat-name">${c.name}</div>
+          </a>`;
+        }).join('')
+      + scs.map(c => `<a href="#" onclick="filterSubProducts('${c.slug}'); return false;" class="category-card-box" data-filter="${c.slug}">
+        <div class="cat-icon">🏷️</div>
+        <div class="cat-name">${c.name}</div>
+      </a>`).join('');
+    catGridBoxes.innerHTML = html;
   }
 
   // Update slider if it exists (on index.html) — Marquee style

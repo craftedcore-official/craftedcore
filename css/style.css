@@ -566,6 +566,45 @@ section { padding: 6rem 2rem; }
   text-align: center;
 }
 
+/* ===== Category Grid for Products Page ===== */
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.category-card-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  padding: 1.5rem 1rem;
+  text-align: center;
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+.category-card-box:hover, .category-card-box.active {
+  background: var(--gold);
+  color: #000;
+  border-color: var(--gold);
+  transform: translateY(-5px);
+}
+.category-card-box .cat-icon {
+  font-size: 2rem;
+}
+.category-card-box .cat-icon img {
+  width: 40px; height: 40px; border-radius: 50%; object-fit: cover;
+}
+.category-card-box .cat-name {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
 /* ===== Products Grid ===== */
 .products-section { background: var(--bg-primary); }
 
