@@ -57,6 +57,18 @@ if (navbar) {
   });
 }
 
+function getOrCreateMenuOverlay() {
+  let overlay = document.getElementById('mobileMenuOverlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'mobileMenuOverlay';
+    overlay.className = 'mobile-menu-overlay';
+    overlay.onclick = closeMenu;
+    document.body.appendChild(overlay);
+  }
+  return overlay;
+}
+
 // ===== Mobile Menu Toggle =====
 function toggleMenu() {
   const navLinks = document.getElementById('navLinks');
@@ -66,6 +78,13 @@ function toggleMenu() {
 
   navLinks.classList.toggle('open');
   const isOpen = navLinks.classList.contains('open');
+
+  const overlay = getOrCreateMenuOverlay();
+  if (isOpen) {
+    overlay.classList.add('active');
+  } else {
+    overlay.classList.remove('active');
+  }
 
   if (navbar) {
     if (isOpen) navbar.classList.add('menu-open');
@@ -90,8 +109,12 @@ function closeMenu() {
   const navLinks = document.getElementById('navLinks');
   const hamburger = document.getElementById('hamburger');
   const navbar = document.getElementById('navbar');
+  const overlay = document.getElementById('mobileMenuOverlay');
+  
   if (navLinks) navLinks.classList.remove('open');
   if (navbar) navbar.classList.remove('menu-open');
+  if (overlay) overlay.classList.remove('active');
+  
   // Body overflow lock removed
   if (hamburger) {
     const spans = hamburger.querySelectorAll('span');
