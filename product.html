@@ -779,6 +779,21 @@
           }
         }
 
+        // Validate Custom Text Inputs
+        let missingInput = false;
+        document.querySelectorAll('input[type="text"].pg-dyn-input').forEach(inp => {
+          if (!inp.value.trim()) {
+            missingInput = true;
+            inp.style.borderColor = 'var(--red)';
+            setTimeout(() => { inp.style.borderColor = 'var(--border)'; }, 3000);
+          }
+        });
+        if (missingInput) {
+          showToast('⚠️ Please fill all required fields!');
+          document.getElementById('pgInputWrap').scrollIntoView({ behavior: 'smooth', block: 'center' });
+          return;
+        }
+
         let color = '';
         const activeColor = document.querySelector('#pgColors .color-btn.active');
         if (activeColor) color = activeColor.textContent;
