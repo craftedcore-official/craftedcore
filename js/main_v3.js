@@ -72,8 +72,7 @@ function toggleMenu() {
     else navbar.classList.remove('menu-open');
   }
 
-  // Lock body scroll when menu is open
-  document.body.style.overflow = isOpen ? 'hidden' : '';
+  // Removed body overflow lock to prevent mobile layout stuttering
 
   const spans = hamburger.querySelectorAll('span');
   if (isOpen) {
@@ -93,7 +92,7 @@ function closeMenu() {
   const navbar = document.getElementById('navbar');
   if (navLinks) navLinks.classList.remove('open');
   if (navbar) navbar.classList.remove('menu-open');
-  document.body.style.overflow = '';
+  // Body overflow lock removed
   if (hamburger) {
     const spans = hamburger.querySelectorAll('span');
     spans[0].style.transform = '';
