@@ -433,45 +433,47 @@ async function loadDynamicCategories() {
     filterTabs.innerHTML = html;
   }
 
-  // Update slider if it exists (on index.html)
+  // Update slider if it exists (on index.html) — Marquee style
   if (catSlider) {
-    let html = '<div class="category-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap:1rem; width:100%;">';
+    // Build category card HTML
+    function buildCatCard(c) {
+      let visualHtml;
+      if (c.emoji && c.emoji.startsWith('http')) {
+        visualHtml = `<img src="${c.emoji}" alt="${c.name}" class="cat-card-img" onerror="this.outerHTML='<div class=\\'cat-card-emoji\\'>📦</div>'" />`;
+      } else {
+        visualHtml = `<div class="cat-card-emoji">${c.emoji || '📦'}</div>`;
+      }
+      return `<a href="category.html?slug=${c.slug}" class="cat-card">
+        ${visualHtml}
+        <div class="cat-card-name">${c.name}</div>
+      </a>`;
+    }
+
+    let allCards = [];
     if (cats.length > 0) {
-      html += cats.map(c => {
-        let imgHtml = `<div style="background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;height:120px;font-size:3rem;border-radius:12px;margin-bottom:0.5rem;">${c.emoji||'📦'}</div>`;
-        if (c.emoji && c.emoji.startsWith('http')) {
-          imgHtml = `<img src="${c.emoji}" alt="${c.name}" style="width:100%; height:120px; object-fit:cover; border-radius:12px; margin-bottom:0.5rem;" onerror="this.style.display='none';this.parentElement.innerHTML='&lt;div style=&quot;background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;height:120px;font-size:3rem;border-radius:12px;margin-bottom:0.5rem;&quot;&gt;📦&lt;/div&gt;'" />`;
-        }
-        return `
-        <a href="category.html?slug=${c.slug}" class="category-card fade-in" style="display:flex; flex-direction:column; background:var(--bg-card); padding:0.8rem; border-radius:16px; border:1px solid var(--border-light); text-decoration:none; color:var(--text-primary); text-align:center; transition:transform 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-          <div>${imgHtml}</div>
-          <div style="font-family:'Outfit',sans-serif; font-weight:600; font-size:0.95rem; margin-top:0.4rem;">${c.name}</div>
-        </a>`;
-      }).join('');
+      allCards = cats.map(c => buildCatCard(c));
     } else {
-      // Show default custom card if no categories exist
-      html += `
-        <a href="products.html" class="category-card fade-in" style="display:flex; flex-direction:column; background:var(--bg-card); padding:0.8rem; border-radius:16px; border:1px solid var(--border-light); text-decoration:none; color:var(--text-primary); text-align:center; transition:transform 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-          <div style="background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;height:120px;font-size:3rem;border-radius:12px;margin-bottom:0.5rem;border:1px solid rgba(212,175,55,0.3);">✨</div>
-          <div style="font-family:'Outfit',sans-serif; font-weight:600; font-size:0.95rem; margin-top:0.4rem;">Custom Design</div>
-        </a>`;
+      // Fallback if no categories exist
+      allCards.push(`<a href="products.html" class="cat-card">
+        <div class="cat-card-emoji">✨</div>
+        <div class="cat-card-name">Custom Design</div>
+      </a>`);
     }
     
-    // Always add "View All"
-    html += `
-      <a href="products.html" class="category-card fade-in" style="display:flex; flex-direction:column; background:var(--bg-card); padding:0.8rem; border-radius:16px; border:1px solid var(--border-light); text-decoration:none; color:var(--text-primary); text-align:center; transition:transform 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-        <div style="background:#1a1a2e;display:flex;align-items:center;justify-content:center;height:120px;font-size:3rem;border-radius:12px;margin-bottom:0.5rem;border:1px solid var(--gold);box-shadow: 0 0 20px rgba(212,175,55,0.2);">🛍️</div>
-        <div style="font-family:'Outfit',sans-serif; font-weight:600; font-size:0.95rem; margin-top:0.4rem;">View All</div>
-      </a>
-    </div>`;
-    
-    catSlider.style.display = 'block'; // Ensure no flex conflicts
-    const wrapper = catSlider.parentElement;
-    if (wrapper) {
-      wrapper.style.overflowX = 'hidden';
-      wrapper.style.padding = '0';
-    }
-    catSlider.innerHTML = html;
+    // Add "View All" card
+    allCards.push(`<a href="products.html" class="cat-card">
+      <div class="cat-card-emoji" style="border-color: var(--gold); box-shadow: 0 0 20px rgba(212,175,55,0.15);">🛍️</div>
+      <div class="cat-card-name">View All</div>
+    </a>`);
+
+    // Duplicate cards for seamless infinite marquee loop
+    const singleSet = allCards.join('');
+    catSlider.innerHTML = singleSet + singleSet;
+
+    // Adjust animation speed based on number of items (more items = slower)
+    const totalCards = allCards.length;
+    const speed = Math.max(20, totalCards * 4); // 4 seconds per card
+    catSlider.style.animationDuration = speed + 's';
   }
 }
 

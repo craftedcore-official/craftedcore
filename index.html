@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CraftedCore — Premium Custom Products</title>
   <meta name="description" content="CraftedCore — Premium custom products including t-shirts, mugs, bottles, wallets, keychains, lockets, and posters. Crafted just for you." />
-  <link rel="stylesheet" href="css/style.css?v=36" />
+  <link rel="stylesheet" href="css/style.css?v=37" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 </head>
@@ -230,7 +230,10 @@
       </div>
       <div class="category-slider-wrapper">
         <div class="category-slider" id="categorySlider">
-          <div style="padding: 2rem; color: var(--gold);">Loading categories...</div>
+          <!-- Shimmer loading placeholders -->
+          <div class="cat-card" style="opacity:0.3;pointer-events:none;"><div class="cat-card-emoji" style="animation:pulse 1.5s ease-in-out infinite;">⏳</div><div class="cat-card-name">Loading...</div></div>
+          <div class="cat-card" style="opacity:0.2;pointer-events:none;"><div class="cat-card-emoji" style="animation:pulse 1.5s ease-in-out 0.2s infinite;">⏳</div><div class="cat-card-name">Loading...</div></div>
+          <div class="cat-card" style="opacity:0.15;pointer-events:none;"><div class="cat-card-emoji" style="animation:pulse 1.5s ease-in-out 0.4s infinite;">⏳</div><div class="cat-card-name">Loading...</div></div>
         </div>
       </div>
     </div>
@@ -451,6 +454,6 @@
   </div>
 
   <script src="js/db.js?v=39"></script>
-  <script src="js/main_v3.js?v=44"></script>
+  <script src="js/main_v3.js?v=45"></script>
 </body>
 </html>
