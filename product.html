@@ -360,6 +360,7 @@
     </div>
   </main>
 
+  <!-- ===== CATEGORIES ===== -->
   <section class="categories" id="categories" style="padding-top: 4rem;">
     <div class="container">
       <div class="section-header fade-in">
@@ -367,42 +368,13 @@
         <h2 class="section-title">Shop by <span>Category</span></h2>
         <p class="section-subtitle">Discover our wide range of customizable products</p>
       </div>
-      <div class="category-grid">
-        <a href="products.html?category=tshirts" class="category-card fade-in" id="cat-tshirts">
-          <div class="category-icon">👕</div>
-          <div class="category-name">T-Shirts</div>
-          <div class="category-count">Custom Prints</div>
-        </a>
-        <a href="products.html?category=mugs" class="category-card fade-in" id="cat-mugs">
-          <div class="category-icon">☕</div>
-          <div class="category-name">Mugs</div>
-          <div class="category-count">Perfect Gifts</div>
-        </a>
-        <a href="products.html?category=bottles" class="category-card fade-in" id="cat-bottles">
-          <div class="category-icon">🧴</div>
-          <div class="category-name">Bottles</div>
-          <div class="category-count">Trending 2025</div>
-        </a>
-        <a href="products.html?category=wallets" class="category-card fade-in" id="cat-wallets">
-          <div class="category-icon">👜</div>
-          <div class="category-name">Wallets</div>
-          <div class="category-count">Premium Leather</div>
-        </a>
-        <a href="products.html?category=keychains" class="category-card fade-in" id="cat-keychains">
-          <div class="category-icon">🔑</div>
-          <div class="category-name">Keychains</div>
-          <div class="category-count">Best Sellers</div>
-        </a>
-        <a href="products.html?category=lockets" class="category-card fade-in" id="cat-lockets">
-          <div class="category-icon">📿</div>
-          <div class="category-name">Lockets</div>
-          <div class="category-count">Emotional Gifts</div>
-        </a>
-        <a href="products.html?category=posters" class="category-card fade-in" id="cat-posters">
-          <div class="category-icon">🖼️</div>
-          <div class="category-name">Posters</div>
-          <div class="category-count">Wall Art</div>
-        </a>
+      <div class="category-slider-wrapper">
+        <div class="category-slider" id="categorySlider">
+          <!-- Shimmer loading placeholders -->
+          <div class="cat-card" style="opacity:0.3;pointer-events:none;"><div class="cat-card-emoji" style="animation:pulse 1.5s ease-in-out infinite;">⏳</div><div class="cat-card-name">Loading...</div></div>
+          <div class="cat-card" style="opacity:0.2;pointer-events:none;"><div class="cat-card-emoji" style="animation:pulse 1.5s ease-in-out 0.2s infinite;">⏳</div><div class="cat-card-name">Loading...</div></div>
+          <div class="cat-card" style="opacity:0.15;pointer-events:none;"><div class="cat-card-emoji" style="animation:pulse 1.5s ease-in-out 0.4s infinite;">⏳</div><div class="cat-card-name">Loading...</div></div>
+        </div>
       </div>
     </div>
   </section>
