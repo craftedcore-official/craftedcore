@@ -533,27 +533,11 @@
         const relatedSubcats = _subcats.filter(sc => sc.parent_slug === slug);
         if (relatedSubcats.length > 0) {
           document.getElementById('subcatsSection').style.display = 'block';
-          let scHtml = '';
+          let scHtml = `<button onclick="filterCatProducts('all')" class="btn btn-outline active" data-filter="all" style="border-radius:2rem; padding: 0.5rem 1.2rem; background: var(--gold); color: #000; border-color: var(--gold);">All</button>`;
           relatedSubcats.forEach(sc => {
-            scHtml += `<a href="category.html?slug=${sc.slug}" class="btn btn-outline" style="border-radius:2rem; padding: 0.5rem 1.2rem;">${sc.name}</a>`;
+            scHtml += `<button onclick="filterCatProducts('${sc.slug}')" class="btn btn-outline" data-filter="${sc.slug}" style="border-radius:2rem; padding: 0.5rem 1.2rem;">${sc.name}</button>`;
           });
           document.getElementById('subcatsList').innerHTML = scHtml;
-        } else {
-          // Check if current page IS a subcategory
-          const thisSubcat = _subcats.find(sc => sc.slug === slug);
-          if (thisSubcat && thisSubcat.parent_slug) {
-            let parentName = thisSubcat.parent_slug.charAt(0).toUpperCase() + thisSubcat.parent_slug.slice(1);
-            try {
-              if (typeof Categories !== 'undefined') {
-                const cats = await Categories.getAll();
-                const pCat = cats.find(c => c.slug === thisSubcat.parent_slug);
-                if (pCat) parentName = pCat.name;
-              }
-            } catch(e) {}
-            document.getElementById('subcatsSection').style.display = 'block';
-            document.getElementById('subcatsSection').querySelector('h3').textContent = 'Explore More';
-            document.getElementById('subcatsList').innerHTML = `<a href="category.html?slug=${thisSubcat.parent_slug}" class="btn btn-outline" style="border-radius:2rem; padding: 0.5rem 1.2rem;"><i style="margin-right:5px;font-style:normal;">⬅️</i> Check all ${parentName} designs</a>`;
-          }
         }
       } catch(e) {}
 
@@ -577,6 +561,8 @@
         document.getElementById('catProductCountText').textContent = `${catProducts.length} product${catProducts.length !== 1 ? 's' : ''} found`;
 
         const grid = document.getElementById('catProductGrid');
+        window.loadedCatProducts = catProducts; // Save for filtering
+
         if (catProducts.length === 0) {
           grid.innerHTML = `
             <div class="cat-empty" style="grid-column: 1/-1;">
@@ -597,6 +583,50 @@
           </div>`;
       }
     })();
+
+    // ═══ FILTER LOGIC FOR SUBCATEGORIES ═══
+    window.filterCatProducts = function(subSlug) {
+      const grid = document.getElementById('catProductGrid');
+      if (!window.loadedCatProducts) return;
+      
+      let filtered = window.loadedCatProducts;
+      if (subSlug !== 'all') {
+        filtered = window.loadedCatProducts.filter(p => {
+          let tags = '';
+          try {
+            const cust = p.customizations ? JSON.parse(p.customizations) : {};
+            if (cust.tags) tags = cust.tags.toLowerCase();
+          } catch(e) {}
+          return tags.includes(subSlug.toLowerCase());
+        });
+      }
+      
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div class="cat-empty" style="grid-column: 1/-1;"><h3>No products found in this subcategory</h3></div>`;
+      } else {
+        grid.innerHTML = filtered.map(p => productCardHTML(p)).join('');
+        if (typeof initProductCardEffects === 'function') initProductCardEffects();
+      }
+      
+      // Update UI active state
+      document.querySelectorAll('#subcatsList .btn').forEach(b => {
+        b.classList.remove('active');
+        b.style.background = 'transparent';
+        b.style.color = 'var(--text-primary)';
+        b.style.borderColor = 'var(--border-light)';
+      });
+      const activeBtn = document.querySelector(`#subcatsList .btn[data-filter="${subSlug}"]`);
+      if (activeBtn) {
+        activeBtn.classList.add('active');
+        activeBtn.style.background = 'var(--gold)';
+        activeBtn.style.color = '#000';
+        activeBtn.style.borderColor = 'var(--gold)';
+      }
+      
+      // Update counts
+      if (document.getElementById('catCount')) document.getElementById('catCount').textContent = filtered.length;
+      document.getElementById('catProductCountText').textContent = `${filtered.length} product${filtered.length !== 1 ? 's' : ''} found`;
+    };
   </script>
 </body>
 </html>
