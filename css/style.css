@@ -1126,28 +1126,38 @@ footer {
   .hero-stats { grid-column: span 2; justify-content: space-between; gap: 1rem; display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--border); padding-top: 1rem; margin-top: 0.5rem; text-align: center; }
 
   /* Navbar */
-  .nav-links { display: none; }
-  .nav-cta .btn { display: none; }
-  .hamburger { display: flex; }
-
-  /* Mobile Menu Fullscreen */
-  .nav-links.open {
+  .nav-links {
     display: flex;
     flex-direction: column;
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
     background: rgba(8,8,8,0.98);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
     justify-content: center;
     align-items: center;
     gap: 2rem;
     z-index: 999;
     overflow-y: auto;
     padding: 2rem;
+    
+    /* Animation states */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-15px);
+    transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s ease;
   }
-  .nav-links.open li { width: 100%; text-align: center; }
-  .nav-links.open a {
+  
+  .nav-cta .btn { display: none; }
+  .hamburger { display: flex; }
+
+  /* Mobile Menu Fullscreen - Active State */
+  .nav-links.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  
+  .nav-links li { width: 100%; text-align: center; }
+  .nav-links a {
     font-size: 1.3rem;
     font-weight: 600;
     display: block;
@@ -1159,12 +1169,12 @@ footer {
     border-radius: 12px;
     border: 1px solid rgba(200,138,88,0.15);
   }
-  .nav-links.open a:hover, .nav-links.open a.active {
+  .nav-links a:hover, .nav-links a.active {
     background: rgba(200,138,88,0.1);
     color: var(--gold);
   }
   /* WhatsApp link inside mobile menu */
-  .nav-links.open .nav-wa-mobile {
+  .nav-links .nav-wa-mobile {
     display: flex !important;
     background: linear-gradient(135deg, #25D366, #128C7E);
     color: #fff !important;
