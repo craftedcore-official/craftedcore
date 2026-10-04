@@ -185,13 +185,7 @@ function filterProducts(category) {
     }
   }
 
-  // Scroll to product grid
-  const grid = document.getElementById('productGrid') || document.getElementById('all-products');
-  if (grid) {
-    setTimeout(() => {
-      grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 100);
-  }
+  // Auto-scroll removed as requested by user
 }
 
 function filterSubProducts(tag) {

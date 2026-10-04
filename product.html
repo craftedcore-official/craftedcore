@@ -600,7 +600,14 @@
 
       document.getElementById('pgLoading').style.display = 'none';
       document.getElementById('pgContent').style.display = 'grid';
+      
+      // Aggressively prevent browser scroll restoration
+      if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+      }
       window.scrollTo(0, 0);
+      setTimeout(() => { window.scrollTo(0, 0); }, 50);
+      setTimeout(() => { window.scrollTo(0, 0); }, 200);
 
       document.title = p.name + " | CraftedCore";
 
