@@ -671,11 +671,13 @@
       const colorWrap = document.getElementById('pgColorWrap');
       const colorsDiv = document.getElementById('pgColors');
       colorsDiv.innerHTML = '';
+      window.pgNeedsColor = false;
       if (p.colors && p.colors.trim() !== '') {
         const colors = p.colors.split(',').map(c => c.trim()).filter(c => c);
         if (colors.length > 0) {
+          window.pgNeedsColor = true;
           colors.forEach((c, i) => {
-            colorsDiv.innerHTML += `<button class="color-btn ${i === 0 ? 'active' : ''}" onclick="selColor(this)">${c}</button>`;
+            colorsDiv.innerHTML += `<button class="color-btn" onclick="selColor(this)">${c}</button>`;
           });
           colorWrap.style.display = 'block';
         }
@@ -757,6 +759,18 @@
       }
 
       document.getElementById('pgAddBtn').onclick = () => {
+        // Validate Color
+        if (window.pgNeedsColor) {
+          const activeColor = document.querySelector('#pgColors .color-btn.active');
+          if (!activeColor) {
+            showToast('⚠️ Please select a color first!');
+            document.getElementById('pgColorWrap').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            document.getElementById('pgColors').style.animation = 'shake 0.5s ease';
+            setTimeout(() => { document.getElementById('pgColors').style.animation = ''; }, 500);
+            return;
+          }
+        }
+
         // Validate size for oversize-tees
         if (window.pgNeedsSize) {
           const activeSize = document.querySelector('#pgSizes .size-btn.active');
