@@ -569,40 +569,51 @@ section { padding: 6rem 2rem; }
 /* ===== Category Grid for Products Page ===== */
 .category-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 1.5rem;
   margin-bottom: 2rem;
 }
 .category-card-box {
   background: var(--bg-card);
   border: 1px solid var(--border-light);
   border-radius: var(--radius);
-  padding: 1.5rem 1rem;
+  overflow: hidden;
   text-align: center;
   text-decoration: none;
   color: var(--text-primary);
   transition: var(--transition);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
 }
 .category-card-box:hover, .category-card-box.active {
-  background: var(--gold);
-  color: #000;
+  background: var(--bg-card-hover);
   border-color: var(--gold);
   transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+.category-card-box.active {
+  border-width: 2px;
 }
 .category-card-box .cat-icon {
-  font-size: 2rem;
+  width: 100%;
+  aspect-ratio: 1/1;
+  background: #1a1a1a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
 }
 .category-card-box .cat-icon img {
-  width: 40px; height: 40px; border-radius: 50%; object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 .category-card-box .cat-name {
+  padding: 1rem 0.5rem;
   font-family: 'Outfit', sans-serif;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 /* ===== Products Grid ===== */

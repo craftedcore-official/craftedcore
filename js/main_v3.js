@@ -435,7 +435,7 @@ async function loadDynamicCategories() {
 
   const catGridBoxes = document.getElementById('catGridBoxes');
   if (catGridBoxes) {
-    const html = `<a href="#" onclick="filterProducts('all'); return false;" class="category-card-box active" data-filter="all">
+    const html = `<a href="products.html?category=all" class="category-card-box active" data-filter="all">
         <div class="cat-icon">🌟</div>
         <div class="cat-name">All Products</div>
       </a>` 
@@ -444,7 +444,7 @@ async function loadDynamicCategories() {
           if (icon.startsWith('http')) {
             icon = `<img src="${icon}" />`;
           }
-          return `<a href="#" onclick="filterProducts('${c.slug}'); return false;" class="category-card-box" data-filter="${c.slug}">
+          return `<a href="products.html?category=${c.slug}" class="category-card-box" data-filter="${c.slug}">
             <div class="cat-icon">${icon}</div>
             <div class="cat-name">${c.name}</div>
           </a>`;
