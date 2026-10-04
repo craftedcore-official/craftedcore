@@ -214,7 +214,7 @@ function productCardHTML(p) {
       <div class="product-desc">${p.description || ''}</div>
       <div class="product-footer">
         <div class="product-price"><span class="from">From </span>₹${p.price}</div>
-        <button onclick="addToCart(${p.id}, '${safeName}', ${p.price||0}, '${p.image_url ? p.image_url.split(',')[0] : ''}')" class="order-btn" style="border:none;background:none;cursor:pointer;">🛒 Add</button>
+        <a href="product.html?id=${p.id}" class="order-btn" style="text-decoration:none;">🛒 Add</a>
       </div>
     </div>
   </div>`;
