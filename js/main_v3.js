@@ -61,10 +61,16 @@ if (navbar) {
 function toggleMenu() {
   const navLinks = document.getElementById('navLinks');
   const hamburger = document.getElementById('hamburger');
+  const navbar = document.getElementById('navbar');
   if (!navLinks) return;
 
   navLinks.classList.toggle('open');
   const isOpen = navLinks.classList.contains('open');
+
+  if (navbar) {
+    if (isOpen) navbar.classList.add('menu-open');
+    else navbar.classList.remove('menu-open');
+  }
 
   // Lock body scroll when menu is open
   document.body.style.overflow = isOpen ? 'hidden' : '';
@@ -84,7 +90,9 @@ function toggleMenu() {
 function closeMenu() {
   const navLinks = document.getElementById('navLinks');
   const hamburger = document.getElementById('hamburger');
+  const navbar = document.getElementById('navbar');
   if (navLinks) navLinks.classList.remove('open');
+  if (navbar) navbar.classList.remove('menu-open');
   document.body.style.overflow = '';
   if (hamburger) {
     const spans = hamburger.querySelectorAll('span');
