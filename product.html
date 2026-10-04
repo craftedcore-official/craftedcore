@@ -276,6 +276,10 @@
           <div class="prod-custs" id="pgCusts"></div>
         </div>
 
+        <div id="pgInputWrap" class="prod-opts" style="display: none; flex-direction: column; gap: 1rem;">
+          <!-- Dynamically inserted inputs go here -->
+        </div>
+
         <!-- Size Selector (Oversize Tees Only) -->
         <div id="pgSizeWrap" class="size-selector" style="display: none;">
           <label class="prod-opt-lbl">📏 Select Size: <span class="size-required">*Required</span></label>
@@ -682,10 +686,12 @@
       custsDiv.innerHTML = '';
       let hasCust = false;
       let opts = [];
+      let inputFields = [];
       if (p.customizations) {
         try {
           const c = JSON.parse(p.customizations);
           if (c.options) opts = opts.concat(c.options.split(',').map(x => x.trim()).filter(x => x));
+          if (c.input_fields) inputFields = c.input_fields.split(',').map(x => x.trim()).filter(x => x);
           if (c.name_engrave) opts.push('Name Engrave');
           if (c.photo_engrave) opts.push('Photo Engrave');
           if (c.uvdtf_name) opts.push('UVDTF Name');
@@ -705,6 +711,22 @@
         });
       }
       if (hasCust) custWrap.style.display = 'block';
+
+      const inputWrap = document.getElementById('pgInputWrap');
+      inputWrap.innerHTML = '';
+      if (inputFields.length > 0) {
+        inputFields.forEach((lbl) => {
+          inputWrap.innerHTML += `
+            <div>
+              <label class="prod-opt-lbl">${lbl}:</label>
+              <input type="text" class="fctl pg-dyn-input" data-label="${lbl}" placeholder="Enter ${lbl}" style="width:100%; border: 1px solid var(--border); padding: 0.8rem; border-radius: var(--r); background: var(--bg2); color: var(--text);" />
+            </div>
+          `;
+        });
+        inputWrap.style.display = 'flex';
+      } else {
+        inputWrap.style.display = 'none';
+      }
 
       // Show size selector only for "oversize-tees" category
       const isOversizeTees = (p.category_slug || '').toLowerCase() === 'oversize-tees';
@@ -752,6 +774,14 @@
         document.querySelectorAll('#pgCusts input:checked').forEach(cb => {
           custs.push(cb.value);
           extraPrice += parseFloat(cb.getAttribute('data-price')) || 0;
+        });
+
+        // Collect custom input fields data
+        document.querySelectorAll('.pg-dyn-input').forEach(inp => {
+          const val = inp.value.trim();
+          if (val) {
+            custs.push(`${inp.getAttribute('data-label')}: ${val}`);
+          }
         });
 
         const finalPrice = (parseFloat(p.price) || 0) + extraPrice;
