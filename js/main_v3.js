@@ -462,7 +462,7 @@ async function loadDynamicCategories() {
       } else {
         visualHtml = `<div class="cat-card-emoji">${c.emoji || '📦'}</div>`;
       }
-      return `<a href="category.html?slug=${c.slug}" class="cat-card">
+      return `<a href="products.html?category=${c.slug}" class="cat-card">
         ${visualHtml}
         <div class="cat-card-name">${c.name}</div>
       </a>`;
