@@ -864,7 +864,14 @@ create policy "Public Settings" on site_settings for all using (true) with check
         <input type="hidden" id="pTags" />
       </div>
       <div class="fg">
-        <label>Customization Options</label>
+        <label>Custom Text Input Fields</label>
+        <div style="font-size:0.75rem;color:var(--text2);margin-bottom:0.4rem;">Type placeholders separated by commas (e.g. <code>Charm Number (1-56), Your Name</code>). These will show as text boxes.</div>
+        <div style="display:flex; gap:0.5rem; align-items:center;">
+          <input type="text" class="fctl" id="pInputFields" placeholder="Charm Number, Your Name (Leave blank if none)" />
+        </div>
+      </div>
+      <div class="fg">
+        <label>Customization Options (Checkboxes)</label>
         <div style="font-size:0.75rem;color:var(--text2);margin-bottom:0.4rem;">Type options separated by commas. Add extra price in brackets, e.g. <code>Gift Wrap (+50)</code>.</div>
         <div style="display:flex; gap:0.5rem; align-items:center;">
           <input type="text" class="fctl" id="pCustOptions" placeholder="Name Engrave, Gift Wrap (+50), Urgent (+100) (Leave blank if none)" />
@@ -1529,7 +1536,7 @@ async function togFeat(id, val) {
 }
 
 function openProdModal() {
-  ['pmId','pName','pPrice','pBadge','pDesc','pWA','pImgUrl','pColors','pCustOptions','pTags'].forEach(id => document.getElementById(id).value = '');
+  ['pmId','pName','pPrice','pBadge','pDesc','pWA','pImgUrl','pColors','pCustOptions','pInputFields','pTags'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('pCat').value = '';
   document.getElementById('pFeat').checked = false;
   document.querySelectorAll('.sc-chk').forEach(c => c.checked = false);
@@ -1565,6 +1572,7 @@ function editProd(id) {
     if (cust.uvdtf_photo) oldOpts.push('UVDTF Photo');
   }
   document.getElementById('pCustOptions').value = oldOpts.join(', ');
+  document.getElementById('pInputFields').value = cust.input_fields || '';
   
   const tagsStr = cust.tags || '';
   document.getElementById('pTags').value = tagsStr;
@@ -1591,6 +1599,7 @@ async function saveProd() {
   
   const cust = {
     options: document.getElementById('pCustOptions').value.trim(),
+    input_fields: document.getElementById('pInputFields').value.trim(),
     image_colors: window.pgImageColors || {},
     tags: document.getElementById('pTags').value.trim()
   };
