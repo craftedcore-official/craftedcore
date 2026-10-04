@@ -165,7 +165,7 @@ function filterProducts(category) {
     subFilterCont.id = 'subFilterTabs';
     subFilterCont.className = 'filter-tabs sub-filter-tabs';
     subFilterCont.style.marginTop = '1rem';
-    const mainTabs = document.getElementById('filterTabs');
+    const mainTabs = document.getElementById('filterTabs') || document.getElementById('catGridBoxes');
     if (mainTabs) mainTabs.parentNode.insertBefore(subFilterCont, mainTabs.nextSibling);
   }
 
@@ -435,12 +435,6 @@ async function loadDynamicCategories() {
 
   const catGridBoxes = document.getElementById('catGridBoxes');
   if (catGridBoxes) {
-    let scs = [];
-    try {
-      const s = await SiteSettings.get('cc_subcats_list');
-      if (s) scs = JSON.parse(s);
-    } catch(e) {}
-    
     const html = `<a href="#" onclick="filterProducts('all'); return false;" class="category-card-box active" data-filter="all">
         <div class="cat-icon">🌟</div>
         <div class="cat-name">All Products</div>
@@ -454,11 +448,7 @@ async function loadDynamicCategories() {
             <div class="cat-icon">${icon}</div>
             <div class="cat-name">${c.name}</div>
           </a>`;
-        }).join('')
-      + scs.map(c => `<a href="#" onclick="filterSubProducts('${c.slug}'); return false;" class="category-card-box" data-filter="${c.slug}">
-        <div class="cat-icon">🏷️</div>
-        <div class="cat-name">${c.name}</div>
-      </a>`).join('');
+        }).join('');
     catGridBoxes.innerHTML = html;
   }
 
