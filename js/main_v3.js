@@ -136,7 +136,7 @@ function filterProducts(category) {
   // Update active button
   buttons.forEach(btn => {
     btn.classList.remove('active');
-    if (btn.dataset.filter === category) {
+    if (btn.dataset.filter === category && category !== 'all') {
       btn.classList.add('active');
     }
   });
@@ -436,9 +436,9 @@ async function loadDynamicCategories() {
   const catGridBoxes = document.getElementById('catGridBoxes');
   if (catGridBoxes) {
     const urlParams = new URLSearchParams(window.location.search);
-    const activeCat = urlParams.get('category') || 'all';
+    const activeCat = urlParams.get('category'); // No default
 
-    const html = `<a href="products.html?category=all" class="category-card-box ${activeCat === 'all' ? 'active' : ''}" data-filter="all">
+    const html = `<a href="products.html" class="category-card-box ${activeCat === 'all' ? 'active' : ''}" data-filter="all">
         <div class="cat-icon">🌟</div>
         <div class="cat-name">All Products</div>
       </a>` 
