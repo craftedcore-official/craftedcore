@@ -871,6 +871,13 @@ create policy "Public Settings" on site_settings for all using (true) with check
         </div>
       </div>
       <div class="fg">
+        <label>📸 Allow Customer Photo Upload</label>
+        <div style="display:flex;align-items:center;gap:.8rem;margin-top:.35rem;">
+          <label class="tog"><input type="checkbox" id="pPhotoUpload" /><span class="tog-sl"></span></label>
+          <span style="font-size:.85rem;color:var(--text2);">Customer can upload a photo (e.g. for custom mugs/posters)</span>
+        </div>
+      </div>
+      <div class="fg">
         <label>Customization Options (Checkboxes)</label>
         <div style="font-size:0.75rem;color:var(--text2);margin-bottom:0.4rem;">Type options separated by commas. Add extra price in brackets, e.g. <code>Gift Wrap (+50)</code>.</div>
         <div style="display:flex; gap:0.5rem; align-items:center;">
@@ -1539,6 +1546,7 @@ function openProdModal() {
   ['pmId','pName','pPrice','pBadge','pDesc','pWA','pImgUrl','pColors','pCustOptions','pInputFields','pTags'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('pCat').value = '';
   document.getElementById('pFeat').checked = false;
+  document.getElementById('pPhotoUpload').checked = false;
   document.querySelectorAll('.sc-chk').forEach(c => c.checked = false);
   window.pgImageColors = {};
   renderPGallery();
@@ -1573,6 +1581,7 @@ function editProd(id) {
   }
   document.getElementById('pCustOptions').value = oldOpts.join(', ');
   document.getElementById('pInputFields').value = cust.input_fields || '';
+  document.getElementById('pPhotoUpload').checked = !!cust.allow_photo_upload;
   
   const tagsStr = cust.tags || '';
   document.getElementById('pTags').value = tagsStr;
@@ -1600,6 +1609,7 @@ async function saveProd() {
   const cust = {
     options: document.getElementById('pCustOptions').value.trim(),
     input_fields: document.getElementById('pInputFields').value.trim(),
+    allow_photo_upload: document.getElementById('pPhotoUpload').checked,
     image_colors: window.pgImageColors || {},
     tags: document.getElementById('pTags').value.trim()
   };

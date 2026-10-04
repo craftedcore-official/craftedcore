@@ -687,11 +687,13 @@
       let hasCust = false;
       let opts = [];
       let inputFields = [];
+      let allowPhotoUpload = false;
       if (p.customizations) {
         try {
           const c = JSON.parse(p.customizations);
           if (c.options) opts = opts.concat(c.options.split(',').map(x => x.trim()).filter(x => x));
           if (c.input_fields) inputFields = c.input_fields.split(',').map(x => x.trim()).filter(x => x);
+          if (c.allow_photo_upload) allowPhotoUpload = true;
           if (c.name_engrave) opts.push('Name Engrave');
           if (c.photo_engrave) opts.push('Photo Engrave');
           if (c.uvdtf_name) opts.push('UVDTF Name');
@@ -714,6 +716,7 @@
 
       const inputWrap = document.getElementById('pgInputWrap');
       inputWrap.innerHTML = '';
+      
       if (inputFields.length > 0) {
         inputFields.forEach((lbl) => {
           inputWrap.innerHTML += `
@@ -723,6 +726,24 @@
             </div>
           `;
         });
+      }
+      
+      if (allowPhotoUpload) {
+        window.pgNeedsPhoto = true;
+        inputWrap.innerHTML += `
+          <div>
+            <label class="prod-opt-lbl">📸 Upload Custom Photo <span style="color:var(--red);">*Required</span></label>
+            <input type="file" id="pgPhotoUploadInput" accept="image/*" style="margin-top: 0.5rem; width:100%;" onchange="window.handleCustPhotoUpload(this.files[0])" />
+            <div id="pgPhotoUploadProgress" style="display:none; font-size: 0.85rem; color: var(--gold); margin-top: 0.5rem;">Uploading... <span id="pgPhotoUploadPct">0</span>%</div>
+            <input type="hidden" id="pgPhotoUploadUrl" class="pg-dyn-input" data-label="Uploaded Photo" />
+            <img id="pgPhotoUploadPreview" style="display:none; width: 100px; height: 100px; object-fit: cover; border-radius: 8px; margin-top: 0.8rem; border: 1px solid var(--border);" />
+          </div>
+        `;
+      } else {
+        window.pgNeedsPhoto = false;
+      }
+
+      if (inputFields.length > 0 || allowPhotoUpload) {
         inputWrap.style.display = 'flex';
       } else {
         inputWrap.style.display = 'none';
@@ -742,9 +763,18 @@
           if (!activeSize) {
             showToast('⚠️ Please select a size first!');
             document.getElementById('pgSizeWrap').scrollIntoView({ behavior: 'smooth', block: 'center' });
-            // Briefly highlight the size buttons
             document.getElementById('pgSizes').style.animation = 'shake 0.5s ease';
             setTimeout(() => { document.getElementById('pgSizes').style.animation = ''; }, 500);
+            return;
+          }
+        }
+
+        // Validate Photo Upload
+        if (window.pgNeedsPhoto) {
+          const photoUrl = document.getElementById('pgPhotoUploadUrl').value;
+          if (!photoUrl) {
+            showToast('⚠️ Please upload your custom photo!');
+            document.getElementById('pgInputWrap').scrollIntoView({ behavior: 'smooth', block: 'center' });
             return;
           }
         }
@@ -872,6 +902,36 @@
     window.slideGal = function (dir) {
       setGalImg(window.pgIndex + dir);
     }
+    
+    window.handleCustPhotoUpload = async function(file) {
+      if (!file) return;
+      const prog = document.getElementById('pgPhotoUploadProgress');
+      const pct = document.getElementById('pgPhotoUploadPct');
+      const urlInput = document.getElementById('pgPhotoUploadUrl');
+      const preview = document.getElementById('pgPhotoUploadPreview');
+      const btn = document.getElementById('pgAddBtn');
+      
+      prog.style.display = 'block';
+      pct.textContent = '0';
+      btn.disabled = true;
+      btn.innerHTML = '⏳ Uploading Photo...';
+      
+      try {
+        const url = await uploadImage(file, p => { pct.textContent = p; });
+        urlInput.value = url;
+        preview.src = url;
+        preview.style.display = 'block';
+        prog.style.display = 'none';
+        showToast('✅ Photo uploaded successfully!', 'success');
+      } catch(e) {
+        prog.style.display = 'none';
+        showToast('❌ Error uploading photo. Try again.', 'error');
+        document.getElementById('pgPhotoUploadInput').value = '';
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '🛍️ Add to Cart';
+      }
+    };
 
     const wrap = document.getElementById('pgMainWrap');
     let touchStartX = 0;
