@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About Us — CraftedCore</title>
+  <meta name="description" content="Discover the story behind CraftedCore. We turn ordinary moments into memorable personalized gifts." />
+  <link rel="icon" type="image/png" href="images/favicon.png" />
+  <link rel="stylesheet" href="css/style.css?v=58" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <style>
+    /* ═══ ABOUT US PREMIUM STYLES ═══ */
+    .about-hero {
+      position: relative;
+      padding: 160px 2rem 4rem;
+      background: var(--bg-primary);
+      overflow: hidden;
+      text-align: center;
+      min-height: 40vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .about-hero::before {
+      content: '';
+      position: absolute;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, rgba(212,175,55,0.08) 0%, transparent 70%);
+      border-radius: 50%;
+      z-index: 0;
+    }
+    .about-hero-content {
+      position: relative;
+      z-index: 10;
+      max-width: 800px;
+      animation: slideUpFade 0.8s ease-out forwards;
+    }
+    .about-eyebrow {
+      display: inline-block;
+      font-size: 0.85rem;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      padding: 0.5rem 1.2rem;
+      background: rgba(212,175,55,0.1);
+      border: 1px solid rgba(212,175,55,0.25);
+      border-radius: 50px;
+    }
+    .about-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 3.5rem;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      letter-spacing: -1px;
+    }
+    .about-title span { color: var(--gold); }
+    .about-subtitle {
+      font-size: 1.2rem;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.6;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    
+    .about-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 2rem 2rem 6rem;
+    }
+    .about-section {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 3.5rem;
+      margin-bottom: 2.5rem;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+      animation: slideUpFade 1s ease-out forwards;
+    }
+    .about-section h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 1.5rem;
+    }
+    .about-section p {
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.75);
+      line-height: 1.8;
+      margin-bottom: 1.2rem;
+    }
+    .about-section p strong {
+      color: #fff;
+      font-weight: 600;
+    }
+    
+    /* Lists */
+    .about-list {
+      list-style: none;
+      padding: 0;
+      margin-top: 1.5rem;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+    .about-list li {
+      position: relative;
+      padding-left: 2rem;
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.75);
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.05);
+      padding: 1rem 1rem 1rem 2.8rem;
+      border-radius: 8px;
+    }
+    .about-list li::before {
+      content: '✦';
+      position: absolute;
+      left: 1rem;
+      color: var(--gold);
+      font-size: 1.2rem;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    /* Promise Cards */
+    .about-values {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    .value-card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 8px;
+      padding: 2rem;
+      transition: transform 0.3s, background 0.3s, border-color 0.3s;
+    }
+    .value-card:hover {
+      background: rgba(212,175,55,0.05);
+      transform: translateY(-5px);
+      border-color: rgba(212,175,55,0.25);
+    }
+    .value-card h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.3rem;
+      color: var(--gold);
+      margin-bottom: 0.8rem;
+    }
+    .value-card p {
+      font-size: 0.95rem;
+      margin-bottom: 0;
+      color: rgba(255,255,255,0.7);
+    }
+    
+    /* Contact Block */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    .contact-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.05);
+      padding: 2rem;
+      border-radius: 8px;
+    }
+    .contact-item svg {
+      color: var(--gold);
+      width: 32px;
+      height: 32px;
+      margin-bottom: 1rem;
+    }
+    .contact-item span {
+      color: rgba(255,255,255,0.6);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 0.5rem;
+    }
+    .contact-item a {
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .contact-item a:hover {
+      color: var(--gold);
+    }
+    
+    @keyframes slideUpFade {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @media (max-width: 768px) {
+      .about-title { font-size: 2.5rem; }
+      .about-section { padding: 2rem 1.5rem; }
+      .about-list { grid-template-columns: 1fr; }
+      .about-values { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar scrolled" id="navbar">
+    <a href="index.html" class="logo-link">
+      <img src="images/logo.png" alt="CraftedCore" class="logo-img" />
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="products.html">Products</a></li>
+      <li><a href="customize-yours-now.html">Customize Yours Now</a></li>
+      <li><a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20want%20to%20place%20a%20custom%20order." target="_blank" class="nav-wa-mobile">💬 WhatsApp Us</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20want%20to%20place%20a%20custom%20order." target="_blank" class="btn btn-primary" id="nav-whatsapp-btn">
+        <svg class="social-svg" viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12.012 2c-5.506 0-9.989 4.478-9.989 9.984 0 1.758.459 3.474 1.33 4.982L2 22l5.176-1.348a9.982 9.982 0 004.836 1.251h.004c5.506 0 9.989-4.478 9.989-9.984 0-2.668-1.039-5.176-2.927-7.063C17.189 3.039 14.68 2 12.012 2zm.004 16.326h-.003a8.31 8.31 0 01-4.238-1.163l-.304-.18-3.149.821.838-3.067-.198-.314a8.275 8.275 0 01-1.272-4.437c0-4.577 3.724-8.301 8.306-8.301 2.217 0 4.301.865 5.869 2.434a8.261 8.261 0 012.43 5.867c0 4.578-3.725 8.302-8.279 8.302zm4.551-6.216c-.249-.125-1.477-.729-1.706-.812-.228-.083-.395-.125-.561.125-.166.249-.644.812-.789.978-.145.166-.291.187-.54.062a6.837 6.837 0 01-2.008-1.238 7.55 7.55 0 01-1.39-1.73c-.145-.249-.016-.384.109-.508.113-.112.249-.291.374-.436.125-.145.166-.249.249-.415.083-.166.042-.312-.021-.436-.062-.125-.561-1.352-.769-1.85-.202-.486-.407-.42-.561-.428l-.478-.009c-.166 0-.436.062-.664.312-.228.249-.873.852-.873 2.079 0 1.226.893 2.41 1.018 2.577.125.166 1.757 2.684 4.257 3.764.595.257 1.06.41 1.422.525.597.19 1.14.163 1.57.099.479-.071 1.477-.603 1.684-1.184.208-.582.208-1.08.145-1.184-.063-.104-.229-.166-.478-.291z"/></svg>
+        WhatsApp Us
+      </a>
+      <div class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+    </div>
+  </nav>
+
+  <!-- ===== HERO SECTION ===== -->
+  <header class="about-hero">
+    <div class="about-hero-content">
+      <span class="about-eyebrow">About Us</span>
+      <h1 class="about-title">Welcome to <span>Crafted Core</span></h1>
+      <p class="about-subtitle">We create thoughtfully designed and customized products that help you turn ordinary moments into something memorable.</p>
+    </div>
+  </header>
+
+  <!-- ===== ABOUT CONTENT ===== -->
+  <main class="about-container">
+    
+    <section class="about-section">
+      <h2>Our Story</h2>
+      <p>At <strong>Crafted Core</strong>, we believe that the best gifts are the ones that carry a personal meaning. From personalized T-shirts and wallets to mugs, bottles, bracelets, lockets and other custom gifts, every product is created with the idea of making your gift truly personal.</p>
+      <p>Crafted Core was created with a simple vision — <strong>to make personalized gifting stylish, meaningful and accessible.</strong></p>
+      <p>Whether you are celebrating a birthday, anniversary, friendship, relationship, special occasion, or simply want to surprise someone, we make it possible to add your own personal touch to the gift.</p>
+    </section>
+
+    <section class="about-section">
+      <h2>What We Offer</h2>
+      <p>Our collection includes a growing range of customizable products, crafted to match your imagination. Our collection may continue to grow as we discover new ways to make gifting more creative and personal.</p>
+      <ul class="about-list">
+        <li>Customized Oversized T-Shirts</li>
+        <li>Personalized Wallets</li>
+        <li>Customized Lockets & Jewellery</li>
+        <li>Personalized Mugs & Bottles</li>
+        <li>Customized Bracelets</li>
+        <li>Personalized Gifts</li>
+        <li>Other custom products and accessories</li>
+      </ul>
+    </section>
+
+    <section class="about-section">
+      <h2>Made Personal. Made for You.</h2>
+      <p>Customization is at the heart of Crafted Core.</p>
+      <p>Names, messages, designs, photos and other personalization details can transform a product into something that is uniquely yours. Because customized products are created according to your requirements, each order receives special attention during the preparation process.</p>
+    </section>
+
+    <section class="about-section">
+      <h2>Our Promise</h2>
+      <p>We combine creativity, customization and thoughtful presentation to help you find something that is not just a product, but a meaningful memory.</p>
+      <div class="about-values">
+        <div class="value-card">
+          <h3>Quality Products</h3>
+          <p>Carefully selected products designed for everyday use and gifting.</p>
+        </div>
+        <div class="value-card">
+          <h3>Personalization</h3>
+          <p>Products that allow you to express your own story and emotions.</p>
+        </div>
+        <div class="value-card">
+          <h3>Thoughtful Packaging</h3>
+          <p>We prepare orders with gifting and presentation in mind.</p>
+        </div>
+        <div class="value-card">
+          <h3>Customer Support</h3>
+          <p>We are here to help before and after your purchase.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="about-section">
+      <h2>Why Choose Crafted Core?</h2>
+      <p>Because a gift should feel personal.</p>
+      <p>Thank you for choosing <strong>Crafted Core</strong>.</p>
+      <p><strong>Crafted with care. Customized for you.</strong></p>
+    </section>
+
+    <section class="about-section">
+      <h2>Contact Us</h2>
+      <p>For questions regarding products, customization, orders or support, please contact us through the contact details available below. We'd love to hear from you.</p>
+      <div class="contact-grid">
+        <div class="contact-item">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+          <span>Email Us</span>
+          <a href="mailto:craftedcore.info@gmail.com">craftedcore.info@gmail.com</a>
+        </div>
+        <div class="contact-item">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+          <span>WhatsApp</span>
+          <a href="https://wa.me/+918320979383" target="_blank">+91 83209 79383</a>
+        </div>
+        <div class="contact-item">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+          <span>Instagram</span>
+          <a href="https://instagram.com/crafted_core_" target="_blank">@crafted_core_</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer id="footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="logo-link">
+          <img src="images/logo.png" alt="CraftedCore" class="logo-img footer-logo" />
+        </a>
+        <p>Premium custom merchandise crafted with passion. Your imagination, our craftsmanship — brought together for something truly special.</p>
+        <div class="footer-social">
+          <a href="https://wa.me/+918320979383" target="_blank" class="social-btn wa-btn" id="footer-wa" title="WhatsApp">
+            <svg class="social-svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12.012 2c-5.506 0-9.989 4.478-9.989 9.984 0 1.758.459 3.474 1.33 4.982L2 22l5.176-1.348a9.982 9.982 0 004.836 1.251h.004c5.506 0 9.989-4.478 9.989-9.984 0-2.668-1.039-5.176-2.927-7.063C17.189 3.039 14.68 2 12.012 2zm.004 16.326h-.003a8.31 8.31 0 01-4.238-1.163l-.304-.18-3.149.821.838-3.067-.198-.314a8.275 8.275 0 01-1.272-4.437c0-4.577 3.724-8.301 8.306-8.301 2.217 0 4.301.865 5.869 2.434a8.261 8.261 0 012.43 5.867c0 4.578-3.725 8.302-8.279 8.302zm4.551-6.216c-.249-.125-1.477-.729-1.706-.812-.228-.083-.395-.125-.561.125-.166.249-.644.812-.789.978-.145.166-.291.187-.54.062a6.837 6.837 0 01-2.008-1.238 7.55 7.55 0 01-1.39-1.73c-.145-.249-.016-.384.109-.508.113-.112.249-.291.374-.436.125-.145.166-.249.249-.415.083-.166.042-.312-.021-.436-.062-.125-.561-1.352-.769-1.85-.202-.486-.407-.42-.561-.428l-.478-.009c-.166 0-.436.062-.664.312-.228.249-.873.852-.873 2.079 0 1.226.893 2.41 1.018 2.577.125.166 1.757 2.684 4.257 3.764.595.257 1.06.41 1.422.525.597.19 1.14.163 1.57.099.479-.071 1.477-.603 1.684-1.184.208-.582.208-1.08.145-1.184-.063-.104-.229-.166-.478-.291z"/></svg>
+          </a>
+          <a href="https://www.instagram.com/crafted_core_/" target="_blank" class="social-btn ig-btn" id="footer-ig" title="Instagram @crafted_core_">
+            <svg class="social-svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Products</h4>
+        <ul>
+          <li><a href="products.html?category=tshirts">T-Shirts</a></li>
+          <li><a href="products.html?category=mugs">Mugs</a></li>
+          <li><a href="products.html?category=bottles">Bottles</a></li>
+          <li><a href="products.html?category=wallets">Wallets</a></li>
+          <li><a href="products.html?category=keychains">Keychains</a></li>
+          <li><a href="products.html?category=lockets">Lockets</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="products.html">All Products</a></li>
+          <li><a href="customize-yours-now.html">Customize Yours Now</a></li>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="terms.html">Terms & Conditions</a></li>
+          <li><a href="shipping.html">Shipping & Returns</a></li>
+          <li><a href="refund.html">Refund Policy</a></li>
+          <li><a href="privacy.html">Privacy Policy</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="https://wa.me/+918320979383" target="_blank">📱 +91 83209 79383</a></li>
+          <li><a href="https://www.instagram.com/crafted_core_/" target="_blank">📸 @crafted_core_</a></li>
+          <li><a href="customize-yours-now.html">📩 Send Message</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 CraftedCore. All rights reserved.</p>
+      <p>Made with ❤️ for custom lovers</p>
+    </div>
+  </footer>
+
+  <!-- Floating WhatsApp Button (Mobile Only) -->
+  <a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20want%20to%20place%20a%20custom%20order." target="_blank" class="wa-float" id="wa-float-btn" title="Order on WhatsApp">
+    <svg class="social-svg" viewBox="0 0 24 24" width="28" height="28" fill="#fff"><path d="M12.012 2c-5.506 0-9.989 4.478-9.989 9.984 0 1.758.459 3.474 1.33 4.982L2 22l5.176-1.348a9.982 9.982 0 004.836 1.251h.004c5.506 0 9.989-4.478 9.989-9.984 0-2.668-1.039-5.176-2.927-7.063C17.189 3.039 14.68 2 12.012 2zm.004 16.326h-.003a8.31 8.31 0 01-4.238-1.163l-.304-.18-3.149.821.838-3.067-.198-.314a8.275 8.275 0 01-1.272-4.437c0-4.577 3.724-8.301 8.306-8.301 2.217 0 4.301.865 5.869 2.434a8.261 8.261 0 012.43 5.867c0 4.578-3.725 8.302-8.279 8.302zm4.551-6.216c-.249-.125-1.477-.729-1.706-.812-.228-.083-.395-.125-.561.125-.166.249-.644.812-.789.978-.145.166-.291.187-.54.062a6.837 6.837 0 01-2.008-1.238 7.55 7.55 0 01-1.39-1.73c-.145-.249-.016-.384.109-.508.113-.112.249-.291.374-.436.125-.145.166-.249.249-.415.083-.166.042-.312-.021-.436-.062-.125-.561-1.352-.769-1.85-.202-.486-.407-.42-.561-.428l-.478-.009c-.166 0-.436.062-.664.312-.228.249-.873.852-.873 2.079 0 1.226.893 2.41 1.018 2.577.125.166 1.757 2.684 4.257 3.764.595.257 1.06.41 1.422.525.597.19 1.14.163 1.57.099.479-.071 1.477-.603 1.684-1.184.208-.582.208-1.08.145-1.184-.063-.104-.229-.166-.478-.291z"/></svg>
+  </a>
+
+  <!-- SCRIPTS -->
+  <script src="js/main_v3.js?v=58"></script>
+</body>
+</html>
