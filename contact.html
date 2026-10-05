@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -247,14 +247,12 @@
                 <div class="category-count">${q.price}</div>
               </a>`;
             });
-            grid.innerHTML = html;
-          } else {
+            grid.innerHTML = html; } else { grid.innerHTML = '<div style="text-align:center; padding:2rem; width:100%; color:var(--text2);">No products found. Add some from the Admin Panel.</div>'; } else {
             grid.innerHTML = '<div style="text-align:center; padding:2rem; width:100%; color:var(--text2);">No Quick Order products available.</div>';
           }
         } else {
           grid.innerHTML = '<div style="text-align:center; padding:2rem; width:100%; color:var(--text2);">No Quick Order products available.</div>';
-        }
-      } catch(e) { 
+        } else { grid.innerHTML = '<div style="text-align:center; padding:2rem; width:100%; color:var(--text2);">No products found. Add some from the Admin Panel.</div>'; } } catch(e) { 
         console.error(e); 
         document.getElementById('quickOrderGrid').innerHTML = '<div style="text-align:center; padding:2rem; width:100%; color:var(--red);">Failed to load products.</div>';
       }
@@ -262,4 +260,6 @@
   </script>
 </body>
 </html>
+
+
 
