@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -2878,8 +2878,11 @@ function renderQO() {
   }
   let h = '<table><thead><tr><th>Icon</th><th>Title</th><th>Price</th><th>Message</th><th>Actions</th></tr></thead><tbody>';
   quickOrders.forEach((q, i) => {
+    const iconHtml = (q.icon.startsWith('http') || q.icon.includes('/')) 
+      ? `<img src="${q.icon}" style="width:40px;height:40px;object-fit:cover;border-radius:6px;" />` 
+      : q.icon;
     h += `<tr>
-      <td style="font-size:1.5rem;">${q.icon}</td>
+      <td style="font-size:1.5rem; text-align:center;">${iconHtml}</td>
       <td style="font-weight:600;">${q.title}</td>
       <td>${q.price}</td>
       <td style="font-size:0.8rem; color:var(--text2);">${q.msg}</td>
