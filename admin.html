@@ -880,7 +880,10 @@ create policy "Public Settings" on site_settings for all using (true) with check
         <div style="font-size:0.75rem;color:var(--text2);margin-bottom:0.4rem;">Type placeholders separated by commas (e.g. <code>Charm Number (1-56), Your Name</code>). These will show as text boxes.</div>
         <div style="display:flex; gap:0.5rem; align-items:center;">
           <input type="text" class="fctl" id="pInputFields" placeholder="Charm Number, Your Name (Leave blank if none)" />
+          <button type="button" class="btn" style="padding:0.2rem 0.5rem;font-size:0.75rem;background:var(--bg3);color:var(--text);" onclick="pinInputFields()">📌 Pin</button>
         </div>
+        <div class="bdg-presets" id="inputPresetsCont" style="margin-top:0.4rem;"></div>
+
       </div>
       <div class="fg">
         <label>📸 Allow Customer Photo Upload</label>
@@ -1265,6 +1268,7 @@ async function initAdmin() {
   await loadPinnedBadges();
   await loadPinnedColors();
   await loadPinnedCusts();
+  await loadPinnedInputs();
 }
 
 // ─── DASHBOARD ───────────────────────────────────────────────
@@ -1810,6 +1814,47 @@ async function delPinCust(i) {
   arr.splice(i, 1);
   await SiteSettings.set('pinned_custs', arr.join('||'));
   renderPinnedCusts(arr);
+}
+
+// --- PINNED INPUT FIELDS ---
+function setInputsPre(val) { 
+  const el = document.getElementById('pInputFields');
+  let arr = el.value.split(',').map(s=>s.trim()).filter(s=>s);
+  if (arr.includes(val)) arr = arr.filter(x => x !== val);
+  else arr.push(val);
+  el.value = arr.join(', ');
+}
+async function pinInputFields() {
+  const b = document.getElementById('pInputFields').value.trim();
+  if (!b) return;
+  const s = await SiteSettings.get('pinned_inputs') || '';
+  let arr = s ? s.split('||') : [];
+  if (!arr.includes(b)) {
+    arr.push(b);
+    await SiteSettings.set('pinned_inputs', arr.join('||'));
+    renderPinnedInputs(arr);
+    toast('📌 Input fields pinned!', 'success');
+  }
+}
+async function loadPinnedInputs() {
+  const s = await SiteSettings.get('pinned_inputs') || '';
+  if (s) renderPinnedInputs(s.split('||'));
+}
+function renderPinnedInputs(arr) {
+  const c = document.getElementById('inputPresetsCont');
+  if(!c) return;
+  let html = '';
+  arr.forEach((b, i) => {
+    html += `<span class="bdg-pre"><span onclick="setInputsPre('${b}')">${b}</span><span style="font-size:0.6rem;color:var(--red);cursor:pointer;margin-left:0.4rem;" onclick="delPinInput(${i})">✖</span></span>`;
+  });
+  c.innerHTML = html;
+}
+async function delPinInput(i) {
+  const s = await SiteSettings.get('pinned_inputs') || '';
+  let arr = s ? s.split('||') : [];
+  arr.splice(i, 1);
+  await SiteSettings.set('pinned_inputs', arr.join('||'));
+  renderPinnedInputs(arr);
 }
 
 // ─── CATEGORIES ──────────────────────────────────────────────
@@ -2813,6 +2858,7 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
+
 
 
 
