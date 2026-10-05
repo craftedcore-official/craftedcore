@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -2933,14 +2933,18 @@ async function saveQO() {
   
   if (i === '') quickOrders.push(q);
   else quickOrders[i] = q;
-  
-  await SiteSettings.set('quick_orders', JSON.stringify(quickOrders));
-  closeM('qoModal');
-  toast('Item saved successfully!', 'success');
-  renderQO();
-  
-  document.getElementById('qoSaveBtn').disabled = false;
-  document.getElementById('qoSaveBtn').innerText = '💾 Save Item';
+  try {
+    await SiteSettings.set('quick_orders', JSON.stringify(quickOrders));
+    closeM('qoModal');
+    toast('Item saved successfully!', 'success');
+    renderQO();
+  } catch(e) {
+    console.error(e);
+    toast('❌ DB Error: ' + e.message, 'error');
+  } finally {
+    document.getElementById('qoSaveBtn').disabled = false;
+    document.getElementById('qoSaveBtn').innerText = '💾 Save Item';
+  }
 }
 
 function delQO(i) {
