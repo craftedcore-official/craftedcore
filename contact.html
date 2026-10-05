@@ -166,42 +166,8 @@
         <h2 class="section-title">Order by <span>Product</span></h2>
         <p class="section-subtitle">Click any product to start your WhatsApp order instantly</p>
       </div>
-      <div class="category-grid">
-        <a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20want%20to%20order%20a%20Custom%20T-Shirt." target="_blank" class="category-card fade-in" id="quick-tshirt">
-          <div class="category-icon">👕</div>
-          <div class="category-name">T-Shirt</div>
-          <div class="category-count">From ₹399</div>
-        </a>
-        <a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20want%20to%20order%20a%20Custom%20Mug." target="_blank" class="category-card fade-in" id="quick-mug">
-          <div class="category-icon">☕</div>
-          <div class="category-name">Mug</div>
-          <div class="category-count">From ₹299</div>
-        </a>
-        <a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20want%20to%20order%20a%20Custom%20Bottle." target="_blank" class="category-card fade-in" id="quick-bottle">
-          <div class="category-icon">🧴</div>
-          <div class="category-name">Bottle</div>
-          <div class="category-count">From ₹499</div>
-        </a>
-        <a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20want%20to%20order%20a%20Custom%20Wallet." target="_blank" class="category-card fade-in" id="quick-wallet">
-          <div class="category-icon">👜</div>
-          <div class="category-name">Wallet</div>
-          <div class="category-count">From ₹499</div>
-        </a>
-        <a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20want%20to%20order%20a%20Custom%20Keychain." target="_blank" class="category-card fade-in" id="quick-keychain">
-          <div class="category-icon">🔑</div>
-          <div class="category-name">Keychain</div>
-          <div class="category-count">From ₹99</div>
-        </a>
-        <a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20want%20to%20order%20a%20Custom%20Locket." target="_blank" class="category-card fade-in" id="quick-locket">
-          <div class="category-icon">📿</div>
-          <div class="category-name">Locket</div>
-          <div class="category-count">From ₹299</div>
-        </a>
-        <a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20want%20to%20order%20a%20Custom%20Poster." target="_blank" class="category-card fade-in" id="quick-poster">
-          <div class="category-icon">🖼️</div>
-          <div class="category-name">Poster</div>
-          <div class="category-count">From ₹199</div>
-        </a>
+      <div class="category-grid" id="quickOrderGrid">
+        <div style="text-align:center; padding:2rem; width:100%; color:var(--text2);">Loading products...</div>
       </div>
     </div>
   </section>
@@ -259,5 +225,35 @@
   </footer>
 
   <script src="js/main_v3.js?v=56"></script>
+  <script src="js/live_db.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const settings = await SiteSettings.getAll();
+        const grid = document.getElementById('quickOrderGrid');
+        if (settings.quick_orders) {
+          const qo = JSON.parse(settings.quick_orders);
+          if (qo.length > 0) {
+            let html = '';
+            qo.forEach(q => {
+              // Ensure icon handles emoji or image URL
+              const iconHtml = (q.icon.startsWith('http') || q.icon.includes('/')) 
+                ? `<img src="${q.icon}" style="width:40px; height:40px; object-fit:contain; margin:0 auto;" />` 
+                : q.icon;
+              html += `
+              <a href="https://wa.me/+918320979383?text=${encodeURIComponent(q.msg)}" target="_blank" class="category-card fade-in">
+                <div class="category-icon">${iconHtml}</div>
+                <div class="category-name">${q.title}</div>
+                <div class="category-count">${q.price}</div>
+              </a>`;
+            });
+            grid.innerHTML = html;
+          } else {
+            grid.innerHTML = '<div style="text-align:center; padding:2rem; width:100%; color:var(--text2);">No Quick Order products available.</div>';
+          }
+        }
+      } catch(e) { console.error(e); }
+    });
+  </script>
 </body>
 </html>
