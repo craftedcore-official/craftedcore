@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -2854,18 +2854,18 @@ function renderQO() {
   }
   let h = '<table><thead><tr><th>Icon</th><th>Title</th><th>Price</th><th>Message</th><th>Actions</th></tr></thead><tbody>';
   quickOrders.forEach((q, i) => {
-    h += <tr>
-      <td style="font-size:1.5rem;">+q.icon+</td>
-      <td style="font-weight:600;">+q.title+</td>
-      <td>+q.price+</td>
-      <td style="font-size:0.8rem; color:var(--text2);">+q.msg+</td>
+    h += `<tr>
+      <td style="font-size:1.5rem;">${q.icon}</td>
+      <td style="font-weight:600;">${q.title}</td>
+      <td>${q.price}</td>
+      <td style="font-size:0.8rem; color:var(--text2);">${q.msg}</td>
       <td>
         <div class="act-cell">
-          <button class="btn btn-icon" style="background:rgba(200,138,88,0.15); color:var(--gold);" onclick="openQOModal(+i+)">✏️</button>
-          <button class="btn btn-icon" style="background:rgba(224,85,85,0.15); color:var(--red);" onclick="delQO(+i+)">🗑️</button>
+          <button class="btn btn-icon" style="background:rgba(200,138,88,0.15); color:var(--gold);" onclick="openQOModal(${i})">✏️</button>
+          <button class="btn btn-icon" style="background:rgba(224,85,85,0.15); color:var(--red);" onclick="delQO(${i})">🗑️</button>
         </div>
       </td>
-    </tr>;
+    </tr>`;
   });
   h += '</tbody></table>';
   document.getElementById('qoTbl').innerHTML = h;
