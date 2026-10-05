@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -2715,7 +2715,7 @@ async function doCropAndUpload() {
         document.getElementById('pPW').style.display = 'none';
         renderPGallery();
         toast('✅ Image cropped & uploaded!', 'success');
-      } catch(e) { toast('❌ Upload failed', 'error'); }
+      } catch(e) { console.error(e); document.getElementById('qoPW').style.display = 'none'; document.getElementById('cPW').style.display = 'none'; document.getElementById('pPW').style.display = 'none'; document.getElementById('heroPW').style.display = 'none'; document.getElementById('logoPW').style.display = 'none'; toast('❌ Upload failed', 'error'); }
     } else if (target === 'category') {
       const preview = document.getElementById('cPre');
       preview.src = URL.createObjectURL(blob);
@@ -2726,7 +2726,7 @@ async function doCropAndUpload() {
         document.getElementById('cmEmoji').value = url;
         document.getElementById('cPW').style.display = 'none';
         toast('✅ Image cropped & uploaded!', 'success');
-      } catch(e) { toast('❌ Upload failed', 'error'); }
+      } catch(e) { console.error(e); document.getElementById('qoPW').style.display = 'none'; document.getElementById('cPW').style.display = 'none'; document.getElementById('pPW').style.display = 'none'; document.getElementById('heroPW').style.display = 'none'; document.getElementById('logoPW').style.display = 'none'; toast('❌ Upload failed', 'error'); }
     } else if (target === 'quickorder') {
       const preview = document.getElementById('qoPre');
       preview.src = URL.createObjectURL(blob);
@@ -2737,7 +2737,7 @@ async function doCropAndUpload() {
         document.getElementById('qoIcon').value = url;
         document.getElementById('qoPW').style.display = 'none';
         toast('✅ Image cropped & uploaded!', 'success');
-      } catch(e) { toast('❌ Upload failed', 'error'); }
+      } catch(e) { console.error(e); document.getElementById('qoPW').style.display = 'none'; document.getElementById('cPW').style.display = 'none'; document.getElementById('pPW').style.display = 'none'; document.getElementById('heroPW').style.display = 'none'; document.getElementById('logoPW').style.display = 'none'; toast('❌ Upload failed', 'error'); }
     }
   }, 'image/jpeg', 0.9);
 }
@@ -2755,7 +2755,7 @@ async function heroUpload(file) {
     document.getElementById('heroImgUrl').value = url;
     document.getElementById('heroPW').style.display = 'none';
     toast('✅ Hero image uploaded!', 'success');
-  } catch(e) { toast('❌ Upload failed', 'error'); }
+  } catch(e) { console.error(e); document.getElementById('qoPW').style.display = 'none'; document.getElementById('cPW').style.display = 'none'; document.getElementById('pPW').style.display = 'none'; document.getElementById('heroPW').style.display = 'none'; document.getElementById('logoPW').style.display = 'none'; toast('❌ Upload failed', 'error'); }
 }
 
 async function logoUpload(file) {
@@ -2768,7 +2768,7 @@ async function logoUpload(file) {
     document.getElementById('logoImgUrl').value = url;
     document.getElementById('logoPW').style.display = 'none';
     toast('✅ Logo uploaded!', 'success');
-  } catch(e) { toast('❌ Upload failed', 'error'); }
+  } catch(e) { console.error(e); document.getElementById('qoPW').style.display = 'none'; document.getElementById('cPW').style.display = 'none'; document.getElementById('pPW').style.display = 'none'; document.getElementById('heroPW').style.display = 'none'; document.getElementById('logoPW').style.display = 'none'; toast('❌ Upload failed', 'error'); }
 }
 
 async function qrUpload(file) {
@@ -2781,7 +2781,7 @@ async function qrUpload(file) {
     document.getElementById('qrImgUrl').value = url;
     document.getElementById('qrPW').style.display = 'none';
     toast('✅ QR Code uploaded!', 'success');
-  } catch(e) { toast('❌ Upload failed', 'error'); }
+  } catch(e) { console.error(e); document.getElementById('qoPW').style.display = 'none'; document.getElementById('cPW').style.display = 'none'; document.getElementById('pPW').style.display = 'none'; document.getElementById('heroPW').style.display = 'none'; document.getElementById('logoPW').style.display = 'none'; toast('❌ Upload failed', 'error'); }
 }
 
 // ─── CONFIRM DELETE ──────────────────────────────────────────
@@ -2954,5 +2954,6 @@ function delQO(i) {
 </script>
 </body>
 </html>
+
 
 
