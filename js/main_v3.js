@@ -945,9 +945,9 @@ function injectCartUI() {
         <span>Total:</span>
         <span id="cartTotal" style="color:var(--gold);">₹0</span>
       </div>
-      <div style="display: flex; gap: 8px; margin-top: 1rem;">
-        <button class="btn" style="flex: 1; background: #333; color: white; padding: 0.7rem 0.5rem; font-size: 0.9rem;" onclick="toggleCartDrawer(false)">Add More</button>
-        <button class="btn btn-primary checkout-btn" id="cartCheckoutBtn" style="flex: 1; margin-top: 0; padding: 0.7rem 0.5rem; font-size: 0.9rem;" onclick="openCheckoutFromCart()">Checkout</button>
+      <div style="display: flex; gap: 8px; margin-top: 1.5rem;">
+        <button class="btn" style="flex: 1; background: #333; color: white; padding: 0.5rem; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; height: 38px; line-height: 1;" onclick="toggleCartDrawer(false)">Add More</button>
+        <button class="btn btn-primary checkout-btn" id="cartCheckoutBtn" style="flex: 1; margin-top: 0; padding: 0.5rem; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; height: 38px; line-height: 1;" onclick="openCheckoutFromCart()">Checkout</button>
       </div>
     </div>
   </div>
