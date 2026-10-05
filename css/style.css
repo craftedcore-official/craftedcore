@@ -1908,3 +1908,44 @@ footer {
   .cat-card-name { font-size: 0.78rem; }
 }
 
+.category-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  padding: 1.5rem 1rem;
+  text-align: center;
+  color: var(--text-primary);
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  cursor: pointer;
+}
+.category-card:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--gold);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+.category-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.category-name {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 0.3rem;
+  color: var(--text-primary);
+}
+.category-count {
+  font-size: 0.8rem;
+  color: var(--gold);
+  font-weight: 500;
+}
