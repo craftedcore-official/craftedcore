@@ -817,6 +817,7 @@ function confirmAddToCart() {
   }
   saveCart();
   closeQV();
+  toggleCartDrawer(true);
   showToast('🛒 Added to Cart!');
 }
 
@@ -944,7 +945,10 @@ function injectCartUI() {
         <span>Total:</span>
         <span id="cartTotal" style="color:var(--gold);">₹0</span>
       </div>
-      <button class="btn btn-primary checkout-btn" id="cartCheckoutBtn" onclick="openCheckoutFromCart()">Proceed to Checkout</button>
+      <div style="display: flex; gap: 10px; margin-top: 1rem;">
+        <button class="btn" style="flex: 1; background: #333; color: white;" onclick="toggleCartDrawer(false)">Add More</button>
+        <button class="btn btn-primary checkout-btn" id="cartCheckoutBtn" style="flex: 1; margin-top: 0;" onclick="openCheckoutFromCart()">Proceed to Checkout</button>
+      </div>
     </div>
   </div>
 
