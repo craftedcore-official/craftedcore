@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -1089,8 +1089,17 @@ create policy "Public Settings" on site_settings for all using (true) with check
         <input type="text" class="fctl" id="qoPrice" placeholder="e.g. From ₹399" />
       </div>
       <div class="fg">
-        <label>Icon / Emoji</label>
-        <input type="text" class="fctl" id="qoIcon" placeholder="e.g. 👕 or Image URL" />
+        <label>Image</label>
+        <div class="img-upload" id="qoUA" ondragover="onDrag(event,'qoUA')" ondragleave="offDrag('qoUA')" ondrop="onDropQO(event)">
+          <input type="file" id="qoFile" accept="image/*" onchange="qoUpload(this.files[0])" />
+          <div class="up-icon" id="qoUIcon">📸</div>
+          <div class="up-text" id="qoUText">Click or drag image</div>
+          <img id="qoPre" class="img-pre" />
+          <div class="prog-wrap" id="qoPW"><div class="prog-bar" id="qoPB"></div></div>
+        </div>
+        <input type="hidden" id="qoIcon" />
+        <span class="url-tog" onclick="toggleEl('qoUrlIn')">Or paste image URL / Emoji</span>
+        <input type="text" class="fctl" id="qoUrlIn" placeholder="https://... or 👕" style="display:none;margin-top:.4rem;" oninput="previewQOUrl(this.value)" />
       </div>
       <div class="fg">
         <label>WhatsApp Message</label>
@@ -2635,6 +2644,9 @@ function previewHeroUrl(url) { document.getElementById('heroImgUrl').value = url
 function previewLogoUrl(url) { document.getElementById('logoImgUrl').value = url; const img=document.getElementById('logoPre'); img.src=url; img.style.display=url?'block':'none'; }
 function previewQRUrl(url) { document.getElementById('qrImgUrl').value = url; const img=document.getElementById('qrPre'); img.src=url; img.style.display=url?'block':'none'; }
 function previewCatUrl(url) { document.getElementById('cmEmoji').value = url; const img=document.getElementById('cPre'); img.style.display=url?'block':'none'; }
+function previewQOUrl(url) { document.getElementById('qoIcon').value = url; const img=document.getElementById('qoPre'); img.src=url; img.style.display=url?'block':'none'; }
+function onDropQO(e) { e.preventDefault(); offDrag('qoUA'); if(e.dataTransfer.files[0]) qoUpload(e.dataTransfer.files[0]); }
+function qoUpload(file) { openCropModal(file, 'quickorder'); }
 
 let cropper = null;
 let currentCropTarget = '';
@@ -2680,6 +2692,7 @@ function closeCropModal() {
   if (cropper) { cropper.destroy(); cropper = null; }
   if (currentCropTarget === 'product') document.getElementById('pFile').value = '';
   if (currentCropTarget === 'category') document.getElementById('cFile').value = '';
+  if (currentCropTarget === 'quickorder') document.getElementById('qoFile').value = '';
 }
 
 async function doCropAndUpload() {
@@ -2712,6 +2725,17 @@ async function doCropAndUpload() {
         const url = await uploadImage(file, pct => { document.getElementById('cPB').style.width = pct + '%'; });
         document.getElementById('cmEmoji').value = url;
         document.getElementById('cPW').style.display = 'none';
+        toast('✅ Image cropped & uploaded!', 'success');
+      } catch(e) { toast('❌ Upload failed', 'error'); }
+    } else if (target === 'quickorder') {
+      const preview = document.getElementById('qoPre');
+      preview.src = URL.createObjectURL(blob);
+      preview.style.display = 'block';
+      document.getElementById('qoPW').style.display = 'block';
+      try {
+        const url = await uploadImage(file, pct => { document.getElementById('qoPB').style.width = pct + '%'; });
+        document.getElementById('qoIcon').value = url;
+        document.getElementById('qoPW').style.display = 'none';
         toast('✅ Image cropped & uploaded!', 'success');
       } catch(e) { toast('❌ Upload failed', 'error'); }
     }
@@ -2927,4 +2951,5 @@ function delQO(i) {
 </script>
 </body>
 </html>
+
 
