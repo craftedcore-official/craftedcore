@@ -479,6 +479,14 @@ async function loadDynamicCategories() {
     catGridBoxes.innerHTML = html;
   }
 
+  // Update footer categories
+  const footerCatList = document.getElementById('footer-categories-list');
+  if (footerCatList && cats.length > 0) {
+    const html = `<li><a href="products.html">All Products</a></li>` 
+      + cats.map(c => `<li><a href="category.html?slug=${c.slug}">${c.name}</a></li>`).join('');
+    footerCatList.innerHTML = html;
+  }
+
   // Update slider if it exists (on index.html) — Marquee style
   if (catSlider) {
     // Build category card HTML
