@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FAQ — CraftedCore</title>
+  <meta name="description" content="Discover the story behind CraftedCore. We turn ordinary moments into memorable personalized gifts." />
+  <link rel="icon" type="image/png" href="images/favicon.png" />
+  <link rel="stylesheet" href="css/style.css?v=58" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  
+  <style>
+    /* ═══ FAQ STYLES ═══ */
+    .faq-hero {
+      position: relative;
+      padding: 160px 2rem 4rem;
+      background: var(--bg-primary);
+      overflow: hidden;
+      text-align: center;
+      min-height: 40vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .faq-hero::before {
+      content: '';
+      position: absolute;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, rgba(200,138,88,0.1) 0%, transparent 70%);
+      border-radius: 50%;
+      z-index: 0;
+    }
+    .faq-hero-content {
+      position: relative;
+      z-index: 10;
+      max-width: 800px;
+      animation: slideUpFade 0.8s ease-out forwards;
+    }
+    .faq-eyebrow {
+      display: inline-block;
+      font-size: 0.85rem;
+      color: var(--copper-light);
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      padding: 0.5rem 1.2rem;
+      background: rgba(200,138,88,0.1);
+      border: 1px solid rgba(200,138,88,0.25);
+      border-radius: 50px;
+    }
+    .faq-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 3.5rem;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      letter-spacing: -1px;
+    }
+    .faq-title span {
+      color: var(--gold);
+      background: linear-gradient(135deg, var(--gold-light), var(--gold), var(--copper));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .faq-subtitle {
+      font-size: 1.2rem;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.6;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    
+    .faq-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem 2rem 6rem;
+    }
+    
+    .faq-section {
+      margin-bottom: 3.5rem;
+      animation: slideUpFade 1s ease-out forwards;
+    }
+    .faq-category-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .faq-item {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    .faq-item:hover {
+      border-color: rgba(200,138,88,0.25);
+      background: rgba(200,138,88,0.02);
+    }
+    .faq-item.active {
+      border-color: var(--copper);
+      box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    }
+    
+    .faq-q {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.15rem;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+    }
+    .faq-q svg {
+      width: 24px;
+      height: 24px;
+      color: var(--copper);
+      transition: transform 0.3s ease;
+      flex-shrink: 0;
+      margin-left: 1rem;
+    }
+    .faq-item.active .faq-q svg {
+      transform: rotate(180deg);
+    }
+    
+    .faq-a {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease-out;
+      background: rgba(0,0,0,0.2);
+    }
+    .faq-a-inner {
+      padding: 0 1.5rem 1.5rem;
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.75);
+      line-height: 1.8;
+    }
+    .faq-a-inner p {
+      margin-bottom: 1rem;
+    }
+    .faq-a-inner p:last-child {
+      margin-bottom: 0;
+    }
+    
+    @keyframes slideUpFade {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @media (max-width: 768px) {
+      .faq-title { font-size: 2.5rem; }
+      .faq-category-title { font-size: 1.5rem; }
+      .faq-q { font-size: 1.05rem; padding: 1.2rem; }
+      .faq-a-inner { padding: 0 1.2rem 1.2rem; font-size: 0.95rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar scrolled" id="navbar">
+    <a href="index.html" class="logo-link">
+      <img src="images/logo.png" alt="CraftedCore" class="logo-img" />
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="products.html">Products</a></li>
+      <li><a href="customize-yours-now.html">Customize Yours Now</a></li>
+      <li><a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20want%20to%20place%20a%20custom%20order." target="_blank" class="nav-wa-mobile">💬 WhatsApp Us</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20want%20to%20place%20a%20custom%20order." target="_blank" class="btn btn-primary" id="nav-whatsapp-btn">
+        <svg class="social-svg" viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12.012 2c-5.506 0-9.989 4.478-9.989 9.984 0 1.758.459 3.474 1.33 4.982L2 22l5.176-1.348a9.982 9.982 0 004.836 1.251h.004c5.506 0 9.989-4.478 9.989-9.984 0-2.668-1.039-5.176-2.927-7.063C17.189 3.039 14.68 2 12.012 2zm.004 16.326h-.003a8.31 8.31 0 01-4.238-1.163l-.304-.18-3.149.821.838-3.067-.198-.314a8.275 8.275 0 01-1.272-4.437c0-4.577 3.724-8.301 8.306-8.301 2.217 0 4.301.865 5.869 2.434a8.261 8.261 0 012.43 5.867c0 4.578-3.725 8.302-8.279 8.302zm4.551-6.216c-.249-.125-1.477-.729-1.706-.812-.228-.083-.395-.125-.561.125-.166.249-.644.812-.789.978-.145.166-.291.187-.54.062a6.837 6.837 0 01-2.008-1.238 7.55 7.55 0 01-1.39-1.73c-.145-.249-.016-.384.109-.508.113-.112.249-.291.374-.436.125-.145.166-.249.249-.415.083-.166.042-.312-.021-.436-.062-.125-.561-1.352-.769-1.85-.202-.486-.407-.42-.561-.428l-.478-.009c-.166 0-.436.062-.664.312-.228.249-.873.852-.873 2.079 0 1.226.893 2.41 1.018 2.577.125.166 1.757 2.684 4.257 3.764.595.257 1.06.41 1.422.525.597.19 1.14.163 1.57.099.479-.071 1.477-.603 1.684-1.184.208-.582.208-1.08.145-1.184-.063-.104-.229-.166-.478-.291z"/></svg>
+        WhatsApp Us
+      </a>
+      <div class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+    </div>
+  </nav>  <!-- ===== HERO SECTION ===== -->
+  <header class="faq-hero">
+    <div class="faq-hero-content">
+      <span class="faq-eyebrow">Support</span>
+      <h1 class="faq-title">Frequently Asked <span>Questions</span></h1>
+      <p class="faq-subtitle">Welcome to the Crafted Core FAQ section. Here you'll find answers to some of the most common questions about our products, customization, orders, shipping and returns.</p>
+    </div>
+  </header>
+
+  <!-- ===== FAQ CONTENT ===== -->
+  <main class="faq-container">
+    
+    <section class="faq-section">
+      <h2 class="faq-category-title">Products & Customization</h2>
+      <div class="faq-list">
+        
+        <div class="faq-item">
+          <button class="faq-q">1. What products does Crafted Core offer? <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></button>
+          <div class="faq-a"><div class="faq-a-inner">
+            <p>We offer a variety of customized and personalized products, including T-shirts, wallets, lockets, mugs, bottles, bracelets, posters and other gifting products.</p>
+            <p>Our collection may change and expand over time.</p>
+          </div></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q">2. Can I customize my product? <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></button>
+          <div class="faq-a"><div class="faq-a-inner">
+            <p>Yes. Many of our products are designed specifically for customization.</p>
+            <p>Depending on the product, you may be able to add a name, text, photo, design or other personalization details.</p>
+            <p>Please check Customize Yours Now for the customization options available.</p>
+          </div></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q">3. Can I request a special design? <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></button>
+          <div class="faq-a"><div class="faq-a-inner">
+            <p>If a product supports custom design requests, you can contact our support team before placing your order.</p>
+            <p>We will let you know whether the requested customization is possible.</p>
+          </div></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q">4. Can I preview my customized product before production? <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></button>
+          <div class="faq-a"><div class="faq-a-inner">
+            <p>Where applicable, we may provide a preview or confirmation before production.</p>
+            <p>However, previews may vary slightly from the final physical product due to screen settings, printing processes, material characteristics and production conditions.</p>
+          </div></div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="faq-section">
+      <h2 class="faq-category-title">Orders</h2>
+      <div class="faq-list">
+
+        <div class="faq-item">
+          <button class="faq-q">5. How do I place an order? <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></button>
+          <div class="faq-a"><div class="faq-a-inner">
+            <p>Simply select your desired product, choose the available options, enter your customization details and add the product to your cart.</p>
+            <p>After reviewing your order details, proceed to checkout and complete the payment.</p>
+          </div></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q">6. Can I change my order after placing it? <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></button>
+          <div class="faq-a"><div class="faq-a-inner">
+            <p>If your order has not yet entered the customization or production process, we may be able to make certain changes.</p>
+            <p>Please contact us as soon as possible after placing your order.</p>
+            <p>Once production has started, changes or cancellations may no longer be possible.</p>
+          </div></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q">7. Can I cancel a customized order? <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></button>
+          <div class="faq-a"><div class="faq-a-inner">
+            <p>Customized products are prepared specifically according to the customer's requirements.</p>
+            <p>Therefore, cancellation may not be possible once customization or production has started.</p>
+            <p>Please refer to our Refund Policy for complete details.</p>
+          </div></div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="faq-section">
+      <h2 class="faq-category-title">Payments</h2>
+      <div class="faq-list">
+
+        <div class="faq-item">
+          <button class="faq-q">8. What payment methods do you accept? <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></button>
+          <div class="faq-a"><div class="faq-a-inner">
+            <p>Available payment methods are displayed during checkout.</p>
+            <p>Payment must be successfully completed for prepaid orders before the order can be processed.</p>
+          </div></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q">9. Is my payment information secure? <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></button>
+          <div class="faq-a"><div class="faq-a-inner">
+            <p>Payments are processed through the payment methods or payment service providers available at checkout.</p>
+            <p>Crafted Core does not intentionally store your complete payment card details.</p>
+          </div></div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="faq-section">
+      <h2 class="faq-category-title">Shipping</h2>
+      <div class="faq-list">
+
+        <div class="faq-item">
+          <button class="faq-q">10. How long does delivery take? <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></button>
+          <div class="faq-a"><div class="faq-a-inner">
+            <p>Delivery time depends on the product, customization requirements, processing time and delivery location.</p>
+            <p>Estimated shipping information may be displayed during checkout or on the product/order page.</p>
+            <p>Customized products may require additional processing time.</p>
+          </div></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q">11. Do you provide tracking information? <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></button>
+          <div class="faq-a"><div class="faq-a-inner">
+            <p>Where tracking is available, tracking details may be shared with you after your order has been dispatched.</p>
+          </div></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q">12. What if my package is delayed? <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></button>
+          <div class="faq-a"><div class="faq-a-inner">
+            <p>Delivery timelines can occasionally be affected by courier delays, weather, holidays, operational issues or circumstances beyond our control.</p>
+            <p>If your order appears significantly delayed, please contact our support team with your order details.</p>
+          </div></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q">13. What if I receive a damaged or incorrect product? <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></button>
+          <div class="faq-a"><div class="faq-a-inner">
+            <p>Please contact us as soon as possible after delivery.</p>
+            <p>For damaged, defective or incorrectly delivered products, we may request photographs or videos showing the product and packaging so that we can investigate the issue.</p>
+          </div></div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="faq-section">
+      <h2 class="faq-category-title">Returns & Refunds</h2>
+      <div class="faq-list">
+
+        <div class="faq-item">
+          <button class="faq-q">14. Can I return a customized product? <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></button>
+          <div class="faq-a"><div class="faq-a-inner">
+            <p>Because customized products are made specifically according to your requirements, returns may generally not be accepted for change of mind, personal preference or incorrect customization details provided by the customer.</p>
+            <p>Please read our Refund Policy before placing an order.</p>
+          </div></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q">15. What if I receive a defective product? <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></button>
+          <div class="faq-a"><div class="faq-a-inner">
+            <p>If your product arrives damaged, defective or different from what you ordered, contact us promptly.</p>
+            <p>After reviewing the issue, we may offer an appropriate resolution such as replacement, correction or refund, depending on the circumstances.</p>
+          </div></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q">16. What if I entered the wrong name, text or customization details? <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></button>
+          <div class="faq-a"><div class="faq-a-inner">
+            <p>Customers are responsible for checking their customization information before submitting an order.</p>
+            <p>If incorrect information is provided by the customer and production has already started, we may not be able to make changes or provide a refund.</p>
+          </div></div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="faq-section">
+      <h2 class="faq-category-title">Account & Support</h2>
+      <div class="faq-list">
+
+        <div class="faq-item">
+          <button class="faq-q">17. Do I need an account to place an order? <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></button>
+          <div class="faq-a"><div class="faq-a-inner">
+            <p>If guest checkout is available, you may be able to place an order without creating an account.</p>
+          </div></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q">18. How can I contact Crafted Core? <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></button>
+          <div class="faq-a"><div class="faq-a-inner">
+            <p>You can contact us using the contact details provided on our website.</p>
+            <p><strong>Instagram:</strong> <a href="https://instagram.com/crafted_core_" target="_blank" style="color:var(--copper-light);">@crafted_core_</a></p>
+            <p>For order-related queries, please keep your Order ID available so that we can assist you faster.</p>
+          </div></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q">19. Do product colors look exactly like the images? <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></button>
+          <div class="faq-a"><div class="faq-a-inner">
+            <p>Product images are provided for reference.</p>
+            <p>Actual colors may vary slightly depending on your device display, lighting, photography and the production process.</p>
+          </div></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q">20. Where can I find your policies? <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></button>
+          <div class="faq-a"><div class="faq-a-inner">
+            <p>You can find our Privacy Policy, Refund Policy, Shipping & Returns Policy and Terms & Conditions through the links available in the website footer.</p>
+            <p>If you have any other questions, feel free to contact Crafted Core.</p>
+          </div></div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const faqItems = document.querySelectorAll('.faq-item');
+      faqItems.forEach(item => {
+        const btn = item.querySelector('.faq-q');
+        const answer = item.querySelector('.faq-a');
+        btn.addEventListener('click', () => {
+          const isActive = item.classList.contains('active');
+          
+          if (!isActive) {
+            item.classList.add('active');
+            answer.style.maxHeight = answer.scrollHeight + "px";
+          } else {
+            item.classList.remove('active');
+            answer.style.maxHeight = null;
+          }
+        });
+      });
+    });
+  </script><footer id="footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="logo-link">
+          <img src="images/logo.png" alt="CraftedCore" class="logo-img footer-logo" />
+        </a>
+        <p>Premium custom merchandise crafted with passion. Your imagination, our craftsmanship — brought together for something truly special.</p>
+        <div class="footer-social">
+          <a href="https://wa.me/+918320979383" target="_blank" class="social-btn wa-btn" id="footer-wa" title="WhatsApp">
+            <svg class="social-svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12.012 2c-5.506 0-9.989 4.478-9.989 9.984 0 1.758.459 3.474 1.33 4.982L2 22l5.176-1.348a9.982 9.982 0 004.836 1.251h.004c5.506 0 9.989-4.478 9.989-9.984 0-2.668-1.039-5.176-2.927-7.063C17.189 3.039 14.68 2 12.012 2zm.004 16.326h-.003a8.31 8.31 0 01-4.238-1.163l-.304-.18-3.149.821.838-3.067-.198-.314a8.275 8.275 0 01-1.272-4.437c0-4.577 3.724-8.301 8.306-8.301 2.217 0 4.301.865 5.869 2.434a8.261 8.261 0 012.43 5.867c0 4.578-3.725 8.302-8.279 8.302zm4.551-6.216c-.249-.125-1.477-.729-1.706-.812-.228-.083-.395-.125-.561.125-.166.249-.644.812-.789.978-.145.166-.291.187-.54.062a6.837 6.837 0 01-2.008-1.238 7.55 7.55 0 01-1.39-1.73c-.145-.249-.016-.384.109-.508.113-.112.249-.291.374-.436.125-.145.166-.249.249-.415.083-.166.042-.312-.021-.436-.062-.125-.561-1.352-.769-1.85-.202-.486-.407-.42-.561-.428l-.478-.009c-.166 0-.436.062-.664.312-.228.249-.873.852-.873 2.079 0 1.226.893 2.41 1.018 2.577.125.166 1.757 2.684 4.257 3.764.595.257 1.06.41 1.422.525.597.19 1.14.163 1.57.099.479-.071 1.477-.603 1.684-1.184.208-.582.208-1.08.145-1.184-.063-.104-.229-.166-.478-.291z"/></svg>
+          </a>
+          <a href="https://www.instagram.com/crafted_core_/" target="_blank" class="social-btn ig-btn" id="footer-ig" title="Instagram @crafted_core_">
+            <svg class="social-svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Products</h4>
+        <ul id="footer-categories-list">
+          <li><a href="products.html">All Products</a></li>
+          <!-- Categories will be injected here dynamically by main_v3.js -->
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="products.html">All Products</a></li>
+          <li><a href="customize-yours-now.html">Customize Yours Now</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="terms.html">Terms & Conditions</a></li>
+          <li><a href="shipping.html">Shipping & Returns</a></li>
+          <li><a href="refund.html">Refund Policy</a></li>
+          <li><a href="privacy.html">Privacy Policy</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="https://wa.me/+918320979383" target="_blank">📱 +91 83209 79383</a></li>
+          <li><a href="https://www.instagram.com/crafted_core_/" target="_blank">📸 @crafted_core_</a></li>
+          <li><a href="customize-yours-now.html">📩 Send Message</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 CraftedCore. All rights reserved.</p>
+      <p>Made with ❤️ for custom lovers</p>
+    </div>
+  </footer>
+
+  <!-- Floating WhatsApp Button (Mobile Only) -->
+  <a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20want%20to%20place%20a%20custom%20order." target="_blank" class="wa-float" id="wa-float-btn" title="Order on WhatsApp">
+    <svg class="social-svg" viewBox="0 0 24 24" width="28" height="28" fill="#fff"><path d="M12.012 2c-5.506 0-9.989 4.478-9.989 9.984 0 1.758.459 3.474 1.33 4.982L2 22l5.176-1.348a9.982 9.982 0 004.836 1.251h.004c5.506 0 9.989-4.478 9.989-9.984 0-2.668-1.039-5.176-2.927-7.063C17.189 3.039 14.68 2 12.012 2zm.004 16.326h-.003a8.31 8.31 0 01-4.238-1.163l-.304-.18-3.149.821.838-3.067-.198-.314a8.275 8.275 0 01-1.272-4.437c0-4.577 3.724-8.301 8.306-8.301 2.217 0 4.301.865 5.869 2.434a8.261 8.261 0 012.43 5.867c0 4.578-3.725 8.302-8.279 8.302zm4.551-6.216c-.249-.125-1.477-.729-1.706-.812-.228-.083-.395-.125-.561.125-.166.249-.644.812-.789.978-.145.166-.291.187-.54.062a6.837 6.837 0 01-2.008-1.238 7.55 7.55 0 01-1.39-1.73c-.145-.249-.016-.384.109-.508.113-.112.249-.291.374-.436.125-.145.166-.249.249-.415.083-.166.042-.312-.021-.436-.062-.125-.561-1.352-.769-1.85-.202-.486-.407-.42-.561-.428l-.478-.009c-.166 0-.436.062-.664.312-.228.249-.873.852-.873 2.079 0 1.226.893 2.41 1.018 2.577.125.166 1.757 2.684 4.257 3.764.595.257 1.06.41 1.422.525.597.19 1.14.163 1.57.099.479-.071 1.477-.603 1.684-1.184.208-.582.208-1.08.145-1.184-.063-.104-.229-.166-.478-.291z"/></svg>
+  </a>
+
+  <!-- SCRIPTS -->
+  <script src="js/main_v3.js?v=58"></script>
+</body>
+</html>
