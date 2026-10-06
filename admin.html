@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -293,6 +293,7 @@
     <button class="sb-link" id="nav-quickorders" onclick="showPage('quickorders',this)"><span class="ic">⚡</span> Quick Orders</button>
     <button class="sb-link" id="nav-reviews" onclick="showPage('reviews',this)"><span class="ic">⭐</span> Reviews</button>
     <button class="sb-link" id="nav-editor" onclick="showPage('editor',this)"><span class="ic">🌐</span> Website Editor</button>
+    <button class="sb-link" id="nav-seo" onclick="showPage('seo',this)"><span class="ic">🚀</span> SEO Manager</button>
     
     <div class="sb-div"></div>
     <div class="sb-lbl">System</div>
@@ -2856,8 +2857,123 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 </script>
+// ─── SEO MANAGER ──────────────────────────────────────────────────
+let currentSeoData = {};
+
+async function initSeoDropdown() {
+  const sel = document.getElementById('seoTarget');
+  if(!sel) return;
+  // Load products into dropdown
+  const prods = await Products.getAll();
+  const optGroup = document.createElement('optgroup');
+  optGroup.label = 'Products';
+  prods.forEach(p => {
+    const opt = document.createElement('option');
+    opt.value = 'prod_' + p.id;
+    opt.innerText = 'Product: ' + p.title;
+    optGroup.appendChild(opt);
+  });
+  sel.appendChild(optGroup);
+}
+
+async function loadSeoData() {
+  const target = document.getElementById('seoTarget').value;
+  const form = document.getElementById('seoForm');
+  if(!target) { form.style.display = 'none'; return; }
+  
+  form.style.display = 'block';
+  document.getElementById('seoTitle').value = '';
+  document.getElementById('seoDesc').value = '';
+  document.getElementById('seoKw').value = '';
+  
+  try {
+    const settings = await SiteSettings.getAll();
+    const seoDb = settings.seo_data ? JSON.parse(settings.seo_data) : {};
+    if(seoDb[target]) {
+      document.getElementById('seoTitle').value = seoDb[target].title || '';
+      document.getElementById('seoDesc').value = seoDb[target].desc || '';
+      document.getElementById('seoKw').value = seoDb[target].kw || '';
+    }
+  } catch(e) { console.error(e); }
+  
+  calcSeoScore();
+}
+
+function calcSeoScore() {
+  const t = document.getElementById('seoTitle').value.trim();
+  const d = document.getElementById('seoDesc').value.trim();
+  const k = document.getElementById('seoKw').value.trim();
+  
+  document.getElementById('seoTitleCount').innerText = t.length + ' characters';
+  document.getElementById('seoDescCount').innerText = d.length + ' characters';
+  
+  let score = 0;
+  
+  // Title score (max 35)
+  if(t.length > 0) score += 10;
+  if(t.length >= 30 && t.length <= 65) score += 25;
+  else if (t.length > 65) score += 10; // too long
+  
+  // Desc score (max 45)
+  if(d.length > 0) score += 10;
+  if(d.length >= 120 && d.length <= 160) score += 35;
+  else if(d.length > 160) score += 15; // too long
+  else if(d.length > 50) score += 20; // okayish
+  
+  // Keywords (max 20)
+  if(k.length > 0) score += 10;
+  if(k.split(',').length >= 2) score += 10;
+  
+  // Update Ring
+  const ring = document.getElementById('seoScoreRing');
+  const val = document.getElementById('seoScoreVal');
+  const txt = document.getElementById('seoScoreText');
+  
+  let color = 'var(--red)';
+  if(score >= 50) color = 'var(--yellow)';
+  if(score >= 80) color = 'var(--green)';
+  
+  ring.style.background = conic-gradient(+color+ 0%, +color+ +score+%, var(--bg3) +score+%);
+  val.innerText = score + '%';
+  val.style.color = color;
+  
+  if(score >= 85) txt.innerText = '🔥 Excellent SEO!';
+  else if(score >= 50) txt.innerText = '⚠️ Needs Improvement';
+  else txt.innerText = '❌ Poor SEO';
+}
+
+async function saveSeoData() {
+  const target = document.getElementById('seoTarget').value;
+  if(!target) return;
+  
+  const btn = document.getElementById('btnSaveSeo');
+  btn.innerText = 'Saving...'; btn.disabled = true;
+  
+  try {
+    const settings = await SiteSettings.getAll();
+    const seoDb = settings.seo_data ? JSON.parse(settings.seo_data) : {};
+    
+    seoDb[target] = {
+      title: document.getElementById('seoTitle').value.trim(),
+      desc: document.getElementById('seoDesc').value.trim(),
+      kw: document.getElementById('seoKw').value.trim()
+    };
+    
+    await SiteSettings.set('seo_data', JSON.stringify(seoDb));
+    toast('SEO Saved Successfully!', 'success');
+  } catch(e) {
+    toast('Error saving SEO: ' + e.message, 'error');
+  }
+  
+  btn.innerText = '💾 Save SEO Settings'; btn.disabled = false;
+}
+
+// Ensure initSeoDropdown runs on load
+const _oldInit = window.onload || function(){};
+window.onload = function() { _oldInit(); initSeoDropdown(); };
 </body>
 </html>
+
 
 
 
