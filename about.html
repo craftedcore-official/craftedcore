@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -31,7 +31,7 @@
       transform: translateX(-50%);
       width: 800px;
       height: 800px;
-      background: radial-gradient(circle, rgba(212,175,55,0.08) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(200,138,88,0.1) 0%, transparent 70%);
       border-radius: 50%;
       z-index: 0;
     }
@@ -44,14 +44,14 @@
     .about-eyebrow {
       display: inline-block;
       font-size: 0.85rem;
-      color: var(--gold);
+      color: var(--copper-light);
       text-transform: uppercase;
       letter-spacing: 3px;
       font-weight: 600;
       margin-bottom: 1.5rem;
       padding: 0.5rem 1.2rem;
-      background: rgba(212,175,55,0.1);
-      border: 1px solid rgba(212,175,55,0.25);
+      background: rgba(200,138,88,0.1);
+      border: 1px solid rgba(200,138,88,0.25);
       border-radius: 50px;
     }
     .about-title {
@@ -63,7 +63,13 @@
       margin-bottom: 1.5rem;
       letter-spacing: -1px;
     }
-    .about-title span { color: var(--gold); }
+    .about-title span {
+      color: var(--gold);
+      background: linear-gradient(135deg, var(--gold-light), var(--gold), var(--copper));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
     .about-subtitle {
       font-size: 1.2rem;
       color: rgba(255,255,255,0.7);
@@ -127,7 +133,7 @@
       content: '✦';
       position: absolute;
       left: 1rem;
-      color: var(--gold);
+      color: var(--copper);
       font-size: 1.2rem;
       top: 50%;
       transform: translateY(-50%);
@@ -148,14 +154,14 @@
       transition: transform 0.3s, background 0.3s, border-color 0.3s;
     }
     .value-card:hover {
-      background: rgba(212,175,55,0.05);
+      background: rgba(200,138,88,0.05);
       transform: translateY(-5px);
-      border-color: rgba(212,175,55,0.25);
+      border-color: rgba(200,138,88,0.25);
     }
     .value-card h3 {
       font-family: 'Outfit', sans-serif;
       font-size: 1.3rem;
-      color: var(--gold);
+      color: var(--copper-light);
       margin-bottom: 0.8rem;
     }
     .value-card p {
@@ -182,7 +188,7 @@
       border-radius: 8px;
     }
     .contact-item svg {
-      color: var(--gold);
+      color: var(--copper);
       width: 32px;
       height: 32px;
       margin-bottom: 1rem;
@@ -202,7 +208,7 @@
       transition: color 0.2s;
     }
     .contact-item a:hover {
-      color: var(--gold);
+      color: var(--copper-light);
     }
     
     @keyframes slideUpFade {
