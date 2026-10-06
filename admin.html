@@ -665,9 +665,15 @@
               <div style="font-size:0.75rem; color:var(--text3); margin-top:0.3rem;" id="seoDescCount">0 characters</div>
             </div>
 
-            <div class="fg">
+                        <div class="fg">
               <label>Focus Keywords (Comma separated)</label>
               <input type="text" class="fctl" id="seoKw" placeholder="custom shirts, gifts, mugs" oninput="calcSeoScore()" />
+            </div>
+            
+            <div class="fg">
+              <label>Social Share Image URL (For WhatsApp & Facebook Preview)</label>
+              <input type="text" class="fctl" id="seoImg" placeholder="https://..." oninput="calcSeoScore()" />
+              <div style="font-size:0.75rem; color:var(--text3); margin-top:0.3rem;">Leave empty to use the default logo.</div>
             </div>
 
             <button class="btn btn-primary" onclick="saveSeoData()" id="btnSaveSeo">💾 Save SEO Settings</button>
@@ -2930,7 +2936,7 @@ async function initSeoDropdown() {
   prods.forEach(p => {
     const opt = document.createElement('option');
     opt.value = 'prod_' + p.id;
-    opt.innerText = 'Product: ' + p.title;
+    opt.innerText = 'Product: ' + p.name;
     optGroup.appendChild(opt);
   });
   sel.appendChild(optGroup);
@@ -2945,6 +2951,7 @@ async function loadSeoData() {
   document.getElementById('seoTitle').value = '';
   document.getElementById('seoDesc').value = '';
   document.getElementById('seoKw').value = '';
+  document.getElementById('seoImg').value = '';
   
   try {
     const settings = await SiteSettings.getAll();
@@ -2953,6 +2960,7 @@ async function loadSeoData() {
       document.getElementById('seoTitle').value = seoDb[target].title || '';
       document.getElementById('seoDesc').value = seoDb[target].desc || '';
       document.getElementById('seoKw').value = seoDb[target].kw || '';
+      document.getElementById('seoImg').value = seoDb[target].img || '';
     }
   } catch(e) { console.error(e); }
   
@@ -3016,7 +3024,8 @@ async function saveSeoData() {
     seoDb[target] = {
       title: document.getElementById('seoTitle').value.trim(),
       desc: document.getElementById('seoDesc').value.trim(),
-      kw: document.getElementById('seoKw').value.trim()
+      kw: document.getElementById('seoKw').value.trim(),
+      img: document.getElementById('seoImg').value.trim()
     };
     
     await SiteSettings.set('seo_data', JSON.stringify(seoDb));
@@ -3034,6 +3043,8 @@ window.onload = function() { _oldInit(); initSeoDropdown(); };
 </script>
 </body>
 </html>
+
+
 
 
 
