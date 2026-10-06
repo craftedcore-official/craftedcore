@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   
   <style>
-    /* ═══ LEGAL PAGE STYLES ═══ */
+    /* ═══ LEGAL PAGE STYLES (MATCHING CRAFTED CORE) ═══ */
     .legal-hero {
       position: relative;
       padding: 160px 2rem 4rem;
@@ -79,45 +79,70 @@
     }
     
     .legal-content {
-      background: var(--bg-secondary);
+      background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: var(--radius);
       padding: 3rem;
-      color: rgba(255,255,255,0.8);
-      font-size: 1.1rem;
+      color: var(--text-primary);
+      font-size: 1.05rem;
       line-height: 1.8;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      box-shadow: var(--shadow-card);
+    }
+
+    .legal-content .policy-entity-info {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      border-left: 2px solid var(--gold);
+      padding-left: 14px;
+      margin-bottom: 2rem;
+      background: rgba(212, 175, 55, 0.03);
+      padding-top: 8px;
+      padding-bottom: 8px;
+      border-radius: 0 8px 8px 0;
+    }
+    .legal-content .policy-entity-info strong {
+      color: var(--text-secondary);
+      font-weight: 600;
     }
 
     .legal-content h1, 
     .legal-content h2, 
     .legal-content h3 {
       font-family: 'Outfit', sans-serif;
-      color: #fff;
+      color: var(--text-primary);
       margin-top: 2.5rem;
       margin-bottom: 1rem;
       font-weight: 700;
     }
     .legal-content h2 {
       font-size: 1.5rem;
-      color: var(--gold);
-      border-bottom: 1px solid rgba(200,138,88,0.2);
+      color: var(--copper-light);
+      border-bottom: 1px solid var(--border-light);
       padding-bottom: 0.5rem;
     }
     .legal-content p {
       margin-bottom: 1.2rem;
+      color: var(--text-secondary);
     }
     .legal-content ul {
       margin-bottom: 1.5rem;
       padding-left: 1.5rem;
+      color: var(--text-secondary);
     }
     .legal-content li {
       margin-bottom: 0.5rem;
+      position: relative;
+    }
+    .legal-content a {
+      color: var(--gold);
+      text-decoration: underline;
+      text-underline-offset: 4px;
     }
     .legal-content .last-updated {
       font-style: italic;
       color: var(--copper-light);
       margin-bottom: 2rem;
+      font-weight: 500;
     }
 
     @keyframes slideUpFade {
@@ -165,6 +190,12 @@
       <p class="last-updated">Last Updated: [5-7-26]</p>
 
       <p>At Crafted Core, we respect your privacy and are committed to protecting the personal information you provide while using our website.</p>
+      
+      <div class="policy-entity-info">
+        Crafted Core is the registered legal entity responsible for all commercial activity on this website. 
+        Udyam Reg: <strong>UDYAM-GJ-01-0674400</strong>. All payment transactions are processed securely on behalf of Crafted Core.
+      </div>
+
       <p>This Privacy Policy explains what information we may collect, how we use it, how we protect it and the choices available to you.</p>
       <p>By using our website, you acknowledge the practices described in this Privacy Policy.</p>
 
@@ -255,8 +286,8 @@
       <p>If you have any questions about this Privacy Policy or how your information is handled, please contact us:</p>
       <p>
         <strong>Crafted Core</strong><br>
-        Email: <a href="mailto:craftedcore.info@gmail.com" style="color:var(--gold);">craftedcore.info@gmail.com</a><br>
-        WhatsApp: <a href="https://wa.me/918320979383" target="_blank" style="color:var(--gold);">+91 83209 79383</a><br>
+        Email: <a href="mailto:craftedcore.info@gmail.com">craftedcore.info@gmail.com</a><br>
+        WhatsApp: <a href="https://wa.me/918320979383" target="_blank">+91 83209 79383</a><br>
         Address: L-19/225, baalkrishna nagar, near jain derasar, Saijpur bogha, naroda, ahemdabad, Gujarat, 382345
       </p>
     </div>
