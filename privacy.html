@@ -3,15 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>About Us — CraftedCore</title>
+  <title>Privacy Policy — CraftedCore</title>
   <meta name="description" content="Discover the story behind CraftedCore. We turn ordinary moments into memorable personalized gifts." />
   <link rel="icon" type="image/png" href="images/favicon.png" />
   <link rel="stylesheet" href="css/style.css?v=58" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  
   <style>
-    /* ═══ ABOUT US PREMIUM STYLES ═══ */
-    .about-hero {
+    /* ═══ LEGAL PAGE STYLES ═══ */
+    .legal-hero {
       position: relative;
       padding: 160px 2rem 4rem;
       background: var(--bg-primary);
@@ -23,7 +24,7 @@
       align-items: center;
       justify-content: center;
     }
-    .about-hero::before {
+    .legal-hero::before {
       content: '';
       position: absolute;
       top: -200px;
@@ -35,13 +36,13 @@
       border-radius: 50%;
       z-index: 0;
     }
-    .about-hero-content {
+    .legal-hero-content {
       position: relative;
       z-index: 10;
       max-width: 800px;
       animation: slideUpFade 0.8s ease-out forwards;
     }
-    .about-eyebrow {
+    .legal-eyebrow {
       display: inline-block;
       font-size: 0.85rem;
       color: var(--copper-light);
@@ -54,7 +55,7 @@
       border: 1px solid rgba(200,138,88,0.25);
       border-radius: 50px;
     }
-    .about-title {
+    .legal-title {
       font-family: 'Outfit', sans-serif;
       font-size: 3.5rem;
       font-weight: 800;
@@ -63,164 +64,70 @@
       margin-bottom: 1.5rem;
       letter-spacing: -1px;
     }
-    .about-title span {
+    .legal-title span {
       color: var(--gold);
       background: linear-gradient(135deg, var(--gold-light), var(--gold), var(--copper));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
-    .about-subtitle {
-      font-size: 1.2rem;
-      color: rgba(255,255,255,0.7);
-      line-height: 1.6;
-      max-width: 700px;
-      margin: 0 auto;
-    }
     
-    .about-container {
-      max-width: 1000px;
+    .legal-container {
+      max-width: 800px;
       margin: 0 auto;
       padding: 2rem 2rem 6rem;
     }
-    .about-section {
+    
+    .legal-content {
       background: var(--bg-secondary);
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 3.5rem;
-      margin-bottom: 2.5rem;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-      animation: slideUpFade 1s ease-out forwards;
-    }
-    .about-section h2 {
-      font-family: 'Outfit', sans-serif;
-      font-size: 2.2rem;
-      font-weight: 700;
-      color: #fff;
-      margin-bottom: 1.5rem;
-    }
-    .about-section p {
-      font-size: 1.05rem;
-      color: rgba(255,255,255,0.75);
+      padding: 3rem;
+      color: rgba(255,255,255,0.8);
+      font-size: 1.1rem;
       line-height: 1.8;
-      margin-bottom: 1.2rem;
-    }
-    .about-section p strong {
-      color: #fff;
-      font-weight: 600;
-    }
-    
-    /* Lists */
-    .about-list {
-      list-style: none;
-      padding: 0;
-      margin-top: 1.5rem;
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1rem;
-    }
-    .about-list li {
-      position: relative;
-      padding-left: 2rem;
-      font-size: 1.05rem;
-      color: rgba(255,255,255,0.75);
-      background: rgba(255,255,255,0.02);
-      border: 1px solid rgba(255,255,255,0.05);
-      padding: 1rem 1rem 1rem 2.8rem;
-      border-radius: 8px;
-    }
-    .about-list li::before {
-      content: '✦';
-      position: absolute;
-      left: 1rem;
-      color: var(--copper);
-      font-size: 1.2rem;
-      top: 50%;
-      transform: translateY(-50%);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
 
-    /* Promise Cards */
-    .about-values {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1.5rem;
-      margin-top: 2rem;
-    }
-    .value-card {
-      background: rgba(255,255,255,0.02);
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 8px;
-      padding: 2rem;
-      transition: transform 0.3s, background 0.3s, border-color 0.3s;
-    }
-    .value-card:hover {
-      background: rgba(200,138,88,0.05);
-      transform: translateY(-5px);
-      border-color: rgba(200,138,88,0.25);
-    }
-    .value-card h3 {
+    .legal-content h1, 
+    .legal-content h2, 
+    .legal-content h3 {
       font-family: 'Outfit', sans-serif;
-      font-size: 1.3rem;
-      color: var(--copper-light);
-      margin-bottom: 0.8rem;
-    }
-    .value-card p {
-      font-size: 0.95rem;
-      margin-bottom: 0;
-      color: rgba(255,255,255,0.7);
-    }
-    
-    /* Contact Block */
-    .contact-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1.5rem;
-      margin-top: 2rem;
-    }
-    .contact-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      background: rgba(255,255,255,0.02);
-      border: 1px solid rgba(255,255,255,0.05);
-      padding: 2rem;
-      border-radius: 8px;
-    }
-    .contact-item svg {
-      color: var(--copper);
-      width: 32px;
-      height: 32px;
+      color: #fff;
+      margin-top: 2.5rem;
       margin-bottom: 1rem;
+      font-weight: 700;
     }
-    .contact-item span {
-      color: rgba(255,255,255,0.6);
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
+    .legal-content h2 {
+      font-size: 1.5rem;
+      color: var(--gold);
+      border-bottom: 1px solid rgba(200,138,88,0.2);
+      padding-bottom: 0.5rem;
+    }
+    .legal-content p {
+      margin-bottom: 1.2rem;
+    }
+    .legal-content ul {
+      margin-bottom: 1.5rem;
+      padding-left: 1.5rem;
+    }
+    .legal-content li {
       margin-bottom: 0.5rem;
     }
-    .contact-item a {
-      color: #fff;
-      font-size: 1.1rem;
-      font-weight: 500;
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-    .contact-item a:hover {
+    .legal-content .last-updated {
+      font-style: italic;
       color: var(--copper-light);
+      margin-bottom: 2rem;
     }
-    
+
     @keyframes slideUpFade {
       from { opacity: 0; transform: translateY(40px); }
       to { opacity: 1; transform: translateY(0); }
     }
     
     @media (max-width: 768px) {
-      .about-title { font-size: 2.5rem; }
-      .about-section { padding: 2rem 1.5rem; }
-      .about-list { grid-template-columns: 1fr; }
-      .about-values { grid-template-columns: 1fr; }
+      .legal-title { font-size: 2.5rem; }
+      .legal-content { padding: 1.5rem; font-size: 1rem; }
     }
   </style>
 </head>
@@ -244,103 +151,116 @@
       </a>
       <div class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
     </div>
-  </nav>
-
-  <!-- ===== HERO SECTION ===== -->
-  <header class="about-hero">
-    <div class="about-hero-content">
-      <span class="about-eyebrow">About Us</span>
-      <h1 class="about-title">Welcome to <span>Crafted Core</span></h1>
-      <p class="about-subtitle">We create thoughtfully designed and customized products that help you turn ordinary moments into something memorable.</p>
+  </nav>  <!-- ===== HERO SECTION ===== -->
+  <header class="legal-hero">
+    <div class="legal-hero-content">
+      <span class="legal-eyebrow">Legal</span>
+      <h1 class="legal-title">Privacy <span>Policy</span></h1>
     </div>
   </header>
 
-  <!-- ===== ABOUT CONTENT ===== -->
-  <main class="about-container">
-    
-    <section class="about-section">
-      <h2>Our Story</h2>
-      <p>At <strong>Crafted Core</strong>, we believe that the best gifts are the ones that carry a personal meaning. From personalized T-shirts and wallets to mugs, bottles, bracelets, lockets and other custom gifts, every product is created with the idea of making your gift truly personal.</p>
-      <p>Crafted Core was created with a simple vision — <strong>to make personalized gifting stylish, meaningful and accessible.</strong></p>
-      <p>Whether you are celebrating a birthday, anniversary, friendship, relationship, special occasion, or simply want to surprise someone, we make it possible to add your own personal touch to the gift.</p>
-    </section>
+  <!-- ===== LEGAL CONTENT ===== -->
+  <main class="legal-container">
+    <div class="legal-content">
+      <p class="last-updated">Last Updated: [5-7-26]</p>
 
-    <section class="about-section">
-      <h2>What We Offer</h2>
-      <p>Our collection includes a growing range of customizable products, crafted to match your imagination. Our collection may continue to grow as we discover new ways to make gifting more creative and personal.</p>
-      <ul class="about-list">
-        <li>Customized Oversized T-Shirts</li>
-        <li>Personalized Wallets</li>
-        <li>Customized Lockets & Jewellery</li>
-        <li>Personalized Mugs & Bottles</li>
-        <li>Customized Bracelets</li>
-        <li>Personalized Gifts</li>
-        <li>Other custom products and accessories</li>
+      <p>At Crafted Core, we respect your privacy and are committed to protecting the personal information you provide while using our website.</p>
+      <p>This Privacy Policy explains what information we may collect, how we use it, how we protect it and the choices available to you.</p>
+      <p>By using our website, you acknowledge the practices described in this Privacy Policy.</p>
+
+      <h2>1. Information We Collect</h2>
+      <p>When you browse our website, place an order or contact us, we may collect information such as:</p>
+      <ul>
+        <li>Name</li>
+        <li>Phone number</li>
+        <li>Email address</li>
+        <li>Billing and shipping address</li>
+        <li>Order details</li>
+        <li>Product customization information</li>
+        <li>Information you voluntarily provide to us</li>
+        <li>Customer support communications</li>
+        <li>Information required to process or deliver your order</li>
       </ul>
-    </section>
+      <p>For customized products, the information you provide may include names, messages, photographs, designs or other content required to create your order.</p>
 
-    <section class="about-section">
-      <h2>Made Personal. Made for You.</h2>
-      <p>Customization is at the heart of Crafted Core.</p>
-      <p>Names, messages, designs, photos and other personalization details can transform a product into something that is uniquely yours. Because customized products are created according to your requirements, each order receives special attention during the preparation process.</p>
-    </section>
+      <h2>2. Payment Information</h2>
+      <p>Payments may be processed through third-party payment service providers.</p>
+      <p>Depending on the payment method used, payment providers may collect and process payment-related information according to their own privacy policies and terms.</p>
+      <p>Crafted Core does not intentionally store complete debit card, credit card, banking or payment credentials on its own systems.</p>
 
-    <section class="about-section">
-      <h2>Our Promise</h2>
-      <p>We combine creativity, customization and thoughtful presentation to help you find something that is not just a product, but a meaningful memory.</p>
-      <div class="about-values">
-        <div class="value-card">
-          <h3>Quality Products</h3>
-          <p>Carefully selected products designed for everyday use and gifting.</p>
-        </div>
-        <div class="value-card">
-          <h3>Personalization</h3>
-          <p>Products that allow you to express your own story and emotions.</p>
-        </div>
-        <div class="value-card">
-          <h3>Thoughtful Packaging</h3>
-          <p>We prepare orders with gifting and presentation in mind.</p>
-        </div>
-        <div class="value-card">
-          <h3>Customer Support</h3>
-          <p>We are here to help before and after your purchase.</p>
-        </div>
-      </div>
-    </section>
+      <h2>3. How We Use Your Information</h2>
+      <p>We may use your information to:</p>
+      <ul>
+        <li>Process and fulfil your orders</li>
+        <li>Create customized products</li>
+        <li>Arrange shipping and delivery</li>
+        <li>Communicate with you about your order</li>
+        <li>Provide customer support</li>
+        <li>Respond to enquiries</li>
+        <li>Process returns, replacements or refunds where applicable</li>
+        <li>Improve our website, products and services</li>
+        <li>Prevent fraud, misuse or unauthorized activity</li>
+        <li>Meet legal and regulatory requirements</li>
+      </ul>
 
-    <section class="about-section">
-      <h2>Why Choose Crafted Core?</h2>
-      <p>Because a gift should feel personal.</p>
-      <p>Thank you for choosing <strong>Crafted Core</strong>.</p>
-      <p><strong>Crafted with care. Customized for you.</strong></p>
-    </section>
+      <h2>4. Customized Content</h2>
+      <p>If you provide photographs, names, messages, logos or other information for customization, we use that information only as reasonably necessary to fulfil your order and provide the requested service.</p>
+      <p>Please do not submit content that you do not have permission to use.</p>
+      <p>You are responsible for ensuring that the photographs, designs, names, logos or other content you submit do not violate the rights of another person or organization.</p>
 
-    <section class="about-section">
-      <h2>Contact Us</h2>
-      <p>For questions regarding products, customization, orders or support, please contact us through the contact details available below. We'd love to hear from you.</p>
-      <div class="contact-grid">
-        <div class="contact-item">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-          <span>Email Us</span>
-          <a href="mailto:craftedcore.info@gmail.com">craftedcore.info@gmail.com</a>
-        </div>
-        <div class="contact-item">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-          <span>WhatsApp</span>
-          <a href="https://wa.me/+918320979383" target="_blank">+91 83209 79383</a>
-        </div>
-        <div class="contact-item">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-          <span>Instagram</span>
-          <a href="https://instagram.com/crafted_core_" target="_blank">@crafted_core_</a>
-        </div>
-      </div>
-    </section>
+      <h2>5. Sharing of Information</h2>
+      <p>We may share necessary information with trusted service providers when required to operate our business, including:</p>
+      <ul>
+        <li>Payment service providers</li>
+        <li>Courier and delivery partners</li>
+        <li>Website or hosting providers</li>
+        <li>Technology and service providers</li>
+        <li>Customer support providers</li>
+        <li>Government or legal authorities where required by law</li>
+      </ul>
+      <p>We do not sell your personal information as a product to third parties.</p>
 
-  </main>
+      <h2>6. Cookies</h2>
+      <p>Our website may use cookies or similar technologies to provide essential website functionality, understand website usage and improve the user experience.</p>
+      <p>Cookies may also be used by certain third-party services integrated into the website.</p>
+      <p>You may be able to manage cookies through your browser settings.</p>
+      <p>Disabling certain cookies may affect website functionality.</p>
 
-  <!-- ===== FOOTER ===== -->
-  <footer id="footer">
+      <h2>7. Data Security</h2>
+      <p>We take reasonable measures to protect the information we collect from unauthorized access, misuse, alteration or disclosure.</p>
+      <p>However, no online transmission or electronic storage system can be guaranteed to be completely secure.</p>
+
+      <h2>8. Data Retention</h2>
+      <p>We retain information for as long as reasonably necessary to fulfil the purposes described in this policy, including order processing, customer support, accounting, legal and regulatory requirements.</p>
+      <p>The retention period may vary depending on the type of information and applicable requirements.</p>
+
+      <h2>9. Third-Party Websites</h2>
+      <p>Our website may contain links to third-party websites, payment providers, social media platforms or other services.</p>
+      <p>We are not responsible for the privacy practices, content or security of third-party websites.</p>
+      <p>We recommend reviewing their respective privacy policies before providing personal information.</p>
+
+      <h2>10. Children's Privacy</h2>
+      <p>Our website is not intentionally designed to collect personal information from children.</p>
+      <p>If you believe that a child has provided personal information to us without appropriate permission, please contact us so that we can review the situation.</p>
+
+      <h2>11. Your Rights</h2>
+      <p>Depending on applicable law, you may have rights relating to your personal information, including requesting access, correction or deletion of certain information.</p>
+      <p>To make a privacy-related request, contact us using the details below.</p>
+
+      <h2>12. Changes to This Privacy Policy</h2>
+      <p>We may update this Privacy Policy from time to time to reflect changes in our business, website, services or legal requirements.</p>
+      <p>The updated version will be posted on this page with a revised "Last Updated" date.</p>
+
+      <h2>13. Contact Us</h2>
+      <p>If you have any questions about this Privacy Policy or how your information is handled, please contact us:</p>
+      <p>
+        <strong>Crafted Core</strong><br>
+        Email: <a href="mailto:craftedcore.info@gmail.com" style="color:var(--gold);">craftedcore.info@gmail.com</a><br>
+        WhatsApp: <a href="https://wa.me/918320979383" target="_blank" style="color:var(--gold);">+91 83209 79383</a><br>
+        Address: L-19/225, baalkrishna nagar, near jain derasar, Saijpur bogha, naroda, ahemdabad, Gujarat, 382345
+      </p>
+    </div>
+  </main><footer id="footer">
     <div class="footer-grid">
       <div class="footer-brand">
         <a href="index.html" class="logo-link">
@@ -410,7 +330,3 @@
   <script src="js/main_v3.js?v=58"></script>
 </body>
 </html>
-
-
-
-
