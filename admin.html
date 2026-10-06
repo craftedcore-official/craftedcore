@@ -616,6 +616,65 @@
       </div>
 
       <!-- ═════ SETTINGS ═════ -->
+      <!-- === SEO MANAGER PAGE === -->
+      <div class="page" id="page-seo">
+        <div class="pg-hdr">
+          <div>
+            <h2 class="pg-title">🚀 SEO Manager (Beta)</h2>
+            <p class="pg-sub">Optimize your pages and products for Google Search</p>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:2rem;">
+          <div class="card-title">SEO Score & Ranking Dashboard</div>
+          <div style="display:flex; gap:2rem; align-items:center; margin-top:1.5rem; flex-wrap:wrap;">
+            <div style="position:relative; width:120px; height:120px; border-radius:50%; background:conic-gradient(var(--green) 0%, var(--green) 88%, var(--bg3) 88%); display:flex; align-items:center; justify-content:center;" id="seoScoreRing">
+              <div style="width:100px; height:100px; border-radius:50%; background:var(--bg2); display:flex; align-items:center; justify-content:center; flex-direction:column;">
+                <span style="font-size:2rem; font-weight:800; color:var(--text);" id="seoScoreVal">0%</span>
+              </div>
+            </div>
+            <div>
+              <h3 id="seoScoreText" style="color:var(--text); margin-bottom:0.5rem;">Select a page to analyze</h3>
+              <p style="color:var(--text2); font-size:0.9rem; max-width:400px;" id="seoScoreDesc">Fill in the SEO title and description below. The score will update live based on Google's best practices (Length, Keywords, etc).</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="fg">
+            <label>Target Page / Product</label>
+            <select class="fctl" id="seoTarget" onchange="loadSeoData()">
+              <option value="">-- Select --</option>
+              <option value="page_home">Home Page (index.html)</option>
+              <option value="page_products">Products Page</option>
+              <option value="page_about">About Us Page</option>
+              <!-- Products will be injected here dynamically -->
+            </select>
+          </div>
+
+          <div id="seoForm" style="display:none;">
+            <div class="fg">
+              <label>SEO Meta Title (Ideal: 50-60 characters)</label>
+              <input type="text" class="fctl" id="seoTitle" placeholder="e.g., Premium Custom T-Shirts | CraftedCore" oninput="calcSeoScore()" />
+              <div style="font-size:0.75rem; color:var(--text3); margin-top:0.3rem;" id="seoTitleCount">0 characters</div>
+            </div>
+
+            <div class="fg">
+              <label>SEO Meta Description (Ideal: 120-160 characters)</label>
+              <textarea class="fctl" id="seoDesc" rows="3" placeholder="Buy premium quality customized products..." oninput="calcSeoScore()"></textarea>
+              <div style="font-size:0.75rem; color:var(--text3); margin-top:0.3rem;" id="seoDescCount">0 characters</div>
+            </div>
+
+            <div class="fg">
+              <label>Focus Keywords (Comma separated)</label>
+              <input type="text" class="fctl" id="seoKw" placeholder="custom shirts, gifts, mugs" oninput="calcSeoScore()" />
+            </div>
+
+            <button class="btn btn-primary" onclick="saveSeoData()" id="btnSaveSeo">💾 Save SEO Settings</button>
+          </div>
+        </div>
+      </div>
+
       <div class="page" id="page-settings">
         <div class="pg-hdr"><div class="pg-title">Settings & Database SQL</div></div>
         <div class="tab-nav">
@@ -2975,6 +3034,7 @@ window.onload = function() { _oldInit(); initSeoDropdown(); };
 </script>
 </body>
 </html>
+
 
 
 
