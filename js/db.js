@@ -246,6 +246,58 @@ async function applyDynamicSettings() {
         a.href = a.href.replace(/wa\.me\/\d+/, `wa.me/${n}`);
       });
     }
+    // 5. SEO Data Application
+    if (s.seo_data) {
+      try {
+        const seoDb = JSON.parse(s.seo_data);
+        let path = window.location.pathname.split('/').pop() || 'index.html';
+        if(path === '') path = 'index.html';
+        
+        let key = '';
+        if(path.includes('index.html')) key = 'page_home';
+        else if(path.includes('products.html')) key = 'page_products';
+        else if(path.includes('about.html')) key = 'page_about';
+        
+        // Product specific logic
+        if(path.includes('product.html')) {
+           const params = new URLSearchParams(window.location.search);
+           if(params.get('id')) key = 'prod_' + params.get('id');
+        }
+
+        if (key && seoDb[key]) {
+                    const { title, desc, kw, img } = seoDb[key];
+          if(title) {
+            document.title = title;
+            const ogTitle = document.querySelector('meta[property="og:title"]');
+            const twTitle = document.querySelector('meta[property="twitter:title"]');
+            if(ogTitle) ogTitle.content = title;
+            if(twTitle) twTitle.content = title;
+          }
+          if(desc) {
+            let metaDesc = document.querySelector('meta[name="description"]');
+            if(!metaDesc) { metaDesc = document.createElement('meta'); metaDesc.name = 'description'; document.head.appendChild(metaDesc); }
+            metaDesc.content = desc;
+            
+            const ogDesc = document.querySelector('meta[property="og:description"]');
+            const twDesc = document.querySelector('meta[property="twitter:description"]');
+            if(ogDesc) ogDesc.content = desc;
+            if(twDesc) twDesc.content = desc;
+          }
+          if(kw) {
+             let metaKw = document.querySelector('meta[name="keywords"]');
+             if(!metaKw) { metaKw = document.createElement('meta'); metaKw.name = 'keywords'; document.head.appendChild(metaKw); }
+             metaKw.content = kw;
+          }
+          if(img) {
+             const ogImg = document.querySelector('meta[property="og:image"]');
+             const twImg = document.querySelector('meta[property="twitter:image"]');
+             if(ogImg) ogImg.content = img;
+             if(twImg) twImg.content = img;
+          }
+        }
+      } catch(e) {}
+    }
+
 
     // 3. Hero Section
     if (s.hero_title)     { const el = document.querySelector('.hero-title');      if (el) el.innerHTML = s.hero_title; }
@@ -332,3 +384,5 @@ async function applyDynamicSettings() {
     }
   } catch(e) { /* Silently use static fallback */ }
 }
+
+
