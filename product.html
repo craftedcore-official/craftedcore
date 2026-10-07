@@ -238,7 +238,6 @@
     }
   </style>
 
-  <script src="https://anywear.decart.ai/widget/latest/anywear.js?domain=craftedcore.in" async></script>
 </head>
 
 <body>
@@ -755,24 +754,7 @@
         document.getElementById('pgSizeWrap').style.display = 'block';
       }
 
-      let cust = {};
-      try { if (p.customizations) cust = JSON.parse(p.customizations); } catch(e){}
 
-      // Inject Anywear Try-On widget if enabled in admin OR if it's an oversize tee and not explicitly disabled
-      const enableTryon = cust.enable_tryon === true || (isOversizeTees && cust.enable_tryon !== false);
-
-      // Hide widget if not enabled
-      if (!enableTryon) {
-        const style = document.createElement('style');
-        style.innerHTML = '#__decart-tryon-widget { display: none !important; }';
-        document.head.appendChild(style);
-      }
-
-      // Inject dummy Product JSON-LD to trick Anywear into thinking it's a product page
-      const ldScript = document.createElement('script');
-      ldScript.type = 'application/ld+json';
-      ldScript.innerHTML = JSON.stringify({ "@context": "https://schema.org", "@type": "Product", "name": p.name || 'T-Shirt' });
-      document.head.appendChild(ldScript);
 
       document.getElementById('pgAddBtn').onclick = () => {
         // Validate Color
