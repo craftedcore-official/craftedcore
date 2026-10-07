@@ -752,6 +752,17 @@
       window.pgNeedsSize = isOversizeTees;
       if (isOversizeTees) {
         document.getElementById('pgSizeWrap').style.display = 'block';
+
+        // Inject Anywear Widget for oversize tees
+        const ldScript = document.createElement('script');
+        ldScript.type = 'application/ld+json';
+        ldScript.innerHTML = JSON.stringify({ "@context": "https://schema.org", "@type": "Product", "name": p.name || 'Oversize Tee' });
+        document.head.appendChild(ldScript);
+
+        const anywearScript = document.createElement('script');
+        anywearScript.src = 'https://anywear.decart.ai/widget/latest/anywear.js?domain=craftedcore.in';
+        anywearScript.async = true;
+        document.head.appendChild(anywearScript);
       }
 
 
