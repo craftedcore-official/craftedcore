@@ -664,6 +664,12 @@
       }
 
       document.getElementById('pgCat').textContent = p.category_name || '';
+        if (p.badge) {
+          document.getElementById('pgBadgeCont').style.display = 'block';
+          document.getElementById('pgBadge').textContent = p.badge;
+        } else {
+          document.getElementById('pgBadgeCont').style.display = 'none';
+        }
       document.getElementById('pgName').textContent = p.name;
       document.getElementById('pgDesc').textContent = p.description || '';
       document.getElementById('pgPrice').textContent = `₹${p.price}`;
