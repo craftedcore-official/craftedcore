@@ -238,7 +238,6 @@
     }
   </style>
 
-  <script src="https://anywear.decart.ai/widget/latest/anywear.js?domain=craftedcore.in" async></script>
 </head>
 
 <body>
@@ -753,6 +752,12 @@
       window.pgNeedsSize = isOversizeTees;
       if (isOversizeTees) {
         document.getElementById('pgSizeWrap').style.display = 'block';
+
+        // Inject Anywear Try-On widget ONLY for oversize-tees category
+        const anywearScript = document.createElement('script');
+        anywearScript.src = 'https://anywear.decart.ai/widget/latest/anywear.js?domain=craftedcore.in';
+        anywearScript.async = true;
+        document.head.appendChild(anywearScript);
       }
 
       document.getElementById('pgAddBtn').onclick = () => {

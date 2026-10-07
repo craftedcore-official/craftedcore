@@ -281,7 +281,6 @@
     }
   </style>
 
-  <script src="https://anywear.decart.ai/widget/latest/anywear.js?domain=craftedcore.in" async></script>
 </head>
 <body>
 
@@ -504,6 +503,14 @@
       if (!slug) {
         window.location.href = 'products.html';
         return;
+      }
+
+      // Inject Anywear Try-On widget ONLY for oversize-tees category
+      if (slug === 'oversize-tees') {
+        const anywearScript = document.createElement('script');
+        anywearScript.src = 'https://anywear.decart.ai/widget/latest/anywear.js?domain=craftedcore.in';
+        anywearScript.async = true;
+        document.head.appendChild(anywearScript);
       }
 
       // Default category info (fallbacks)
