@@ -238,6 +238,7 @@
     }
   </style>
 
+  <script src="https://anywear.decart.ai/widget/latest/anywear.js?domain=craftedcore.in" async></script>
 </head>
 
 <body>
@@ -760,10 +761,12 @@
       // Inject Anywear Try-On widget if enabled in admin OR if it's an oversize tee and not explicitly disabled
       const enableTryon = cust.enable_tryon === true || (isOversizeTees && cust.enable_tryon !== false);
       if (enableTryon) {
-        const anywearScript = document.createElement('script');
-        anywearScript.src = 'https://anywear.decart.ai/widget/latest/anywear.js?domain=craftedcore.in';
-        anywearScript.async = true;
-        document.head.appendChild(anywearScript);
+        // Show widget if enabled, else hide it
+        if (!enableTryon) {
+          const style = document.createElement('style');
+          style.innerHTML = '#__decart-tryon-widget { display: none !important; }';
+          document.head.appendChild(style);
+        }
       }
 
       document.getElementById('pgAddBtn').onclick = () => {
