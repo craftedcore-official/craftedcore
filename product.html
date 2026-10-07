@@ -760,14 +760,19 @@
 
       // Inject Anywear Try-On widget if enabled in admin OR if it's an oversize tee and not explicitly disabled
       const enableTryon = cust.enable_tryon === true || (isOversizeTees && cust.enable_tryon !== false);
-      if (enableTryon) {
-        // Show widget if enabled, else hide it
-        if (!enableTryon) {
-          const style = document.createElement('style');
-          style.innerHTML = '#__decart-tryon-widget { display: none !important; }';
-          document.head.appendChild(style);
-        }
+
+      // Hide widget if not enabled
+      if (!enableTryon) {
+        const style = document.createElement('style');
+        style.innerHTML = '#__decart-tryon-widget { display: none !important; }';
+        document.head.appendChild(style);
       }
+
+      // Inject dummy Product JSON-LD to trick Anywear into thinking it's a product page
+      const ldScript = document.createElement('script');
+      ldScript.type = 'application/ld+json';
+      ldScript.innerHTML = JSON.stringify({ "@context": "https://schema.org", "@type": "Product", "name": p.name || 'T-Shirt' });
+      document.head.appendChild(ldScript);
 
       document.getElementById('pgAddBtn').onclick = () => {
         // Validate Color
