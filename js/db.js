@@ -192,8 +192,9 @@ async function uploadImage(file, onProgress) {
 function productCardHTML(p) {
   const safeName = (p.name || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
   let tags = '';
+  let cust = {};
   try {
-    const cust = p.customizations ? JSON.parse(p.customizations) : {};
+    if (p.customizations) cust = JSON.parse(p.customizations);
     if (cust.tags) tags = cust.tags.toLowerCase();
   } catch(e) {}
   
@@ -210,6 +211,7 @@ function productCardHTML(p) {
     </div>
     <div class="product-info">
       <div class="product-category">${p.category_name || ''}</div>
+      ${(cust.enable_tryon === true || (p.category_slug === 'oversize-tees' && cust.enable_tryon !== false)) ? '<div style="margin-top:4px;"><span style="background:var(--gold);color:#000;padding:2px 8px;border-radius:12px;font-size:0.75rem;font-weight:600;">✨ Virtual Try-On Available</span></div>' : ''}
       <div class="product-name">${p.name}</div>
       <div class="product-desc">${p.description || ''}</div>
       <div class="product-footer">
