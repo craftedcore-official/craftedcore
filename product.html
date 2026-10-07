@@ -752,8 +752,14 @@
       window.pgNeedsSize = isOversizeTees;
       if (isOversizeTees) {
         document.getElementById('pgSizeWrap').style.display = 'block';
+      }
 
-        // Inject Anywear Try-On widget ONLY for oversize-tees category
+      let cust = {};
+      try { if (p.customizations) cust = JSON.parse(p.customizations); } catch(e){}
+
+      // Inject Anywear Try-On widget if enabled in admin OR if it's an oversize tee and not explicitly disabled
+      const enableTryon = cust.enable_tryon === true || (isOversizeTees && cust.enable_tryon !== false);
+      if (enableTryon) {
         const anywearScript = document.createElement('script');
         anywearScript.src = 'https://anywear.decart.ai/widget/latest/anywear.js?domain=craftedcore.in';
         anywearScript.async = true;

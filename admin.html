@@ -975,6 +975,13 @@ create policy "Public Settings" on site_settings for all using (true) with check
           <span style="font-size:.85rem;color:var(--text2);">Show on homepage featured section</span>
         </div>
       </div>
+      <div class="fg">
+        <label>👕 Virtual Try-On</label>
+        <div style="display:flex;align-items:center;gap:.8rem;margin-top:.35rem;">
+          <label class="tog"><input type="checkbox" id="pTryon" /><span class="tog-sl"></span></label>
+          <span style="font-size:.85rem;color:var(--text2);">Enable Anywear Try-On widget for this product</span>
+        </div>
+      </div>
     </div>
     <div class="modal-foot">
       <button class="btn btn-ghost" onclick="closeM('prodModal')">Cancel</button>
@@ -1670,6 +1677,7 @@ function openProdModal() {
   ['pmId','pName','pPrice','pBadge','pDesc','pWA','pImgUrl','pColors','pCustOptions','pInputFields','pTags'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('pCat').value = '';
   document.getElementById('pFeat').checked = false;
+  document.getElementById('pTryon').checked = false;
   document.getElementById('pPhotoUpload').checked = false;
   document.querySelectorAll('.sc-chk').forEach(c => c.checked = false);
   window.pgImageColors = {};
@@ -1715,6 +1723,7 @@ function editProd(id) {
   });
   
   window.pgImageColors = cust.image_colors || {};
+  document.getElementById('pTryon').checked = !!cust.enable_tryon;
 
   renderPGallery();
   document.getElementById('pmTitle').textContent = 'Edit Product';
@@ -1735,7 +1744,8 @@ async function saveProd() {
     input_fields: document.getElementById('pInputFields').value.trim(),
     allow_photo_upload: document.getElementById('pPhotoUpload').checked,
     image_colors: window.pgImageColors || {},
-    tags: document.getElementById('pTags').value.trim()
+    tags: document.getElementById('pTags').value.trim(),
+    enable_tryon: document.getElementById('pTryon').checked
   };
   
   const data = {
