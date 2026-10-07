@@ -238,15 +238,6 @@
     }
   </style>
 
-  <!-- Anywear Widget Requirements -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    "name": "Custom Product"
-  }
-  </script>
-  <script src="https://anywear.decart.ai/widget/latest/anywear.js?domain=craftedcore.in" async></script>
 </head>
 
 <body>
@@ -762,6 +753,30 @@
       if (isOversizeTees) {
         document.getElementById('pgSizeWrap').style.display = 'block';
       }
+
+      // Inject Anywear Widget for ALL products
+      try {
+        const ldScript = document.createElement('script');
+        ldScript.type = 'application/ld+json';
+        ldScript.innerHTML = JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Product",
+          "name": p.name || 'Product',
+          "image": p.image_url ? p.image_url.split(',')[0] : 'https://craftedcore.in/images/product_mug.jpg',
+          "description": p.description || 'Custom Product',
+          "offers": {
+            "@type": "Offer",
+            "priceCurrency": "INR",
+            "price": p.price || 0
+          }
+        });
+        document.head.appendChild(ldScript);
+
+        const anywearScript = document.createElement('script');
+        anywearScript.src = 'https://anywear.decart.ai/widget/latest/anywear.js?domain=craftedcore.in';
+        anywearScript.async = true;
+        document.head.appendChild(anywearScript);
+      } catch (err) {}
 
 
 
