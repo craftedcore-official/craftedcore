@@ -192,9 +192,13 @@ async function uploadImage(file, onProgress) {
 function productCardHTML(p) {
   const safeName = (p.name || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
   let tags = '';
+  let catBadgeHtml = '';
   try {
     const cust = p.customizations ? JSON.parse(p.customizations) : {};
     if (cust.tags) tags = cust.tags.toLowerCase();
+    if (cust.category_badge) {
+      catBadgeHtml = `<div style="margin-top:4px;"><span style="background:var(--gold);color:#000;padding:2px 8px;border-radius:12px;font-size:0.75rem;font-weight:600;">${cust.category_badge}</span></div>`;
+    }
   } catch(e) {}
   
   return `
@@ -210,6 +214,7 @@ function productCardHTML(p) {
     </div>
     <div class="product-info">
       <div class="product-category">${p.category_name || ''}</div>
+      ${catBadgeHtml}
       <div class="product-name">${p.name}</div>
       <div class="product-desc">${p.description || ''}</div>
       <div class="product-footer">
