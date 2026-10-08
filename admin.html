@@ -3062,7 +3062,18 @@ async function autoSeoWithGemini() {
       prompt = `Generate SEO Meta Title (max 60 chars), Meta Description (max 160 chars), and Keywords for an ecommerce store page.\nPage Target: ${target}\nContext: This is a custom personalized gifts store named CraftedCore.\n\nRespond ONLY with a raw JSON object (no markdown, no backticks) with keys: "title", "description", "keywords".`;
     }
     
-    const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=' + apiKey, {
+    // Auto-detect working model for this API key
+    let modelName = 'gemini-1.5-flash'; // default
+    try {
+      const modelsRes = await fetch('https://generativelanguage.googleapis.com/v1beta/models?key=' + apiKey);
+      const modelsData = await modelsRes.json();
+      if(modelsData.models) {
+        const validModel = modelsData.models.find(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes('generateContent') && m.name.includes('gemini'));
+        if(validModel) modelName = validModel.name.replace('models/', '');
+      }
+    } catch(e) { console.log('Model detection failed, using default'); }
+
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=` + apiKey, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({ contents: [{ parts: [{text: prompt}] }] })
