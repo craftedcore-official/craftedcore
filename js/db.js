@@ -210,7 +210,6 @@ function productCardHTML(p) {
     </div>
     <div class="product-info">
       <div class="product-category">${p.category_name || ''}</div>
-      <div style="margin-top:4px;"><span style="background:var(--gold);color:#000;padding:2px 8px;border-radius:12px;font-size:0.75rem;font-weight:600;">✨ Virtual Try-On Available</span></div>
       <div class="product-name">${p.name}</div>
       <div class="product-desc">${p.description || ''}</div>
       <div class="product-footer">
