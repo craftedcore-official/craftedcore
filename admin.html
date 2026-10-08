@@ -3063,15 +3063,16 @@ async function autoSeoWithGemini() {
     }
     
     // Auto-detect working model for this API key
-    let modelName = 'gemini-1.5-flash'; // default
+    let modelName = 'gemini-3.8-flash';
     try {
       const modelsRes = await fetch('https://generativelanguage.googleapis.com/v1beta/models?key=' + apiKey);
       const modelsData = await modelsRes.json();
       if(modelsData.models) {
-        const validModel = modelsData.models.find(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes('generateContent') && m.name.includes('gemini'));
+        // Find gemini-3.8 or latest available
+        const validModel = modelsData.models.find(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes('generateContent') && m.name.includes('gemini-3.8'));
         if(validModel) modelName = validModel.name.replace('models/', '');
       }
-    } catch(e) { console.log('Model detection failed, using default'); }
+    } catch(e) { console.log('Model detection failed'); }
 
     const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=` + apiKey, {
       method: 'POST',
