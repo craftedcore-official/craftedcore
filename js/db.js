@@ -1,4 +1,4 @@
-// CraftedCore — js/db.js v4
+﻿// CraftedCore — js/db.js v4
 // ============================================================
 
 const DB_CONFIG = {
@@ -64,16 +64,16 @@ function cacheGet(k) {
   } catch(e) { return null; }
 }
 function cacheClear() {
-  ['cc_products', 'cc_categories', 'cc_settings_v2'].forEach(k => { try { localStorage.removeItem(k); } catch(e) {} });
+  ['cc_products_v2', 'cc_categories', 'cc_settings_v2'].forEach(k => { try { localStorage.removeItem(k); } catch(e) {} });
 }
 
 // ── Products API ──────────────────────────────────────────────
 const Products = {
   async getAll() {
-    const c = cacheGet('cc_products');
+    const c = cacheGet('cc_products_v2');
     if (c && c.length > 0) return c; // Only return cache if it actually has items
     const d = await dbFetch('products?select=*&order=created_at.desc');
-    if (d && d.length > 0) cacheSet('cc_products', d); 
+    if (d && d.length > 0) cacheSet('cc_products_v2', d); 
     return d || [];
   },
   async getFeatured()  { return (await this.getAll()).filter(p => p.is_featured); },
@@ -384,5 +384,6 @@ async function applyDynamicSettings() {
     }
   } catch(e) { /* Silently use static fallback */ }
 }
+
 
 
