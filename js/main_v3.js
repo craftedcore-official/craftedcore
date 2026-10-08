@@ -693,6 +693,15 @@ async function openQuickView(id) {
   
   currentQVProduct = p;
   document.getElementById('qvTitle').textContent = p.category_name || 'Options';
+  
+  if (p.badge) {
+    const qbC = document.getElementById('qvBadgeCont');
+    if (qbC) { qbC.style.display = 'block'; document.getElementById('qvBadge').textContent = p.badge; }
+  } else {
+    const qbC = document.getElementById('qvBadgeCont');
+    if (qbC) qbC.style.display = 'none';
+  }
+  
   document.getElementById('qvImg').src = p.image_url ? p.image_url.split(',')[0] : 'images/product_mug.jpg';
   document.getElementById('qvName').textContent = p.name;
   document.getElementById('qvDesc').textContent = p.description || '';
