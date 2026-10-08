@@ -910,12 +910,6 @@ create policy "Public Settings" on site_settings for all using (true) with check
           <input type="text" class="fctl" id="pBadge" placeholder="🔥 Top Seller" />
           <button type="button" class="btn" style="padding:0.2rem 0.5rem;font-size:0.75rem;background:var(--bg3);color:var(--text);" onclick="pinBadge()">📌 Pin</button>
         </div>
-      <div class="fg">
-        <label>Category Label (Under Category Name)</label>
-        <div style="display:flex; gap:0.5rem; align-items:center;">
-          <input type="text" class="fctl" id="pCatBadge" placeholder="✨ Customizable" />
-        </div>
-      </div>
         <div class="bdg-presets" id="badgePresetsCont">
           <span class="bdg-pre" onclick="setBdg(this,'🔥 Top Seller')">🔥 Top Seller</span>
           <span class="bdg-pre" onclick="setBdg(this,'🎁 Gift Idea')">🎁 Gift Idea</span>
@@ -1256,7 +1250,7 @@ create policy "Public Settings" on site_settings for all using (true) with check
 <!-- Image Cropper -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
-<script src="js/db.js?v=42"></script>
+<script src="js/db.js?v=43"></script>
 <script>
 // ─── AUTH ────────────────────────────────────────────────────
 function getAdmPass() { 
@@ -1700,7 +1694,6 @@ function editProd(id) {
   let cust = {};
   try { if (p.customizations) cust = JSON.parse(p.customizations); } catch(e){}
   
-  document.getElementById('pCatBadge').value = cust.category_badge || '';
   let oldOpts = [];
   if (cust.options) {
     oldOpts.push(cust.options);
@@ -1738,7 +1731,6 @@ async function saveProd() {
   updatePTags();
   
   const cust = {
-    category_badge: document.getElementById('pCatBadge').value.trim(),
     options: document.getElementById('pCustOptions').value.trim(),
     input_fields: document.getElementById('pInputFields').value.trim(),
     allow_photo_upload: document.getElementById('pPhotoUpload').checked,
@@ -3051,6 +3043,8 @@ window.onload = function() { _oldInit(); initSeoDropdown(); };
 </script>
 </body>
 </html>
+
+
 
 
 
