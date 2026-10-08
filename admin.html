@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -653,6 +653,9 @@
           </div>
 
           <div id="seoForm" style="display:none;">
+            <div style="display:flex; justify-content:flex-end; margin-bottom:1rem;">
+              <button class="btn" style="background:var(--copper);color:#000;" onclick="autoSeoWithGemini()" id="btnAutoSeo">✨ Auto Generate SEO (AI)</button>
+            </div>
             <div class="fg">
               <label>SEO Meta Title (Ideal: 50-60 characters)</label>
               <input type="text" class="fctl" id="seoTitle" placeholder="e.g., Premium Custom T-Shirts | CraftedCore" oninput="calcSeoScore()" />
@@ -3035,6 +3038,53 @@ async function saveSeoData() {
   }
   
   btn.innerText = '💾 Save SEO Settings'; btn.disabled = false;
+}
+
+async function autoSeoWithGemini() {
+  const target = document.getElementById('seoTarget').value;
+  if(!target) return toast('Please select a target first', 'error');
+  
+  const apiKey = localStorage.getItem('cc_gemini_key');
+  if(!apiKey) return toast('Please enter Gemini API Key in Settings > AI Settings', 'error');
+  
+  const btn = document.getElementById('btnAutoSeo');
+  btn.innerText = '⏳ Generating...'; btn.disabled = true;
+  
+  try {
+    let prompt = '';
+    if(target.startsWith('prod_')) {
+      const pId = target.replace('prod_', '');
+      const prods = await Products.getAll();
+      const p = prods.find(x => x.id == pId);
+      if(!p) throw new Error('Product not found');
+      prompt = `Generate SEO Meta Title (max 60 chars), Meta Description (max 160 chars), and Keywords for this ecommerce product.\nProduct Name: ${p.name}\nDescription: ${p.description}\nCategory: ${p.category_name}\nPrice: ${p.price}\n\nRespond ONLY with a raw JSON object (no markdown, no backticks) with keys: "title", "description", "keywords".`;
+    } else {
+      prompt = `Generate SEO Meta Title (max 60 chars), Meta Description (max 160 chars), and Keywords for an ecommerce store page.\nPage Target: ${target}\nContext: This is a custom personalized gifts store named CraftedCore.\n\nRespond ONLY with a raw JSON object (no markdown, no backticks) with keys: "title", "description", "keywords".`;
+    }
+    
+    const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' + apiKey, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ contents: [{ parts: [{text: prompt}] }] })
+    });
+    const data = await res.json();
+    if(data.error) throw new Error(data.error.message);
+    
+    const text = data.candidates[0].content.parts[0].text;
+    const parsed = JSON.parse(text.replace(/```json/g, '').replace(/```/g, '').trim());
+    
+    document.getElementById('seoTitle').value = parsed.title || '';
+    document.getElementById('seoDesc').value = parsed.description || '';
+    document.getElementById('seoKw').value = parsed.keywords || '';
+    
+    calcSeoScore();
+    toast('✅ AI SEO Generated Successfully!', 'success');
+  } catch(e) {
+    console.error(e);
+    toast('❌ AI Error: ' + e.message, 'error');
+  } finally {
+    btn.innerText = '✨ Auto Generate SEO (AI)'; btn.disabled = false;
+  }
 }
 
 // Ensure initSeoDropdown runs on load
