@@ -203,12 +203,16 @@ function productCardHTML(p) {
   <div class="product-card" data-category="${p.category_slug || 'all'}" data-tags="${tags}" id="prod-${p.id}">
     <div class="product-image-wrap">
       ${(p.badge && p.badge !== 'null' && p.badge.trim() !== '') ? `<span class="product-badge">${p.badge}</span>` : ''}
-      <a href="product.html?id=${p.id}">
-        <img src="${p.image_url ? p.image_url.split(',')[0] : 'images/product_mug.jpg'}" alt="${p.name}" loading="lazy"/>
+      <a href="product.html?id=${p.id}" class="prod-img-link">
+        ${(() => {
+           let imgs = p.image_url ? p.image_url.split(',').map(u => u.trim()) : ['images/product_mug.jpg'];
+           let out = `<img src="${imgs[0]}" alt="${safeName}" class="img-primary" loading="lazy"/>`;
+           if (imgs.length > 1) {
+             out += `<img src="${imgs[1]}" alt="${safeName}" class="img-secondary" loading="lazy"/>`;
+           }
+           return out;
+        })()}
       </a>
-      <div class="product-overlay">
-        <a href="product.html?id=${p.id}" class="btn btn-whatsapp" style="width:100%;justify-content:center;border:none;text-decoration:none;display:flex;">🛍️ View Options</a>
-      </div>
     </div>
     <div class="product-info">
       <div class="product-category">${p.category_name || ''}</div>
