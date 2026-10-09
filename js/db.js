@@ -1,3 +1,4 @@
+localStorage.clear();
 // CraftedCore — js/db.js v4
 // ============================================================
 
@@ -386,6 +387,7 @@ async function applyDynamicSettings() {
     }
   } catch(e) { /* Silently use static fallback */ }
 }
+
 
 
 
