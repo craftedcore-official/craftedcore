@@ -64,18 +64,18 @@ function cacheGet(k) {
   } catch(e) { return null; }
 }
 function cacheClear() {
-  ['cc_products_v3', 'cc_categories', 'cc_settings_v2'].forEach(k => { try { localStorage.removeItem(k); } catch(e) {} });
+  ['cc_products_v4', 'cc_categories_v2', 'cc_settings_v2'].forEach(k => { try { localStorage.removeItem(k); } catch(e) {} });
 }
 
 // ── Products API ──────────────────────────────────────────────
 const Products = {
   async getAll() {
-    const c = cacheGet('cc_products_v3');
+    const c = cacheGet('cc_products_v4');
     const ts = localStorage.getItem('cc_products_ts');
     const now = new Date().getTime();
     if (c && c.length > 0 && ts && (now - parseInt(ts) < 5 * 60 * 1000)) return c; // 5 min TTL // Only return cache if it actually has items
     const d = await dbFetch('products?select=*&order=created_at.desc');
-    if (d && d.length > 0) cacheSet('cc_products_v3', d); try { localStorage.setItem('cc_products_ts', new Date().getTime().toString()); } catch(e){} 
+    if (d && d.length > 0) cacheSet('cc_products_v4', d); try { localStorage.setItem('cc_products_ts', new Date().getTime().toString()); } catch(e){} 
     return d || [];
   },
   async getFeatured()  { return (await this.getAll()).filter(p => p.is_featured); },
@@ -87,10 +87,10 @@ const Products = {
 // ── Categories API ────────────────────────────────────────────
 const Categories = {
   async getAll() {
-    const c = cacheGet('cc_categories');
+    const c = cacheGet('cc_categories_v2');
     if (c && c.length > 0) return c; // Only return cache if it actually has items
     const d = await dbFetch('categories?select=*&order=sort_order.asc,name.asc');
-    if (d && d.length > 0) cacheSet('cc_categories', d); 
+    if (d && d.length > 0) cacheSet('cc_categories_v2', d); 
     return d || [];
   },
   async create(c)      { cacheClear(); return dbFetch('categories',              { method: 'POST',  body: JSON.stringify(c) }); },
