@@ -1984,21 +1984,27 @@ footer {
   transform: scale(1);
 }
 
-/* FORCING BADGE - BULLETPROOF */
+
+
+/* FORCING BADGE - PREMIUM & SLEEK */
 .product-badge {
   display: inline-block !important;
   position: absolute !important;
-  top: 0.8rem !important;
-  left: 0.8rem !important;
+  top: 0.6rem !important;
+  left: 0.6rem !important;
   z-index: 50 !important;
-  background: #C88A58 !important;
-  background: linear-gradient(135deg, #E2B38F, #C88A58) !important;
-  color: #000 !important;
-  font-size: 0.72rem !important;
-  font-weight: 800 !important;
-  padding: 0.25rem 0.6rem !important;
-  border-radius: 50px !important;
+  background: rgba(200, 138, 88, 0.9) !important; /* Premium semi-transparent copper */
+  backdrop-filter: blur(4px) !important;
+  -webkit-backdrop-filter: blur(4px) !important;
+  color: #fff !important;
+  font-size: 0.6rem !important;
+  font-weight: 600 !important;
+  padding: 0.2rem 0.5rem !important;
+  border-radius: 50px !important; /* Pill shape */
   opacity: 1 !important;
   visibility: visible !important;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3) !important;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15) !important;
+  letter-spacing: 0.5px !important;
+  border: 1px solid rgba(255,255,255,0.3) !important;
+  text-transform: uppercase !important;
 }
