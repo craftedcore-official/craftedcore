@@ -1,4 +1,3 @@
-localStorage.clear();
 // CraftedCore — js/db.js v4
 // ============================================================
 
@@ -65,18 +64,18 @@ function cacheGet(k) {
   } catch(e) { return null; }
 }
 function cacheClear() {
-  ['cc_products_v4', 'cc_categories_v2', 'cc_settings_v2'].forEach(k => { try { localStorage.removeItem(k); } catch(e) {} });
+  ['cc_products_v5', 'cc_categories_v3', 'cc_settings_v3'].forEach(k => { try { localStorage.removeItem(k); } catch(e) {} });
 }
 
 // ── Products API ──────────────────────────────────────────────
 const Products = {
   async getAll() {
-    const c = cacheGet('cc_products_v4');
+    const c = cacheGet('cc_products_v5');
     const ts = localStorage.getItem('cc_products_ts');
     const now = new Date().getTime();
     if (c && c.length > 0 && ts && (now - parseInt(ts) < 5 * 60 * 1000)) return c; // 5 min TTL // Only return cache if it actually has items
     const d = await dbFetch('products?select=*&order=created_at.desc');
-    if (d && d.length > 0) cacheSet('cc_products_v4', d); try { localStorage.setItem('cc_products_ts', new Date().getTime().toString()); } catch(e){} 
+    if (d && d.length > 0) cacheSet('cc_products_v5', d); try { localStorage.setItem('cc_products_ts', new Date().getTime().toString()); } catch(e){} 
     return d || [];
   },
   async getFeatured()  { return (await this.getAll()).filter(p => p.is_featured); },
@@ -88,10 +87,10 @@ const Products = {
 // ── Categories API ────────────────────────────────────────────
 const Categories = {
   async getAll() {
-    const c = cacheGet('cc_categories_v2');
+    const c = cacheGet('cc_categories_v3');
     if (c && c.length > 0) return c; // Only return cache if it actually has items
     const d = await dbFetch('categories?select=*&order=sort_order.asc,name.asc');
-    if (d && d.length > 0) cacheSet('cc_categories_v2', d); 
+    if (d && d.length > 0) cacheSet('cc_categories_v3', d); 
     return d || [];
   },
   async create(c)      { cacheClear(); return dbFetch('categories',              { method: 'POST',  body: JSON.stringify(c) }); },
@@ -148,11 +147,11 @@ const SiteSettings = {
     return this._ok;
   },
   async getAll() {
-    const c = cacheGet('cc_settings_v2'); if (c) return c;
+    const c = cacheGet('cc_settings_v3'); if (c) return c;
     try {
       const d = await dbFetch('site_settings?select=*');
       const o = {}; (d || []).forEach(r => { o[r.key] = r.value; });
-      cacheSet('cc_settings_v2', o); return o;
+      cacheSet('cc_settings_v3', o); return o;
     } catch(e) { return {}; }
   },
   async get(key) {
@@ -203,7 +202,7 @@ function productCardHTML(p) {
   return `
   <div class="product-card" data-category="${p.category_slug || 'all'}" data-tags="${tags}" id="prod-${p.id}">
     <div class="product-image-wrap">
-      <span class="product-badge">${p.badge || 'Test Badge'}</span>
+      ${(p.badge && p.badge !== 'null' && p.badge.trim() !== '') ? `<span class="product-badge">${p.badge}</span>` : ''}
       <a href="product.html?id=${p.id}">
         <img src="${p.image_url ? p.image_url.split(',')[0] : 'images/product_mug.jpg'}" alt="${p.name}" loading="lazy"/>
       </a>
@@ -387,6 +386,7 @@ async function applyDynamicSettings() {
     }
   } catch(e) { /* Silently use static fallback */ }
 }
+
 
 
 

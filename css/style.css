@@ -1950,19 +1950,4 @@ footer {
   font-weight: 500;
 }
 
-/* FORCE VISIBILITY TEST */
-.product-badge {
-  position: absolute !important;
-  top: 1rem !important;
-  left: 1rem !important;
-  z-index: 99999 !important;
-  background: red !important;
-  color: white !important;
-  font-size: 1.2rem !important;
-  font-weight: 800 !important;
-  padding: 0.5rem 1rem !important;
-  border-radius: 5px !important;
-  display: block !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-}
+
