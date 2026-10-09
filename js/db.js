@@ -203,7 +203,7 @@ function productCardHTML(p) {
   return `
   <div class="product-card" data-category="${p.category_slug || 'all'}" data-tags="${tags}" id="prod-${p.id}">
     <div class="product-image-wrap">
-      ${(p.badge && p.badge !== 'null' && p.badge.trim() !== '') ? `<span class="product-badge">${p.badge}</span>` : ''}
+      <span class="product-badge">${p.badge || 'Test Badge'}</span>
       <a href="product.html?id=${p.id}">
         <img src="${p.image_url ? p.image_url.split(',')[0] : 'images/product_mug.jpg'}" alt="${p.name}" loading="lazy"/>
       </a>
@@ -387,6 +387,7 @@ async function applyDynamicSettings() {
     }
   } catch(e) { /* Silently use static fallback */ }
 }
+
 
 
 
