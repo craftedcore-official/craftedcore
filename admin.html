@@ -1670,7 +1670,7 @@ async function togFeat(id, val) {
 }
 
 function openProdModal() {
-  ['pmId','pName','pPrice','pBadge','pDesc','pWA','pImgUrl','pColors','pCustOptions','pInputFields','pTags'].forEach(id => document.getElementById(id).value = '');
+  ['pmId','pName','pPrice','pBadge','pDesc','pWA','pImgUrl','pColors','pCustOptions','pInputFields','pTags','pSeoTitle','pSeoDesc','pSeoKw'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('pCat').value = '';
   document.getElementById('pFeat').checked = false;
   document.getElementById('pPhotoUpload').checked = false;
