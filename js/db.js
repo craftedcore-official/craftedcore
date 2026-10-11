@@ -247,9 +247,12 @@ async function applyDynamicSettings() {
 
     // 2. WhatsApp Number
     if (s.whatsapp_number) {
-      const n = s.whatsapp_number.replace(/\D/g, '');
+      let n = String(s.whatsapp_number).replace(/\D/g, '');
+      if (n.startsWith('0')) n = n.substring(1);
+      if (n.length === 10) n = '91' + n;
+      s.whatsapp_number = n;
       document.querySelectorAll('a[href*="wa.me"]').forEach(a => {
-        a.href = a.href.replace(/wa\.me\/\d+/, `wa.me/${n}`);
+        a.href = a.href.replace(/wa\.me\/[+0-9]+/, `wa.me/${n}`);
       });
     }
     // 5. SEO Data Application

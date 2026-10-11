@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -1253,7 +1253,7 @@ create policy "Public Settings" on site_settings for all using (true) with check
 <!-- Image Cropper -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
-<script src="js/db.js?v=46"></script>
+<script src="js/db.js?v=54"></script>
 <script>
 // ─── AUTH ────────────────────────────────────────────────────
 function getAdmPass() { 
@@ -1554,7 +1554,9 @@ function handleOrderStatusWhatsApp(order, newStatus) {
   if (!order.customer_phone) return;
   
   let msg = '';
-  const waNum = order.customer_phone.replace(/\\D/g, '');
+  let waNum = String(order.customer_phone).replace(/\D/g, '');
+  if (waNum.startsWith('0')) waNum = waNum.substring(1);
+  if (waNum.length === 10) waNum = '91' + waNum;
   if (!waNum) return;
 
   const E_WAVE = decodeURIComponent("%F0%9F%91%8B");
@@ -1567,10 +1569,10 @@ function handleOrderStatusWhatsApp(order, newStatus) {
 
   if (newStatus === 'processing') {
     msg = `Hi ${order.customer_name}! ${E_WAVE}\n\nWe have received your order *#${order.id}* and we are currently processing it. ${E_TOOLS}${E_SPARKLES}\n\nWe will notify you once it's shipped. Thank you for choosing CraftedCore! ${E_HEART}`;
-    window.open(`https://api.whatsapp.com/send?phone=${waNum}&text=${encodeURIComponent(msg)}`, '_blank');
+    window.open(`https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`, '_blank');
   } 
   else if (newStatus === 'completed') {
-    const trackingInfo = prompt(`Enter tracking number or link for Order #${order.id}\\n(Leave blank if not applicable):`);
+    const trackingInfo = prompt(`Enter tracking number or link for Order #${order.id}\n(Leave blank if not applicable):`);
     
     msg = `Hi ${order.customer_name}! ${E_TADA}\n\nThank you for your order and for supporting CraftedCore! ${E_HEART}\n\nYour order *#${order.id}* has been successfully completed and shipped. ${E_TRUCK}${E_BOX}\n`;
     
@@ -1579,7 +1581,7 @@ function handleOrderStatusWhatsApp(order, newStatus) {
     }
     
     msg += `\nWe hope you love your custom merchandise! Feel free to reach out if you need any assistance. ${E_SPARKLES}`;
-    window.open(`https://api.whatsapp.com/send?phone=${waNum}&text=${encodeURIComponent(msg)}`, '_blank');
+    window.open(`https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`, '_blank');
   }
 }
 
@@ -2432,7 +2434,10 @@ async function saveAnn() {
 }
 
 async function saveWAFooter() {
-  const n = document.getElementById('waNum').value.trim().replace(/[^\d+]/g, '');
+  let rawN = document.getElementById('waNum').value.trim();
+  let n = rawN.replace(/\D/g, '');
+  if (n.startsWith('0')) n = n.substring(1);
+  if (n.length === 10) n = '91' + n;
   if (!n) { toast('❌ Valid WhatsApp number required!', 'error'); return; }
   try {
     await SiteSettings.setMultiple({
@@ -2443,12 +2448,15 @@ async function saveWAFooter() {
       biz_insta: document.getElementById('bInstaVal').value.trim(),
       biz_tagline: document.getElementById('ftTagline').value.trim()
     });
+    document.getElementById('waNum').value = n;
     toast('✅ Step 7: WhatsApp, QR & Footer Saved!', 'success');
   } catch(e) { toast('❌ Error', 'error'); }
 }
 
 function testWA() {
-  const n = document.getElementById('waNum').value.trim().replace(/[^\d+]/g, '');
+  let n = document.getElementById('waNum').value.trim().replace(/\D/g, '');
+  if (n.startsWith('0')) n = n.substring(1);
+  if (n.length === 10) n = '91' + n;
   if (!n) return;
   window.open(`https://wa.me/${n}?text=Test+from+Admin`, '_blank');
 }
@@ -3105,6 +3113,7 @@ window.onload = function() { _oldInit(); initSeoDropdown(); };
 </script>
 </body>
 </html>
+
 
 
 

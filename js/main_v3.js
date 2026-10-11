@@ -1160,7 +1160,9 @@ async function submitCartCheckout() {
     const E_BOX = decodeURIComponent("%F0%9F%93%A6");
     const E_ID = decodeURIComponent("%F0%9F%86%94");
     const E_BAG = decodeURIComponent("%F0%9F%9B%8D%EF%B8%8F");
-    const waNum = ((window._siteSettings || {}).whatsapp_number || '918320979383').replace(/\D/g, '');
+    let waNum = ((window._siteSettings || {}).whatsapp_number || '918320979383').toString().replace(/\D/g, '');
+    if (waNum.startsWith('0')) waNum = waNum.substring(1);
+    if (waNum.length === 10) waNum = '91' + waNum;
     let msg = `Hi Crafted Core! ${E_WAVE}\n\nA new order has been placed + payment screenshot attached.\n\n${E_BOX} *ORDER DETAILS*\n━━━━━━━━━━━━━━━━━━\n${E_ID} *Order ID:* #${orderId}\n\n${E_BAG} *Items*\n`;
     shoppingCart.forEach(item => {
       msg += `• ${item.qty} × ${item.name}\n`;
@@ -1200,7 +1202,7 @@ async function submitCartCheckout() {
     msg += `*GRAND TOTAL: ₹${grandTotal}*\n`;
     msg += `\n━━━━━━━━━━━━━━━━━━\n${E_CAM} Payment screenshot attached.\n${E_CHECK} Please review and process.`;
     
-    currentDraftWaMsg = `https://api.whatsapp.com/send?phone=${waNum}&text=${encodeURIComponent(msg)}`;
+    currentDraftWaMsg = `https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`;
     
     // Close checkout modal, open UPI payment modal
     document.getElementById('frontOrderModal').style.display = 'none';
@@ -1243,10 +1245,11 @@ function closeUpiModal() {
 
 // Confirm order via WhatsApp — updates draft to pending
 async function confirmOrderViaWhatsApp() {
+  const targetUrl = currentDraftWaMsg;
   try {
-    // Update order status from 'draft' to 'pending'
+    // Update order status from 'draft' to 'pending' in background
     if (currentDraftOrderId && currentDraftOrderId !== 'NEW') {
-      await Orders.updateStatus(currentDraftOrderId, 'pending');
+      Orders.updateStatus(currentDraftOrderId, 'pending').catch(e => console.log('Could not update order status:', e));
     }
   } catch(e) {
     console.log('Could not update order status:', e);
@@ -1258,8 +1261,11 @@ async function confirmOrderViaWhatsApp() {
   
   // Close payment modal and open WhatsApp
   closeUpiModal();
-  if (currentDraftWaMsg) {
-    window.open(currentDraftWaMsg, '_blank');
+  if (targetUrl) {
+    const w = window.open(targetUrl, '_blank');
+    if (!w || w.closed || typeof w.closed === 'undefined') {
+      window.location.href = targetUrl;
+    }
   }
   
   // Reset draft state
@@ -1286,7 +1292,9 @@ document.addEventListener('click', (e) => {
          text += `\n\n*Product Image:* ${imgUrl}`;
       }
       
-      const waNum = ((window._siteSettings || {}).whatsapp_number || '918320979383').replace(/\D/g, '');
+      let waNum = ((window._siteSettings || {}).whatsapp_number || '918320979383').toString().replace(/\D/g, '');
+      if (waNum.startsWith('0')) waNum = waNum.substring(1);
+      if (waNum.length === 10) waNum = '91' + waNum;
       openQR(`https://wa.me/${waNum}?text=${encodeURIComponent(text)}`);
     }
   }
@@ -1321,9 +1329,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const qrWaBtn = document.getElementById('qrWaBtn');
   if (qrWaBtn) {
     qrWaBtn.onclick = () => {
+      const link = currentWaLink;
       closeQR();
-      if (currentWaLink) {
-        window.open(currentWaLink, '_blank');
+      if (link) {
+        const w = window.open(link, '_blank');
+        if (!w || w.closed || typeof w.closed === 'undefined') {
+          window.location.href = link;
+        }
       }
     };
   }
