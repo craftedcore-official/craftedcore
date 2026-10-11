@@ -927,7 +927,6 @@ create policy "Public Settings" on site_settings for all using (true) with check
         </div>
         <textarea class="fctl" id="pDesc" placeholder="Description..." style="margin-top:0;"></textarea>
       </div>
-      </div>
       <div class="fg">
         <label>Available Colors</label>
         <div style="display:flex; gap:0.5rem; align-items:center;">
@@ -969,6 +968,21 @@ create policy "Public Settings" on site_settings for all using (true) with check
           <button type="button" class="btn" style="padding:0.2rem 0.5rem;font-size:0.75rem;background:var(--bg3);color:var(--text);" onclick="pinCust()">📌 Pin</button>
         </div>
         <div class="bdg-presets" id="custPresetsCont" style="margin-top:0.4rem;"></div>
+      </div>
+      <div class="card" style="margin-bottom:1rem;background:var(--bg3);padding:1rem;border-radius:var(--r);border:1px solid var(--border);">
+        <div class="card-title" style="font-size:0.9rem;font-weight:700;margin-bottom:0.6rem;">🚀 SEO Details (Optional)</div>
+        <div class="fg">
+          <label>SEO Meta Title</label>
+          <input type="text" class="fctl" id="pSeoTitle" placeholder="Leave blank to use default name" />
+        </div>
+        <div class="fg">
+          <label>SEO Meta Description</label>
+          <textarea class="fctl" id="pSeoDesc" rows="2" placeholder="Leave blank to use product description"></textarea>
+        </div>
+        <div class="fg">
+          <label>SEO Keywords</label>
+          <input type="text" class="fctl" id="pSeoKw" placeholder="custom gifts, mug..." />
+        </div>
       </div>
       <div class="fg"><label>WhatsApp Message</label><input type="text" class="fctl" id="pWA" placeholder="Hi! I want to order this product." /></div>
       <div class="fg">
@@ -1253,7 +1267,7 @@ create policy "Public Settings" on site_settings for all using (true) with check
 <!-- Image Cropper -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
-<script src="js/db.js?v=54"></script>
+<script src="js/db.js?v=55"></script>
 <script>
 // ─── AUTH ────────────────────────────────────────────────────
 function getAdmPass() { 
@@ -1672,10 +1686,16 @@ async function togFeat(id, val) {
 }
 
 function openProdModal() {
-  ['pmId','pName','pPrice','pBadge','pDesc','pWA','pImgUrl','pColors','pCustOptions','pInputFields','pTags','pSeoTitle','pSeoDesc','pSeoKw'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('pCat').value = '';
-  document.getElementById('pFeat').checked = false;
-  document.getElementById('pPhotoUpload').checked = false;
+  ['pmId','pName','pPrice','pBadge','pDesc','pWA','pImgUrl','pColors','pCustOptions','pInputFields','pTags','pSeoTitle','pSeoDesc','pSeoKw'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  const pCat = document.getElementById('pCat');
+  if (pCat) pCat.value = '';
+  const pFeat = document.getElementById('pFeat');
+  if (pFeat) pFeat.checked = false;
+  const pPhotoUpload = document.getElementById('pPhotoUpload');
+  if (pPhotoUpload) pPhotoUpload.checked = false;
   document.querySelectorAll('.sc-chk').forEach(c => c.checked = false);
   window.pgImageColors = {};
   renderPGallery();
@@ -1695,6 +1715,22 @@ function editProd(id) {
   document.getElementById('pWA').value = p.wa_message || '';
   document.getElementById('pImgUrl').value = p.image_url || '';
   document.getElementById('pFeat').checked = !!p.is_featured;
+
+  if (document.getElementById('pSeoTitle')) document.getElementById('pSeoTitle').value = '';
+  if (document.getElementById('pSeoDesc')) document.getElementById('pSeoDesc').value = '';
+  if (document.getElementById('pSeoKw')) document.getElementById('pSeoKw').value = '';
+
+  SiteSettings.getAll().then(settings => {
+    try {
+      const seoDb = settings.seo_data ? JSON.parse(settings.seo_data) : {};
+      const prodSeo = seoDb['prod_' + p.id];
+      if (prodSeo) {
+        if (document.getElementById('pSeoTitle')) document.getElementById('pSeoTitle').value = prodSeo.title || '';
+        if (document.getElementById('pSeoDesc')) document.getElementById('pSeoDesc').value = prodSeo.desc || '';
+        if (document.getElementById('pSeoKw')) document.getElementById('pSeoKw').value = prodSeo.kw || '';
+      }
+    } catch(e) {}
+  });
   
   let cust = {};
   try { if (p.customizations) cust = JSON.parse(p.customizations); } catch(e){}
@@ -1728,9 +1764,12 @@ function editProd(id) {
 
 async function saveProd() {
   const name  = document.getElementById('pName').value.trim();
-  const price = parseFloat(document.getElementById('pPrice').value);
+  const priceVal = document.getElementById('pPrice').value.trim();
+  const price = parseFloat(priceVal);
   const cat   = document.getElementById('pCat').value;
-  if (!name || !price || !cat) { toast('❌ Name, price & category are required!', 'error'); return; }
+  if (!name) { toast('❌ Please enter product name!', 'error'); return; }
+  if (isNaN(price) || price < 0) { toast('❌ Please enter a valid price!', 'error'); return; }
+  if (!cat) { toast('❌ Please select a category!', 'error'); return; }
   const catObj = _cats.find(c => c.slug === cat);
   
   updatePTags();
@@ -1753,15 +1792,52 @@ async function saveProd() {
     is_featured: document.getElementById('pFeat').checked,
     image_url: document.getElementById('pImgUrl').value.trim() || null
   };
+
+  const btn = document.getElementById('savePBtn');
+  if (btn) {
+    btn.disabled = true;
+    btn.innerText = '⏳ Saving...';
+  }
+
   try {
     const id = document.getElementById('pmId').value;
-    if (id) await Products.update(id, data);
-    else    await Products.create(data);
-    toast(id ? '✅ Product updated!' : '✅ Product added!', 'success');
+    let savedProdId = id;
+    if (id) {
+      await Products.update(id, data);
+    } else {
+      const res = await Products.create(data);
+      if (res && res[0]) savedProdId = res[0].id;
+    }
+
+    // Save SEO if fields exist
+    const seoTitleEl = document.getElementById('pSeoTitle');
+    const seoDescEl  = document.getElementById('pSeoDesc');
+    const seoKwEl    = document.getElementById('pSeoKw');
+    const t = seoTitleEl ? seoTitleEl.value.trim() : '';
+    const d = seoDescEl  ? seoDescEl.value.trim()  : '';
+    const k = seoKwEl    ? seoKwEl.value.trim()    : '';
+    if (savedProdId && (t || d || k)) {
+      try {
+        const settings = await SiteSettings.getAll();
+        const seoDb = settings.seo_data ? JSON.parse(settings.seo_data) : {};
+        seoDb['prod_' + savedProdId] = Object.assign(seoDb['prod_' + savedProdId] || {}, { title: t, desc: d, kw: k });
+        await SiteSettings.set('seo_data', JSON.stringify(seoDb));
+      } catch(seoErr) { console.error('SEO save error:', seoErr); }
+    }
+
+    toast(id ? '✅ Product updated!' : '✅ Product added successfully!', 'success');
     closeM('prodModal');
-    loadProds();
+    await loadProds();
     loadDash();
-  } catch(e) { toast('❌ Error: ' + e.message, 'error'); }
+  } catch(e) {
+    console.error(e);
+    toast('❌ Error saving product: ' + (e.message || 'Database error'), 'error');
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerText = '💾 Save Product';
+    }
+  }
 }
 
 function setBdg(el, val) { document.getElementById('pBadge').value = val; }
@@ -2792,27 +2868,43 @@ async function autoGenerateAI(btn) {
   btn.disabled = true;
   
   try {
-    const prompt = `You are an expert e-commerce copywriter and SEO specialist. Write a highly engaging, SEO-optimized product description (2-3 sentences max) for a product named "${name}". Use relevant search keywords naturally (like custom, personalized, buy online, etc.). Also generate a polite, engaging predefined WhatsApp order message for this product. Also generate a catchy, short emoji-filled badge for this product (like "💎 Premium Pick" or "🔥 Hot Trend"). Return ONLY a valid JSON object in this exact format: {"description": "...", "wa_message": "...", "badge": "..."}. Do not wrap in markdown blocks, just the raw JSON text.`;
+    const prompt = `You are an expert e-commerce copywriter and SEO specialist. Write a highly engaging, SEO-optimized product description (2-3 sentences max) for a product named "${name}". Use relevant search keywords naturally (like custom, personalized, buy online, etc.). Also generate a polite, engaging predefined WhatsApp order message for this product. Also generate a catchy, short emoji-filled badge for this product (like "💎 Premium Pick" or "🔥 Hot Trend"). Also generate SEO Meta Title (max 60 chars), SEO Meta Description (max 160 chars), and SEO Keywords (comma separated).
+Return ONLY a valid JSON object in this exact format:
+{"description": "...", "wa_message": "...", "badge": "...", "seo_title": "...", "seo_desc": "...", "seo_kw": "..."}.
+Do not wrap in markdown blocks, just the raw JSON text.`;
     
-    const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=' + key, {
+    let modelName = 'gemini-1.5-flash';
+    try {
+      const modelsRes = await fetch('https://generativelanguage.googleapis.com/v1beta/models?key=' + key);
+      const modelsData = await modelsRes.json();
+      if(modelsData.models) {
+        const validModel = modelsData.models.find(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes('generateContent') && (m.name.includes('flash') || m.name.includes('pro')));
+        if(validModel) modelName = validModel.name.replace('models/', '');
+      }
+    } catch(e) {}
+
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=` + key, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
     });
     
-    if (!res.ok) throw new Error('API Error');
+    if (!res.ok) throw new Error('API Error: ' + res.status);
     const data = await res.json();
     const rawText = data.candidates[0].content.parts[0].text;
     const jsonStr = rawText.replace(/^```json/i, '').replace(/```$/i, '').trim();
     const result = JSON.parse(jsonStr);
     
-    document.getElementById('pDesc').value = result.description || '';
-    document.getElementById('pWA').value = result.wa_message || '';
+    if (result.description) document.getElementById('pDesc').value = result.description;
+    if (result.wa_message) document.getElementById('pWA').value = result.wa_message;
     if (result.badge) document.getElementById('pBadge').value = result.badge;
+    if (result.seo_title && document.getElementById('pSeoTitle')) document.getElementById('pSeoTitle').value = result.seo_title;
+    if (result.seo_desc && document.getElementById('pSeoDesc')) document.getElementById('pSeoDesc').value = result.seo_desc;
+    if (result.seo_kw && document.getElementById('pSeoKw')) document.getElementById('pSeoKw').value = result.seo_kw;
     toast('✨ AI Generation Complete!', 'success');
   } catch (e) {
     console.error(e);
-    toast('❌ AI Generation failed. Check API Key.', 'error');
+    toast('❌ AI Generation failed: ' + (e.message || 'Check API Key'), 'error');
   } finally {
     btn.innerHTML = originalTxt;
     btn.disabled = false;
@@ -3113,6 +3205,7 @@ window.onload = function() { _oldInit(); initSeoDropdown(); };
 </script>
 </body>
 </html>
+
 
 
 

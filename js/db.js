@@ -64,7 +64,7 @@ function cacheGet(k) {
   } catch(e) { return null; }
 }
 function cacheClear() {
-  ['cc_products_v5', 'cc_categories_v3', 'cc_settings_v3'].forEach(k => { try { localStorage.removeItem(k); } catch(e) {} });
+  ['cc_products_v5', 'cc_categories_v3', 'cc_settings_v3', 'cc_products', 'cc_categories', 'cc_settings', 'cc_products_ts'].forEach(k => { try { localStorage.removeItem(k); } catch(e) {} });
 }
 
 // ── Products API ──────────────────────────────────────────────
