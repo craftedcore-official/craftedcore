@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -1169,6 +1169,10 @@ create policy "Public Settings" on site_settings for all using (true) with check
       <div class="fg">
         <label>Title</label>
         <input type="text" class="fctl" id="qoTitle" placeholder="e.g. T-Shirt" />
+      </div>
+      <div class="fg">
+        <label>Description (Optional)</label>
+        <input type="text" class="fctl" id="qoDesc" placeholder="e.g. 100% Pure Cotton 240 GSM" />
       </div>
       <div class="fg">
         <label>Starting Price (Text)</label>
@@ -2926,7 +2930,7 @@ function renderQO() {
     document.getElementById('qoTbl').innerHTML = '<div class="empty">No Quick Order items found.</div>';
     return;
   }
-  let h = '<table><thead><tr><th>Icon</th><th>Title</th><th>Price</th><th>Message</th><th>Actions</th></tr></thead><tbody>';
+  let h = '<table><thead><tr><th>Icon</th><th>Title</th><th>Description</th><th>Price</th><th>Message</th><th>Actions</th></tr></thead><tbody>';
   quickOrders.forEach((q, i) => {
     const iconHtml = (q.icon && (q.icon.startsWith('http') || q.icon.includes('/'))) 
       ? `<img src="${q.icon}" style="width:40px;height:40px;object-fit:cover;border-radius:6px;" />` 
@@ -2934,6 +2938,7 @@ function renderQO() {
     h += `<tr>
       <td style="font-size:1.5rem; text-align:center;">${iconHtml}</td>
       <td style="font-weight:600;">${q.title || ''}</td>
+      <td style="font-size:0.8rem; color:var(--text2); max-width:180px;">${q.desc || '<span style="color:var(--text3);font-style:italic;">—</span>'}</td>
       <td>${q.price || ''}</td>
       <td style="font-size:0.8rem; color:var(--text2);">${q.msg || ''}</td>
       <td>
@@ -2953,6 +2958,7 @@ function openQOModal(i = -1) {
     document.getElementById('qoModalTitle').innerText = 'Add Quick Order Item';
     document.getElementById('qoId').value = '';
     document.getElementById('qoTitle').value = '';
+    document.getElementById('qoDesc').value = '';
     document.getElementById('qoPrice').value = '';
     document.getElementById('qoIcon').value = '';
     document.getElementById('qoMsg').value = '';
@@ -2962,6 +2968,7 @@ function openQOModal(i = -1) {
       document.getElementById('qoModalTitle').innerText = 'Edit Quick Order Item';
       document.getElementById('qoId').value = i;
       document.getElementById('qoTitle').value = q.title || '';
+      document.getElementById('qoDesc').value = q.desc || '';
       document.getElementById('qoPrice').value = q.price || '';
       document.getElementById('qoIcon').value = q.icon || '';
       document.getElementById('qoMsg').value = q.msg || '';
@@ -2974,6 +2981,7 @@ async function saveQO() {
   const i = document.getElementById('qoId').value;
   const q = {
     title: document.getElementById('qoTitle').value.trim(),
+    desc: document.getElementById('qoDesc').value.trim(),
     price: document.getElementById('qoPrice').value.trim(),
     icon: document.getElementById('qoIcon').value.trim(),
     msg: document.getElementById('qoMsg').value.trim()
