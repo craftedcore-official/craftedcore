@@ -20,13 +20,13 @@
                 displayPrice = '₹' + rawPrice;
               }
               
-              const msg = q.msg || ('Hi CraftedCore! I want to order ' + (q.title || 'this item') + '.');
-              const waLink = `https://wa.me/+918320979383?text=${encodeURIComponent(msg)}`;
+              const phone = (settings.whatsapp_number || '918320979383').replace(/\D/g, '');
+              const msg = q.msg || ('Hi Crafted Core! 😊 Mujhe custom printed T-shirt order karni hai. Please details share karein.');
+              const waLink = `https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(msg)}`;
               
               html += `
               <a href="${waLink}" target="_blank" class="qo-card" title="Order ${escapeHtml(q.title || '')} on WhatsApp">
                 <div class="qo-img-wrap">
-                  <span class="qo-badge">⚡ Quick Order</span>
                   ${iconHtml}
                 </div>
                 <div class="qo-body">
