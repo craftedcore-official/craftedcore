@@ -2014,3 +2014,199 @@ footer {
   border: 1px solid rgba(255,255,255,0.3) !important;
   text-transform: uppercase !important;
 }
+
+/* =============================================
+   QUICK ORDER SECTION & CARDS
+   ============================================= */
+.quick-order-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 300px));
+  gap: 1.5rem;
+  justify-content: center;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.qo-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  overflow: hidden;
+  text-decoration: none;
+  color: var(--text-primary);
+  display: flex;
+  flex-direction: column;
+  transition: var(--transition);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  position: relative;
+}
+
+.qo-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--copper);
+  box-shadow: 0 16px 36px rgba(200, 138, 88, 0.22), var(--shadow-card);
+  background: var(--bg-card-hover);
+}
+
+.qo-card:active {
+  transform: scale(0.98);
+}
+
+.qo-img-wrap {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: #141419;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.qo-card:hover .qo-img {
+  transform: scale(1.08);
+}
+
+.qo-emoji {
+  font-size: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.qo-badge {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 2;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 0.3rem 0.7rem;
+  border-radius: 50px;
+  background: rgba(10, 10, 14, 0.8);
+  color: var(--copper-light);
+  border: 1px solid rgba(200, 138, 88, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+}
+
+.qo-body {
+  padding: 1rem 1.1rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: space-between;
+}
+
+.qo-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.4rem;
+  text-transform: capitalize;
+  line-height: 1.3;
+}
+
+.qo-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--border-light);
+}
+
+.qo-price {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--copper-light);
+}
+
+.qo-btn {
+  background: linear-gradient(135deg, #25D366, #128C7E);
+  color: #fff;
+  border-radius: 50px;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.35);
+  transition: var(--transition);
+  white-space: nowrap;
+}
+
+.qo-card:hover .qo-btn {
+  filter: brightness(1.1);
+  box-shadow: 0 6px 18px rgba(37, 211, 102, 0.5);
+}
+
+@media (max-width: 768px) {
+  .quick-order-grid {
+    gap: 1.2rem;
+  }
+}
+
+@media (max-width: 580px) {
+  .quick-order-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.85rem;
+  }
+  
+  .quick-order-grid.has-single,
+  .quick-order-grid:has(.qo-card:only-child) {
+    grid-template-columns: minmax(260px, 340px);
+    justify-content: center;
+  }
+
+  .qo-card {
+    border-radius: 14px;
+  }
+
+  .qo-body {
+    padding: 0.75rem 0.8rem 0.85rem;
+  }
+
+  .qo-title {
+    font-size: 0.92rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .qo-price {
+    font-size: 1.05rem;
+  }
+
+  .qo-btn {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.72rem;
+  }
+
+  .qo-badge {
+    font-size: 0.55rem;
+    padding: 0.2rem 0.5rem;
+    top: 0.5rem;
+    left: 0.5rem;
+  }
+}
+
+@media (max-width: 340px) {
+  .quick-order-grid {
+    grid-template-columns: 1fr;
+  }
+}

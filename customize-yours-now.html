@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -21,7 +21,7 @@
   <link rel="icon" type="image/png" sizes="144x144" href="images/favicon-144.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png" />
   <link rel="icon" type="image/png" href="images/favicon.png" />
-  <link rel="stylesheet" href="css/style.css?v=58" />
+  <link rel="stylesheet" href="css/style.css?v=63" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
@@ -73,6 +73,177 @@
       .wa-cta-title { font-size: 1.6rem; }
       .wa-cta-desc { font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.5rem; padding: 0 0.5rem; }
       .wa-cta-btn { font-size: 1rem !important; padding: 1rem 1.5rem !important; width: 100%; display: flex; justify-content: center; }
+    }
+
+    /* ===== QUICK ORDER SECTION & CARDS ===== */
+    .quick-order-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 300px));
+      gap: 1.5rem;
+      justify-content: center;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    .qo-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      overflow: hidden;
+      text-decoration: none;
+      color: var(--text-primary);
+      display: flex;
+      flex-direction: column;
+      transition: var(--transition);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      position: relative;
+    }
+    .qo-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--copper);
+      box-shadow: 0 16px 36px rgba(200, 138, 88, 0.22), var(--shadow-card);
+      background: var(--bg-card-hover);
+    }
+    .qo-card:active {
+      transform: scale(0.98);
+    }
+    .qo-img-wrap {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      background: #141419;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .qo-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    .qo-card:hover .qo-img {
+      transform: scale(1.08);
+    }
+    .qo-emoji {
+      font-size: 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+    }
+    .qo-badge {
+      position: absolute;
+      top: 0.75rem;
+      left: 0.75rem;
+      z-index: 2;
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 0.3rem 0.7rem;
+      border-radius: 50px;
+      background: rgba(10, 10, 14, 0.8);
+      color: var(--copper-light);
+      border: 1px solid rgba(200, 138, 88, 0.4);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    }
+    .qo-body {
+      padding: 1rem 1.1rem 1.1rem;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      justify-content: space-between;
+    }
+    .qo-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.4rem;
+      text-transform: capitalize;
+      line-height: 1.3;
+    }
+    .qo-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-top: 0.4rem;
+      padding-top: 0.6rem;
+      border-top: 1px solid var(--border-light);
+    }
+    .qo-price {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--copper-light);
+    }
+    .qo-btn {
+      background: linear-gradient(135deg, #25D366, #128C7E);
+      color: #fff;
+      border-radius: 50px;
+      padding: 0.45rem 0.9rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      box-shadow: 0 4px 12px rgba(37, 211, 102, 0.35);
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+    .qo-card:hover .qo-btn {
+      filter: brightness(1.1);
+      box-shadow: 0 6px 18px rgba(37, 211, 102, 0.5);
+    }
+
+    @media (max-width: 768px) {
+      .quick-order-grid {
+        gap: 1.2rem;
+      }
+    }
+    @media (max-width: 580px) {
+      .quick-order-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.85rem;
+      }
+      .quick-order-grid.has-single,
+      .quick-order-grid:has(.qo-card:only-child) {
+        grid-template-columns: minmax(260px, 340px);
+        justify-content: center;
+      }
+      .qo-card {
+        border-radius: 14px;
+      }
+      .qo-body {
+        padding: 0.75rem 0.8rem 0.85rem;
+      }
+      .qo-title {
+        font-size: 0.92rem;
+        margin-bottom: 0.25rem;
+      }
+      .qo-price {
+        font-size: 1.05rem;
+      }
+      .qo-btn {
+        padding: 0.4rem 0.75rem;
+        font-size: 0.72rem;
+      }
+      .qo-badge {
+        font-size: 0.55rem;
+        padding: 0.2rem 0.5rem;
+        top: 0.5rem;
+        left: 0.5rem;
+      }
+    }
+    @media (max-width: 340px) {
+      .quick-order-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
   <!-- ===== PAGE HERO ===== -->
@@ -205,7 +376,7 @@
         <h2 class="section-title">Order by <span>Product</span></h2>
         <p class="section-subtitle">Click any product to start your WhatsApp order instantly</p>
       </div>
-      <div class="category-grid" id="quickOrderGrid">
+      <div class="quick-order-grid" id="quickOrderGrid">
         <div style="text-align:center; padding:2rem; width:100%; color:var(--text2);">Loading products...</div>
       </div>
     </div>
@@ -280,6 +451,16 @@
   <script src="js/main_v3.js?v=62"></script>
   <script src="js/db.js?v=55"></script>
     <script>
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
     document.addEventListener('DOMContentLoaded', async () => {
       try {
         const settings = await SiteSettings.getAll();
@@ -287,16 +468,39 @@
         if (settings.quick_orders) {
           const qo = JSON.parse(settings.quick_orders);
           if (qo.length > 0) {
+            grid.classList.toggle('has-single', qo.length === 1);
             let html = '';
             qo.forEach(q => {
-              const iconHtml = (q.icon && (q.icon.startsWith('http') || q.icon.includes('/'))) 
-                ? `<img src="${q.icon}" style="width:40px; height:40px; object-fit:contain; margin:0 auto;" />` 
-                : (q.icon || '');
+              const hasImg = q.icon && (q.icon.startsWith('http') || q.icon.includes('/') || q.icon.startsWith('data:'));
+              const iconHtml = hasImg 
+                ? `<img src="${q.icon}" alt="${escapeHtml(q.title || 'Product')}" class="qo-img" loading="lazy" />` 
+                : `<div class="qo-emoji">${q.icon || '👕'}</div>`;
+              
+              const rawPrice = (q.price || '').trim();
+              let displayPrice = rawPrice;
+              if (rawPrice && !rawPrice.startsWith('₹') && !rawPrice.toLowerCase().includes('from') && !rawPrice.toLowerCase().includes('rs')) {
+                displayPrice = '₹' + rawPrice;
+              }
+              
+              const msg = q.msg || ('Hi CraftedCore! I want to order ' + (q.title || 'this item') + '.');
+              const waLink = `https://wa.me/+918320979383?text=${encodeURIComponent(msg)}`;
+              
               html += `
-              <a href="https://wa.me/+918320979383?text=${encodeURIComponent(q.msg)}" target="_blank" class="category-card">
-                <div class="category-icon">${iconHtml}</div>
-                <div class="category-name">${q.title}</div>
-                <div class="category-count">${q.price}</div>
+              <a href="${waLink}" target="_blank" class="qo-card" title="Order ${escapeHtml(q.title || '')} on WhatsApp">
+                <div class="qo-img-wrap">
+                  <span class="qo-badge">⚡ Quick Order</span>
+                  ${iconHtml}
+                </div>
+                <div class="qo-body">
+                  <div class="qo-title">${escapeHtml(q.title || 'Custom Product')}</div>
+                  <div class="qo-bottom">
+                    <div class="qo-price">${escapeHtml(displayPrice)}</div>
+                    <span class="qo-btn">
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12.012 2c-5.506 0-9.989 4.478-9.989 9.984 0 1.758.459 3.474 1.33 4.982L2 22l5.176-1.348a9.982 9.982 0 004.836 1.251h.004c5.506 0 9.989-4.478 9.989-9.984 0-2.668-1.039-5.176-2.927-7.063C17.189 3.039 14.68 2 12.012 2zm.004 16.326h-.003a8.31 8.31 0 01-4.238-1.163l-.304-.18-3.149.821.838-3.067-.198-.314a8.275 8.275 0 01-1.272-4.437c0-4.577 3.724-8.301 8.306-8.301 2.217 0 4.301.865 5.869 2.434a8.261 8.261 0 012.43 5.867c0 4.578-3.725 8.302-8.279 8.302zm4.551-6.216c-.249-.125-1.477-.729-1.706-.812-.228-.083-.395-.125-.561.125-.166.249-.644.812-.789.978-.145.166-.291.187-.54.062a6.837 6.837 0 01-2.008-1.238 7.55 7.55 0 01-1.39-1.73c-.145-.249-.016-.384.109-.508.113-.112.249-.291.374-.436.125-.145.166-.249.249-.415.083-.166.042-.312-.021-.436-.062-.125-.561-1.352-.769-1.85-.202-.486-.407-.42-.561-.428l-.478-.009c-.166 0-.436.062-.664.312-.228.249-.873.852-.873 2.079 0 1.226.893 2.41 1.018 2.577.125.166 1.757 2.684 4.257 3.764.595.257 1.06.41 1.422.525.597.19 1.14.163 1.57.099.479-.071 1.477-.603 1.684-1.184.208-.582.208-1.08.145-1.184-.063-.104-.229-.166-.478-.291z"/></svg>
+                      Order Now
+                    </span>
+                  </div>
+                </div>
               </a>`;
             });
             grid.innerHTML = html;
