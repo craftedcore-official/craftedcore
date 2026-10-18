@@ -21,7 +21,7 @@
   <link rel="icon" type="image/png" sizes="144x144" href="images/favicon-144.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png" />
   <link rel="icon" type="image/png" href="images/favicon.png" />
-  <link rel="stylesheet" href="css/style.css?v=63" />
+  <link rel="stylesheet" href="css/style.css?v=64" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
@@ -164,9 +164,20 @@
       font-size: 1.05rem;
       font-weight: 600;
       color: var(--text-primary);
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.3rem;
       text-transform: capitalize;
       line-height: 1.3;
+    }
+    .qo-msg {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      line-height: 1.45;
+      margin: 0.2rem 0 0.5rem;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 0.45rem 0.65rem;
+      border-radius: 8px;
+      word-break: break-word;
     }
     .qo-bottom {
       display: flex;
@@ -482,17 +493,18 @@
                 displayPrice = '₹' + rawPrice;
               }
               
-              const msg = q.msg || ('Hi CraftedCore! I want to order ' + (q.title || 'this item') + '.');
-              const waLink = `https://wa.me/+918320979383?text=${encodeURIComponent(msg)}`;
+              const phone = (settings.whatsapp_number || '918320979383').replace(/\D/g, '');
+              const msg = q.msg || ('Hi Crafted Core! 😊 Mujhe custom printed T-shirt order karni hai. Please details share karein.');
+              const waLink = `https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(msg)}`;
               
               html += `
               <a href="${waLink}" target="_blank" class="qo-card" title="Order ${escapeHtml(q.title || '')} on WhatsApp">
                 <div class="qo-img-wrap">
-                  <span class="qo-badge">⚡ Quick Order</span>
                   ${iconHtml}
                 </div>
                 <div class="qo-body">
                   <div class="qo-title">${escapeHtml(q.title || 'Custom Product')}</div>
+                  ${q.msg ? `<div class="qo-msg">${escapeHtml(q.msg)}</div>` : ''}
                   <div class="qo-bottom">
                     <div class="qo-price">${escapeHtml(displayPrice)}</div>
                     <span class="qo-btn">
