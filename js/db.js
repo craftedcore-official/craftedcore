@@ -391,6 +391,57 @@ async function applyDynamicSettings() {
         }
       });
     }
+
+    // 10. Dynamic SEO Meta Tags
+    if (s.seo_data) {
+      try {
+        const seoDb = JSON.parse(s.seo_data);
+        let path = window.location.pathname.replace(/^\//, '').replace(/\.html$/, '');
+        let targetKey = 'page_home';
+        if (path === '' || path === 'index') targetKey = 'page_home';
+        else if (path === 'products') targetKey = 'page_products';
+        else if (path === 'customize-yours-now') targetKey = 'page_customize';
+        else if (path === 'about') targetKey = 'page_about';
+        else if (path === 'faq') targetKey = 'page_faq';
+        else if (path === 'product') {
+          const urlParams = new URLSearchParams(window.location.search);
+          const pId = urlParams.get('id');
+          if (pId) targetKey = 'prod_' + pId;
+        }
+
+        const pageSeo = seoDb[targetKey];
+        if (pageSeo) {
+          if (pageSeo.title) {
+            document.title = pageSeo.title;
+            const ogTitle = document.querySelector('meta[property="og:title"]');
+            if (ogTitle) ogTitle.setAttribute('content', pageSeo.title);
+            const twTitle = document.querySelector('meta[property="twitter:title"]');
+            if (twTitle) twTitle.setAttribute('content', pageSeo.title);
+          }
+          if (pageSeo.desc) {
+            const mDesc = document.querySelector('meta[name="description"]');
+            if (mDesc) mDesc.setAttribute('content', pageSeo.desc);
+            const ogDesc = document.querySelector('meta[property="og:description"]');
+            if (ogDesc) ogDesc.setAttribute('content', pageSeo.desc);
+            const twDesc = document.querySelector('meta[property="twitter:description"]');
+            if (twDesc) twDesc.setAttribute('content', pageSeo.desc);
+          }
+          if (pageSeo.kw) {
+            let mKw = document.querySelector('meta[name="keywords"]');
+            if (!mKw) {
+              mKw = document.createElement('meta');
+              mKw.name = 'keywords';
+              document.head.appendChild(mKw);
+            }
+            mKw.setAttribute('content', pageSeo.kw);
+          }
+          if (pageSeo.img) {
+            const ogImg = document.querySelector('meta[property="og:image"]');
+            if (ogImg) ogImg.setAttribute('content', pageSeo.img);
+          }
+        }
+      } catch(seoErr) {}
+    }
   } catch(e) { /* Silently use static fallback */ }
 }
 
