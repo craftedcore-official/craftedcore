@@ -9,18 +9,19 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://craftedcore.in/category.html" />
   <meta property="og:title" content="CraftedCore — Premium Custom Products" />
-  <meta property="og:description" content="CraftedCore — Premium custom products including t-shirts, mugs, bottles, wallets, keychains, lockets, and posters. Crafted just for you." />
-  <meta property="og:image" content="https://craftedcore.in/images/logo.png" />
+  <meta property="og:description" content="CraftedCore — Premium custom products including t-shirts, mugs, bottles, wallets, keychains, and lockets. Crafted just for you." />
+  <meta property="og:image" content="https://craftedcore.in/images/og-hero.jpg" />
   <meta property="twitter:card" content="summary_large_image" />
   <meta property="twitter:url" content="https://craftedcore.in/category.html" />
   <meta property="twitter:title" content="CraftedCore — Premium Custom Products" />
-  <meta property="twitter:description" content="CraftedCore — Premium custom products including t-shirts, mugs, bottles, wallets, keychains, lockets, and posters. Crafted just for you." />
-  <meta property="twitter:image" content="https://craftedcore.in/images/logo.png" />
+  <meta property="twitter:description" content="CraftedCore — Premium custom products including t-shirts, mugs, bottles, wallets, keychains, and lockets. Crafted just for you." />
+  <meta property="twitter:image" content="https://craftedcore.in/images/og-hero.jpg" />
   <link rel="canonical" href="https://craftedcore.in/category.html" />
-    <link rel="icon" type="image/png" sizes="192x192" href="images/favicon-192.png" />
-  <link rel="icon" type="image/png" sizes="144x144" href="images/favicon-144.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png" />
-  <link rel="icon" type="image/png" href="images/favicon.png" />
+      <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="48x48" href="/images/favicon-48.png" />
+  <link rel="icon" type="image/png" sizes="96x96" href="/images/favicon-96.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/images/favicon-192.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png" />
   <link rel="stylesheet" href="css/style.css?v=65" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -507,15 +508,13 @@
 
 
       // Default category info (fallbacks)
-      const catDefaults = {
-        'anime':   { emoji: '🎌', name: 'Anime Collection',   subtitle: 'Premium anime artwork on brushed metal — bring your favourite characters to life', color: '#ff6b6b' },
-        'god':     { emoji: '🕉️', name: 'Divine Collection',   subtitle: 'Sacred art and divine aesthetics on premium metal prints for your pooja room & walls', color: '#ffd93d' },
-        'quotes':  { emoji: '💬', name: 'Quotes Collection',   subtitle: 'Motivational and inspirational quotes on premium metal — fuel your hustle everyday', color: '#6bcb77' },
-        'gaming':  { emoji: '🎮', name: 'Gaming Collection',   subtitle: 'Level up your setup with cyberpunk neon gaming art on solid metal posters', color: '#4d96ff' },
-        'cars':    { emoji: '🏎️', name: 'Supercar Collection', subtitle: 'Supercar posters that capture speed, luxury, and adrenaline on premium metal', color: '#ff922b' },
-        'dark':    { emoji: '💀', name: 'Dark Arts Collection', subtitle: 'Gothic and dark aesthetic art on metal — for those who love the shadows', color: '#845ef7' },
-        'custom':  { emoji: '✨', name: 'Custom Collection',   subtitle: 'Your design, your vision — we bring exactly what you imagine to life', color: '#d4af37' },
-        'tshirts': { emoji: '👕', name: 'T-Shirts & Merch',    subtitle: 'Custom printed t-shirts, hoodies and merchandise — wear your personality', color: '#20c997' },
+            const catDefaults = {
+        'oversize-tees':   { emoji: '👕', name: 'Oversize Tees',        subtitle: 'Premium Oversize Tees — Made to Stand Out', color: '#d4af37' },
+        'mugs':            { emoji: '☕', name: 'Custom Mugs',          subtitle: 'Your Design. Your Style. Your Mug.', color: '#d4af37' },
+        'bottles':         { emoji: '🍶', name: 'Personalized Bottles', subtitle: 'Your Bottle. Your Identity.', color: '#d4af37' },
+        'bracelet':        { emoji: '✨', name: 'Custom Bracelets',     subtitle: 'Your Name. Your Style. Your Signature.', color: '#d4af37' },
+        'leather-product': { emoji: '💼', name: 'Leather Products',    subtitle: 'Custom Engraved Wallets & Accessories', color: '#d4af37' },
+        'lockets':         { emoji: '💖', name: 'Custom Lockets',       subtitle: 'Personalized Photo & Name Lockets', color: '#d4af37' }
       };
 
       const defaults = catDefaults[slug] || { emoji: '📦', name: slug.charAt(0).toUpperCase() + slug.slice(1), subtitle: 'Browse our premium collection', color: '#d4af37' };
@@ -660,6 +659,7 @@
   </script>
 </body>
 </html>
+
 
 
 
