@@ -384,7 +384,7 @@ function injectSEOData(products) {
   const schemaList = products.map(p => ({
     "@type": "Product",
     "name": p.name,
-    "image": p.image_url ? p.image_url.split(',')[0] : "https://craftedcore-official.github.io/craftedcore/images/logo.png",
+    "image": p.image_url ? p.image_url.split(',')[0] : "https://craftedcore.in/images/og-hero.jpg",
     "description": p.description || p.name,
     "offers": {
       "@type": "Offer",
