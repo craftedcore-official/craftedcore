@@ -1443,19 +1443,19 @@ function injectNavbarModals() {
       <div class="account-modal" id="accountModal">
         <div class="account-modal-header">
           <div class="account-avatar">
-            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-              <circle cx="12" cy="7" r="4"></circle>
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 18v-6a9 9 0 0 1 18 0v6"></path>
+              <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path>
             </svg>
           </div>
           <div style="flex:1;">
-            <div class="account-modal-title">CraftedCore Care</div>
-            <div class="account-modal-sub">Personalized Gifts & Support</div>
+            <div class="account-modal-title">Help & Support</div>
+            <div class="account-modal-sub">Order assistance & quick help</div>
           </div>
-          <button class="account-close-btn" onclick="toggleAccountMenu(false)">&times;</button>
+          <button class="account-close-btn" onclick="toggleAccountMenu(false)" aria-label="Close">&times;</button>
         </div>
         <div class="account-modal-links">
-          <a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20want%20to%20track%20my%20order." target="_blank" class="account-link-item">
+          <a href="https://wa.me/+918320979383?text=Hello!%20I%20want%20to%20track%20my%20order." target="_blank" class="account-link-item">
             <span class="account-item-icon">📦</span>
             <div class="account-item-info">
               <div class="account-item-title">Track My Order</div>
@@ -1463,7 +1463,7 @@ function injectNavbarModals() {
             </div>
             <span class="account-item-arrow">›</span>
           </a>
-          <a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20need%20help%20with%20an%20order." target="_blank" class="account-link-item">
+          <a href="https://wa.me/+918320979383?text=Hello!%20I%20need%20help%20with%20an%20order." target="_blank" class="account-link-item">
             <span class="account-item-icon">💬</span>
             <div class="account-item-info">
               <div class="account-item-title">WhatsApp Support</div>
@@ -1484,14 +1484,6 @@ function injectNavbarModals() {
             <div class="account-item-info">
               <div class="account-item-title">FAQs & Policies</div>
               <div class="account-item-sub">Shipping & return details</div>
-            </div>
-            <span class="account-item-arrow">›</span>
-          </a>
-          <a href="admin.html" class="account-link-item account-admin-link">
-            <span class="account-item-icon">🔐</span>
-            <div class="account-item-info">
-              <div class="account-item-title">Admin Dashboard</div>
-              <div class="account-item-sub">Manage products & orders</div>
             </div>
             <span class="account-item-arrow">›</span>
           </a>
