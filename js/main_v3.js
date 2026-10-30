@@ -869,6 +869,7 @@ function toggleCartDrawer(show) {
 }
 
 function updateCartUI() {
+  if (typeof updateNavCartBadge === 'function') updateNavCartBadge();
   const badge = document.getElementById('cartBadge');
   const body = document.getElementById('cartBody');
   const totalEl = document.getElementById('cartTotal');
@@ -1356,6 +1357,7 @@ document.addEventListener('DOMContentLoaded', () => {
   loadDynamicCategories();
   loadDynamicReviews();
   injectCartUI();
+  initNavbarActions();
   
   if (typeof applyDynamicSettings === 'function') {
     applyDynamicSettings();
@@ -1376,3 +1378,269 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+
+// =============================================
+// Modern Shopify-Style Header Actions
+// (Search Modal, Account Menu, Nav Cart Badge)
+// =============================================
+let allSearchProductsCache = null;
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m]);
+}
+
+function updateNavCartBadge() {
+  const badge = document.getElementById('navCartBadge');
+  if (!badge) return;
+  const cart = JSON.parse(localStorage.getItem('cc_cart')) || (typeof shoppingCart !== 'undefined' ? shoppingCart : []);
+  const total = cart.reduce((sum, item) => sum + (parseInt(item.qty) || 1), 0);
+  badge.textContent = total;
+  badge.style.display = total > 0 ? 'flex' : 'none';
+}
+
+function injectNavbarModals() {
+  // Inject Search Overlay & Modal if not present
+  if (!document.getElementById('searchModal')) {
+    const searchHTML = `
+      <div class="search-overlay" id="searchOverlay" onclick="closeSearchModal()"></div>
+      <div class="search-modal" id="searchModal">
+        <div class="search-header-bar">
+          <div class="search-input-wrap">
+            <span class="search-input-icon">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+            </span>
+            <input type="search" id="ccGlobalSearchInput" class="search-input-field" placeholder="Search gifts, personalized mugs, bottles..." autocomplete="off" />
+          </div>
+          <button class="search-modal-close" onclick="closeSearchModal()" aria-label="Close search">&times;</button>
+        </div>
+        <div class="search-body-content" id="searchResultsBox"></div>
+      </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', searchHTML);
+    
+    const searchInput = document.getElementById('ccGlobalSearchInput');
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => handleSearchInput(e.target.value));
+      searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          const firstResult = document.querySelector('.search-result-card');
+          if (firstResult) firstResult.click();
+        }
+      });
+    }
+  }
+
+  // Inject Account Overlay & Modal if not present
+  if (!document.getElementById('accountModal')) {
+    const accountHTML = `
+      <div class="account-overlay" id="accountOverlay" onclick="toggleAccountMenu(false)"></div>
+      <div class="account-modal" id="accountModal">
+        <div class="account-modal-header">
+          <div class="account-avatar">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </div>
+          <div style="flex:1;">
+            <div class="account-modal-title">CraftedCore Care</div>
+            <div class="account-modal-sub">Personalized Gifts & Support</div>
+          </div>
+          <button class="account-close-btn" onclick="toggleAccountMenu(false)">&times;</button>
+        </div>
+        <div class="account-modal-links">
+          <a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20want%20to%20track%20my%20order." target="_blank" class="account-link-item">
+            <span class="account-item-icon">📦</span>
+            <div class="account-item-info">
+              <div class="account-item-title">Track My Order</div>
+              <div class="account-item-sub">Instant tracking via WhatsApp</div>
+            </div>
+            <span class="account-item-arrow">›</span>
+          </a>
+          <a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20need%20help%20with%20an%20order." target="_blank" class="account-link-item">
+            <span class="account-item-icon">💬</span>
+            <div class="account-item-info">
+              <div class="account-item-title">WhatsApp Support</div>
+              <div class="account-item-sub">+91 83209 79383 (Fast reply)</div>
+            </div>
+            <span class="account-item-arrow">›</span>
+          </a>
+          <a href="customize-yours-now.html" class="account-link-item">
+            <span class="account-item-icon">🎨</span>
+            <div class="account-item-info">
+              <div class="account-item-title">Custom Order Request</div>
+              <div class="account-item-sub">Create your bespoke gift</div>
+            </div>
+            <span class="account-item-arrow">›</span>
+          </a>
+          <a href="faq.html" class="account-link-item">
+            <span class="account-item-icon">❓</span>
+            <div class="account-item-info">
+              <div class="account-item-title">FAQs & Policies</div>
+              <div class="account-item-sub">Shipping & return details</div>
+            </div>
+            <span class="account-item-arrow">›</span>
+          </a>
+          <a href="admin.html" class="account-link-item account-admin-link">
+            <span class="account-item-icon">🔐</span>
+            <div class="account-item-info">
+              <div class="account-item-title">Admin Dashboard</div>
+              <div class="account-item-sub">Manage products & orders</div>
+            </div>
+            <span class="account-item-arrow">›</span>
+          </a>
+        </div>
+      </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', accountHTML);
+  }
+}
+
+async function openSearchModal() {
+  injectNavbarModals();
+  const modal = document.getElementById('searchModal');
+  const overlay = document.getElementById('searchOverlay');
+  const input = document.getElementById('ccGlobalSearchInput');
+  if (!modal || !overlay) return;
+  
+  overlay.classList.add('active');
+  modal.classList.add('active');
+  
+  if (input) {
+    input.value = '';
+    setTimeout(() => input.focus(), 150);
+  }
+  
+  renderSearchSuggestions();
+  
+  if (!allSearchProductsCache && typeof Products !== 'undefined') {
+    try {
+      allSearchProductsCache = await Products.getAll();
+    } catch (e) {
+      console.warn('Search pre-fetch error:', e);
+    }
+  }
+}
+
+function closeSearchModal() {
+  const modal = document.getElementById('searchModal');
+  const overlay = document.getElementById('searchOverlay');
+  if (modal) modal.classList.remove('active');
+  if (overlay) overlay.classList.remove('active');
+}
+
+function renderSearchSuggestions() {
+  const container = document.getElementById('searchResultsBox');
+  if (!container) return;
+  container.innerHTML = `
+    <div class="search-suggestion-header">🔥 Popular Searches</div>
+    <div class="search-tag-pills">
+      <button type="button" class="search-tag-pill" onclick="quickSearchTag('Mug')">☕ Custom Mugs</button>
+      <button type="button" class="search-tag-pill" onclick="quickSearchTag('Bottle')">💧 Temp Bottles</button>
+      <button type="button" class="search-tag-pill" onclick="quickSearchTag('Bracelet')">✨ Gold Bracelets</button>
+      <button type="button" class="search-tag-pill" onclick="quickSearchTag('Wallet')">💼 Leather Wallets</button>
+      <button type="button" class="search-tag-pill" onclick="quickSearchTag('T-Shirt')">👕 Oversize Tees</button>
+      <button type="button" class="search-tag-pill" onclick="quickSearchTag('Locket')">💖 Photo Lockets</button>
+    </div>
+  `;
+}
+
+function quickSearchTag(tag) {
+  const input = document.getElementById('ccGlobalSearchInput');
+  if (input) {
+    input.value = tag;
+    handleSearchInput(tag);
+  }
+}
+
+async function handleSearchInput(val) {
+  const q = (val || '').trim().toLowerCase();
+  const container = document.getElementById('searchResultsBox');
+  if (!container) return;
+  
+  if (!q) {
+    renderSearchSuggestions();
+    return;
+  }
+  
+  if (!allSearchProductsCache && typeof Products !== 'undefined') {
+    allSearchProductsCache = await Products.getAll();
+  }
+  
+  const prods = allSearchProductsCache || [];
+  const matches = prods.filter(p => {
+    const nameMatch = p.name && p.name.toLowerCase().includes(q);
+    const catMatch = p.category_name && p.category_name.toLowerCase().includes(q);
+    const descMatch = p.description && p.description.toLowerCase().includes(q);
+    return nameMatch || catMatch || descMatch;
+  });
+  
+  if (matches.length === 0) {
+    container.innerHTML = `
+      <div class="search-empty">
+        <div style="font-size:2.2rem;margin-bottom:0.5rem;">🔍</div>
+        <p>No products found for "<strong>${escapeHtml(q)}</strong>"</p>
+        <div style="font-size:0.82rem;color:var(--text-muted);margin-top:0.4rem;">Try searching for mugs, bottles, wallets, or bracelets.</div>
+      </div>
+    `;
+    return;
+  }
+  
+  let html = `<div class="search-results-count">${matches.length} product${matches.length > 1 ? 's' : ''} found</div>`;
+  html += '<div class="search-results-grid">';
+  matches.slice(0, 10).forEach(p => {
+    const img = p.image_url ? p.image_url.split(',')[0].trim() : 'images/product_mug.jpg';
+    html += `
+      <a href="product.html?id=${p.id}" class="search-result-card" onclick="closeSearchModal()">
+        <img src="${img}" alt="${escapeHtml(p.name)}" class="search-result-img" />
+        <div class="search-result-details">
+          <div class="search-result-cat">${p.category_name || 'Personalized Gift'}</div>
+          <div class="search-result-title">${escapeHtml(p.name)}</div>
+          <div class="search-result-price">₹${p.price} ${p.original_price ? `<span class="search-orig-price">₹${p.original_price}</span>` : ''}</div>
+        </div>
+      </a>
+    `;
+  });
+  html += '</div>';
+  if (matches.length > 10) {
+    html += `<div style="text-align:center;margin-top:1rem;"><a href="products.html" class="btn btn-outline" style="font-size:0.85rem;padding:0.5rem 1rem;">View All Products (${matches.length})</a></div>`;
+  }
+  container.innerHTML = html;
+}
+
+function toggleAccountMenu(forceState) {
+  injectNavbarModals();
+  const modal = document.getElementById('accountModal');
+  const overlay = document.getElementById('accountOverlay');
+  if (!modal || !overlay) return;
+  
+  const isOpen = modal.classList.contains('active');
+  const shouldOpen = typeof forceState === 'boolean' ? forceState : !isOpen;
+  
+  if (shouldOpen) {
+    modal.classList.add('active');
+    overlay.classList.add('active');
+  } else {
+    modal.classList.remove('active');
+    overlay.classList.remove('active');
+  }
+}
+
+function initNavbarActions() {
+  injectNavbarModals();
+  updateNavCartBadge();
+  
+  // Close search/account modals with Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeSearchModal();
+      toggleAccountMenu(false);
+    }
+  });
+}
