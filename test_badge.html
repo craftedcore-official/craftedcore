@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+.product-image-wrap { position: relative; width: 200px; height: 200px; background: #eee; }
+.product-badge { position: absolute; top: 1rem; left: 1rem; z-index: 10; background: red; color: white; padding: 5px; }
+</style>
+</head>
+<body>
+<div id="out"></div>
+<script>
+const p = { id: 11, name: 'bracelet', badge: 'Best Custom Gift', image_url: 'foo' };
+const out = document.getElementById('out');
+out.innerHTML = \<div class="product-image-wrap">\ + 
+  ((p.badge && p.badge !== 'null' && p.badge.trim() !== '') ? \<span class="product-badge">\</span>\ : '') + 
+  \</div>\;
+console.log(out.innerHTML);
+</script>
+</body>
+</html>
+
+
