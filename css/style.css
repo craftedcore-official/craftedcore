@@ -245,7 +245,7 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; line-height: 1.2; }
   left: 0;
   right: 0;
   z-index: 1000;
-  padding: 0.85rem max(1.5rem, calc((100% - 1320px) / 2));
+  padding: 0.85rem 3.5rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -261,7 +261,7 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; line-height: 1.2; }
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(212, 175, 55, 0.25);
-  padding: 0.7rem max(1.5rem, calc((100% - 1320px) / 2));
+  padding: 0.7rem 3.5rem;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
@@ -494,12 +494,12 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; line-height: 1.2; }
 }
 
 .hero-content {
-  max-width: 1200px;
+  max-width: 1360px;
   margin: 0 auto;
   width: 100%;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 4rem;
+  gap: 3.5rem;
   align-items: center;
 }
 
@@ -602,7 +602,7 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; line-height: 1.2; }
 
 /* ===== Section Wrapper ===== */
 section { padding: 6rem 2rem; }
-.container { max-width: 1200px; margin: 0 auto; width: 100%; padding: 0 1rem; }
+.container { max-width: 1360px; margin: 0 auto; width: 100%; padding: 0 1.5rem; }
 
 /* ===== Category Grid ===== */
 .categories { background: var(--bg-secondary); }
@@ -1045,7 +1045,7 @@ footer {
   display: grid;
   grid-template-columns: 2.5fr 1fr 1fr 1fr 1.5fr;
   gap: 3rem;
-  max-width: 1200px;
+  max-width: 1360px;
   margin: 0 auto;
   padding-bottom: 3rem;
   border-bottom: 1px solid var(--border);
@@ -1113,7 +1113,7 @@ footer {
 .footer-col ul a:hover { color: var(--gold); padding-left: 4px; }
 
 .footer-bottom {
-  max-width: 1200px;
+  max-width: 1360px;
   margin: 0 auto;
   padding-top: 2rem;
   display: flex;
@@ -1254,8 +1254,16 @@ footer {
   padding-top: 7rem;
 }
 
-/* ===== Laptop / Small Desktop (1280px) ===== */
+/* ===== Laptop Tier (max-width: 1440px) ===== */
+@media (max-width: 1440px) {
+  .navbar { padding: 0.85rem 2.2rem; }
+  .navbar.scrolled { padding: 0.7rem 2.2rem; }
+}
+
+/* ===== Small Laptop / Desktop (max-width: 1280px) ===== */
 @media (max-width: 1280px) {
+  .navbar { padding: 0.85rem 1.8rem; }
+  .navbar.scrolled { padding: 0.7rem 1.8rem; }
   .product-grid { grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
   .hero-content { gap: 2.5rem; }
   .hero-image-wrap { max-width: 360px; }
