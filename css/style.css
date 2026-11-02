@@ -1,4 +1,4 @@
-/* =============================================
+﻿/* =============================================
    CraftedCore — Premium Dark Gold Theme
    ============================================= */
 
@@ -2047,43 +2047,138 @@ footer {
   color: var(--gold);
 }
 
-/* ===== Product Page Delivery & Quality Perks Card ===== */
-.prod-perks-card {
-  margin-top: 1.4rem;
-  padding: 1.1rem 1.25rem;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(212, 175, 55, 0.22);
-  border-radius: 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 0.85rem;
+/* ===== Free Delivery Promotional Popup (2-3s Delay) ===== */
+.fd-popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.82);
   backdrop-filter: blur(8px);
-}
-.prod-perk-item {
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 10005;
   display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
+  align-items: center;
+  justify-content: center;
+  padding: 1.2rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s ease;
 }
-.prod-perk-item .perk-icon {
-  font-size: 1.3rem;
-  line-height: 1;
-  flex-shrink: 0;
-  margin-top: 2px;
+.fd-popup-overlay.show {
+  opacity: 1;
+  visibility: visible;
 }
-.prod-perk-item .perk-text {
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-  line-height: 1.35;
+.fd-popup-card {
+  background: radial-gradient(ellipse 110% 90% at 50% 0%, #221808 0%, #0d0d10 80%);
+  border: 1px solid rgba(212, 175, 55, 0.45);
+  border-radius: 22px;
+  width: 100%;
+  max-width: 410px;
+  padding: 2.2rem 1.8rem 1.8rem;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.9), 0 0 35px rgba(212, 175, 55, 0.18);
+  transform: scale(0.88) translateY(25px);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.prod-perk-item .perk-text strong {
-  font-size: 0.88rem;
-  color: var(--gold);
-  font-weight: 700;
+.fd-popup-overlay.show .fd-popup-card {
+  transform: scale(1) translateY(0);
 }
-.prod-perk-item .perk-text span {
-  font-size: 0.8rem;
+.fd-popup-close {
+  position: absolute;
+  top: 1rem;
+  right: 1.1rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   color: var(--text-secondary);
+  font-size: 1.4rem;
+  line-height: 1;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+.fd-popup-close:hover {
+  background: rgba(255, 85, 85, 0.2);
+  color: #ff5555;
+  border-color: rgba(255, 85, 85, 0.4);
+  transform: rotate(90deg);
+}
+.fd-popup-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: var(--gold);
+  background: rgba(212, 175, 55, 0.12);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 1.1rem;
+}
+.fd-popup-icon-wrap {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 1.1rem;
+  background: radial-gradient(circle, rgba(212,175,55,0.22) 0%, rgba(212,175,55,0.02) 70%);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 25px rgba(212, 175, 55, 0.22);
+}
+.fd-popup-icon {
+  font-size: 2.3rem;
+  animation: floatDelivery 3s ease-in-out infinite;
+}
+@keyframes floatDelivery {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+.fd-popup-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.7rem;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  color: #fff;
+  margin-bottom: 0.35rem;
+}
+.fd-popup-subtitle {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.8rem;
+  font-weight: 600;
+}
+.fd-popup-subtitle .fd-highlight {
+  color: var(--gold);
+  font-weight: 800;
+  font-size: 1.25rem;
+}
+.fd-popup-desc {
+  font-size: 0.86rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+  margin-bottom: 1.5rem;
+  max-width: 320px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.fd-popup-actions {
+  display: flex;
+  justify-content: center;
+}
+.fd-popup-btn {
+  width: 100%;
+  padding: 0.85rem 1.5rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  border-radius: 10px;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.35);
 }
 .checkout-btn {
   width: 100%;

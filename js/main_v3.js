@@ -1742,6 +1742,7 @@ document.addEventListener('DOMContentLoaded', () => {
   loadDynamicReviews();
   injectCartUI();
   initNavbarActions();
+  initFreeDeliveryPopup();
   
   if (typeof applyDynamicSettings === 'function') {
     applyDynamicSettings();
@@ -2018,6 +2019,56 @@ function initNavbarActions() {
     if (e.key === 'Escape') {
       closeSearchModal();
       toggleAccountMenu(false);
+      closeFreeDeliveryPopup();
     }
   });
+}
+
+// ===== Free Delivery Promotional Popup (2-3s Delay) =====
+function initFreeDeliveryPopup() {
+  if (sessionStorage.getItem('cc_fd_popup_closed')) return;
+
+  setTimeout(() => {
+    if (sessionStorage.getItem('cc_fd_popup_closed')) return;
+    
+    let popup = document.getElementById('fdPopupOverlay');
+    if (!popup) {
+      const html = `
+        <div class="fd-popup-overlay" id="fdPopupOverlay" onclick="if(event.target===this)closeFreeDeliveryPopup()">
+          <div class="fd-popup-card">
+            <button class="fd-popup-close" onclick="closeFreeDeliveryPopup()" aria-label="Close">&times;</button>
+            <div class="fd-popup-badge">✨ SPECIAL STORE OFFER</div>
+            <div class="fd-popup-icon-wrap">
+              <span class="fd-popup-icon">🚚</span>
+            </div>
+            <h3 class="fd-popup-title">FREE DELIVERY</h3>
+            <p class="fd-popup-subtitle">On All Orders Above <span class="fd-highlight">₹1,999</span></p>
+            <p class="fd-popup-desc">Get 100% free doorstep delivery across India on all your custom & personalized gift orders!</p>
+            <div class="fd-popup-actions">
+              <a href="products.html" class="btn btn-primary fd-popup-btn" onclick="closeFreeDeliveryPopup()">🛍️ Shop & Save Now</a>
+            </div>
+          </div>
+        </div>
+      `;
+      document.body.insertAdjacentHTML('beforeend', html);
+      popup = document.getElementById('fdPopupOverlay');
+    }
+
+    if (popup) {
+      requestAnimationFrame(() => {
+        popup.classList.add('show');
+      });
+    }
+  }, 2500);
+}
+
+function closeFreeDeliveryPopup() {
+  const popup = document.getElementById('fdPopupOverlay');
+  if (popup) {
+    popup.classList.remove('show');
+    setTimeout(() => {
+      popup.style.display = 'none';
+    }, 400);
+  }
+  sessionStorage.setItem('cc_fd_popup_closed', '1');
 }
