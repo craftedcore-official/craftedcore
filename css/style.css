@@ -1971,12 +1971,119 @@ footer {
   background: #ff5555;
   color: #fff;
 }
-.cart-subtotal-row, .cart-discount-row {
+.cart-subtotal-row, .cart-discount-row, .cart-delivery-row {
   display: flex;
   justify-content: space-between;
   font-size: 0.92rem;
   color: var(--text-secondary);
   margin-bottom: 0.35rem;
+}
+
+/* ===== Cart Free Delivery Progress Meter ===== */
+.cart-free-shipping-banner {
+  padding: 0.85rem 1.25rem;
+  background: rgba(212, 175, 55, 0.06);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+}
+.free-shipping-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+.free-shipping-text {
+  font-size: 0.82rem;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  line-height: 1.35;
+}
+.free-shipping-text b {
+  color: var(--gold);
+}
+.free-shipping-bar-wrap.unlocked .free-shipping-text b {
+  color: #25D366;
+}
+.free-shipping-progress {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+}
+.free-shipping-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--copper), var(--gold));
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+.free-shipping-fill.unlocked {
+  background: linear-gradient(90deg, #25D366, #20ba5a);
+  box-shadow: 0 0 10px rgba(37, 211, 102, 0.5);
+}
+
+/* ===== Store Perk Banner (Catalog & Category Pages) ===== */
+.store-perk-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  background: linear-gradient(90deg, rgba(212,175,55,0.06) 0%, rgba(212,175,55,0.15) 50%, rgba(212,175,55,0.06) 100%);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 12px;
+  padding: 0.75rem 1.2rem;
+  margin-bottom: 1.8rem;
+  text-align: center;
+  font-size: 0.88rem;
+  color: var(--text-primary);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+}
+.store-perk-banner .spb-icon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+.store-perk-banner b {
+  color: var(--gold);
+}
+
+/* ===== Product Page Delivery & Quality Perks Card ===== */
+.prod-perks-card {
+  margin-top: 1.4rem;
+  padding: 1.1rem 1.25rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  backdrop-filter: blur(8px);
+}
+.prod-perk-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+.prod-perk-item .perk-icon {
+  font-size: 1.3rem;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.prod-perk-item .perk-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  line-height: 1.35;
+}
+.prod-perk-item .perk-text strong {
+  font-size: 0.88rem;
+  color: var(--gold);
+  font-weight: 700;
+}
+.prod-perk-item .perk-text span {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
 }
 .checkout-btn {
   width: 100%;

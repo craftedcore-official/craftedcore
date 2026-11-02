@@ -658,6 +658,7 @@ const DELIVERY_ZONES = [
   { label: 'Maharashtra', prefixes: ['40','41','42','43','44'], charge: 80, days: 4 },
 ];
 const DEFAULT_DELIVERY = { label: 'Rest of India', charge: 120, days: 7 };
+const FREE_DELIVERY_THRESHOLD = 1999;
 const UPI_ID = '8320979383@ibl';
 const UPI_NAME = 'CraftedCore';
 
@@ -985,6 +986,7 @@ function updateCartUI() {
   const body = document.getElementById('cartBody');
   const totalEl = document.getElementById('cartTotal');
   const checkoutBtn = document.getElementById('cartCheckoutBtn');
+  const freeBanner = document.getElementById('cartFreeShippingBanner');
   
   if (!badge || !body) return;
   
@@ -994,6 +996,13 @@ function updateCartUI() {
   
   if (shoppingCart.length === 0) {
     window._appliedCoupon = null;
+    if (freeBanner) {
+      freeBanner.innerHTML = `
+        <div class="free-shipping-bar-wrap">
+          <div class="free-shipping-text">🚚 <span><b>FREE Delivery</b> across India on orders above <b>₹${FREE_DELIVERY_THRESHOLD}</b>!</span></div>
+        </div>
+      `;
+    }
     body.innerHTML = `
       <div class="cart-empty">
         <div class="cart-empty-icon">🛒</div>
@@ -1004,9 +1013,11 @@ function updateCartUI() {
     if (checkoutBtn) checkoutBtn.disabled = true;
     const subRow = document.getElementById('cartSubtotalRow');
     const discRow = document.getElementById('cartDiscountRow');
+    const delRow = document.getElementById('cartDeliveryRow');
     const cBox = document.getElementById('cartCouponBox');
     if (subRow) subRow.style.display = 'none';
     if (discRow) discRow.style.display = 'none';
+    if (delRow) delRow.style.display = 'none';
     if (cBox) cBox.style.display = 'none';
     return;
   }
@@ -1047,6 +1058,33 @@ function updateCartUI() {
   
   body.innerHTML = html;
 
+  // Free Shipping Progress Calculation
+  const isFreeDelivery = subtotal >= FREE_DELIVERY_THRESHOLD;
+  const remainingForFree = Math.max(0, FREE_DELIVERY_THRESHOLD - subtotal);
+  const progressPct = Math.min(100, Math.round((subtotal / FREE_DELIVERY_THRESHOLD) * 100));
+
+  if (freeBanner) {
+    if (isFreeDelivery) {
+      freeBanner.innerHTML = `
+        <div class="free-shipping-bar-wrap unlocked">
+          <div class="free-shipping-text">🎉 <span><b>Congratulations!</b> You've unlocked <b>FREE Delivery</b>!</span></div>
+          <div class="free-shipping-progress">
+            <div class="free-shipping-fill unlocked" style="width: 100%;"></div>
+          </div>
+        </div>
+      `;
+    } else {
+      freeBanner.innerHTML = `
+        <div class="free-shipping-bar-wrap">
+          <div class="free-shipping-text">🚚 <span>Add <b>₹${remainingForFree}</b> more to unlock <b>FREE Delivery</b>!</span></div>
+          <div class="free-shipping-progress">
+            <div class="free-shipping-fill" style="width: ${progressPct}%;"></div>
+          </div>
+        </div>
+      `;
+    }
+  }
+
   // Coupon & Discount Calculation
   let discountAmount = 0;
   if (window._appliedCoupon && subtotal > 0) {
@@ -1059,6 +1097,8 @@ function updateCartUI() {
   const discountRow = document.getElementById('cartDiscountRow');
   const discountVal = document.getElementById('cartDiscountVal');
   const discountLabel = document.getElementById('cartDiscountLabel');
+  const delRow = document.getElementById('cartDeliveryRow');
+  const delVal = document.getElementById('cartDeliveryVal');
   const cBox = document.getElementById('cartCouponBox');
 
   if (cBox) {
@@ -1092,6 +1132,15 @@ function updateCartUI() {
     if (discountRow) discountRow.style.display = 'none';
   }
 
+  if (delRow && delVal) {
+    delRow.style.display = 'flex';
+    if (isFreeDelivery) {
+      delVal.innerHTML = `<span style="color:#25D366;font-weight:700;">FREE (Orders > ₹${FREE_DELIVERY_THRESHOLD})</span>`;
+    } else {
+      delVal.innerHTML = `<span style="color:var(--text2);font-size:0.82rem;">Calculated at checkout</span>`;
+    }
+  }
+
   if (totalEl) totalEl.textContent = '₹' + finalTotal;
 }
 
@@ -1121,6 +1170,7 @@ function injectCartUI() {
       <h2>Your Cart</h2>
       <button class="close-cart-btn" onclick="toggleCartDrawer(false)">&times;</button>
     </div>
+    <div id="cartFreeShippingBanner" class="cart-free-shipping-banner"></div>
     <div class="cart-body" id="cartBody"></div>
     <div class="cart-footer">
       <div id="cartCouponBox" class="cart-coupon-wrap" style="display:none;"></div>
@@ -1131,6 +1181,10 @@ function injectCartUI() {
       <div class="cart-discount-row" id="cartDiscountRow" style="display:none; color:#25D366;">
         <span id="cartDiscountLabel">Discount:</span>
         <span id="cartDiscountVal">-₹0</span>
+      </div>
+      <div class="cart-delivery-row" id="cartDeliveryRow" style="display:none;">
+        <span>Delivery:</span>
+        <span id="cartDeliveryVal"></span>
       </div>
       <div class="cart-total-row">
         <span>Total:</span>
@@ -1201,8 +1255,9 @@ function injectCartUI() {
         </div>
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <span style="color:var(--text2); font-size:0.9rem;">Delivery Charge:</span>
-          <span style="color:white; font-weight:700;">₹<span id="foDeliveryCharge">0</span></span>
+          <span id="foDeliveryChargeWrap" style="color:white; font-weight:700;">₹<span id="foDeliveryCharge">0</span></span>
         </div>
+        <div id="foDeliveryFreeNudge" style="display:none; margin-top:0.45rem; font-size:0.82rem; padding:0.45rem 0.7rem; border-radius:6px; line-height:1.35;"></div>
         <hr style="border:none; border-top:1px solid rgba(255,255,255,0.08); margin:0.7rem 0;">
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <span style="color:white; font-weight:700; font-size:1.05rem;">Grand Total:</span>
@@ -1229,33 +1284,74 @@ function injectCartUI() {
       <h2 style="color:var(--gold); font-size:1.4rem; font-weight:700; margin-bottom:0.3rem;">Complete Payment</h2>
       <p style="color:var(--text2); font-size:0.85rem; margin-bottom:1.5rem;">Order <span id="upiOrderId" style="color:var(--gold);">#—</span></p>
       
-      <!-- Amount Display -->
-      <div style="background:rgba(212,175,55,0.1); border:1px solid rgba(212,175,55,0.3); border-radius:12px; padding:1.2rem; margin-bottom:1.5rem;">
-        <div id="upiAmountBreakdown" style="font-size:0.85rem; color:var(--text2); margin-bottom:0.5rem;"></div>
-        <div style="font-size:2rem; font-weight:900; color:var(--gold);">₹<span id="upiAmount">0</span></div>
-        <div style="font-size:0.8rem; color:var(--text3); margin-top:0.3rem;">Total Amount to Pay</div>
+      <!-- QR Code -->
+      <div style="background:white; border-radius:12px; padding:1rem; display:inline-block; margin-bottom:1.2rem; box-shadow:0 8px 25px rgba(0,0,0,0.4);">
+        <img id="upiQrImg" src="" alt="Scan & Pay via UPI" style="width:200px; height:200px; display:block;" />
       </div>
-
-      <!-- UPI Pay Button (Mobile deep link) -->
-      <a id="upiDeepLink" href="#" target="_blank" style="display:flex; align-items:center; justify-content:center; gap:0.6rem; width:100%; padding:1rem; background:linear-gradient(135deg, #5F259F, #7B42B8); color:white; font-size:1.05rem; font-weight:700; border-radius:10px; text-decoration:none; margin-bottom:0.8rem; transition:opacity 0.2s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
-        📱 Pay with PhonePe / GPay / UPI
-      </a>
-
-      <!-- QR Code for Desktop -->
-      <div style="margin-bottom:1rem;">
-        <p style="font-size:0.8rem; color:var(--text3); margin-bottom:0.8rem;">Or scan this QR code with any UPI app</p>
-        <img id="upiQrImg" src="" alt="UPI QR Code" style="width:200px; height:200px; border-radius:10px; background:white; padding:8px; object-fit:contain;" />
-      </div>
-
-      <hr style="border:none; border-top:1px solid rgba(255,255,255,0.08); margin:1rem 0;">
-
-      <p style="color:var(--text2); font-size:0.85rem; margin-bottom:1rem;">✅ After payment, take a <strong style="color:white;">screenshot</strong> and send it on WhatsApp to confirm your order.</p>
       
-      <button id="upiWaSendBtn" onclick="confirmOrderViaWhatsApp()" class="btn btn-whatsapp" style="width:100%; justify-content:center; font-size:1rem; padding:0.9rem; border-radius:10px;">📸 Send Screenshot on WhatsApp</button>
+      <!-- Amount -->
+      <div style="margin-bottom:1rem;">
+        <span style="font-size:0.9rem; color:var(--text2);">Amount to Pay</span>
+        <div style="font-size:2rem; font-weight:800; color:var(--gold);">₹<span id="upiAmount">0</span></div>
+        <div id="upiAmountBreakdown" style="font-size:0.8rem; color:var(--text3); margin-top:0.2rem;"></div>
+      </div>
+      
+      <!-- Pay via App button -->
+      <a id="upiDeepLink" href="#" class="btn btn-primary" style="width:100%; justify-content:center; padding:0.9rem; font-size:1rem; margin-bottom:0.8rem; border-radius:8px;">📱 Pay via UPI App (GPay / PhonePe / Paytm)</a>
+      
+      <div style="font-size:0.8rem; color:var(--text3); margin-bottom:1.2rem;">UPI ID: <strong style="color:white;">8320979383@ibl</strong></div>
+      
+      <hr style="border:none; border-top:1px solid rgba(255,255,255,0.08); margin:1.2rem 0;">
+      
+      <!-- Confirm after payment -->
+      <p style="font-size:0.85rem; color:#aaa; margin-bottom:1rem;">After payment, click below to confirm order & send screenshot on WhatsApp:</p>
+      <button id="upiWaSendBtn" onclick="confirmOrderViaWhatsApp()" class="btn btn-whatsapp" style="width:100%; justify-content:center; padding:0.9rem; font-size:1rem; font-weight:bold; border-radius:8px; border:none; cursor:pointer;">📸 Send Screenshot on WhatsApp</button>
     </div>
-  </div>`;
+  </div>
+  `;
   document.body.insertAdjacentHTML('beforeend', html);
   updateCartUI();
+}
+
+function addToCart(product) {
+  const existing = shoppingCart.find(i => 
+    i.id === product.id && 
+    i.size === product.size && 
+    i.color === product.color && 
+    JSON.stringify(i.custs) === JSON.stringify(product.custs)
+  );
+  if (existing) {
+    existing.qty += (product.qty || 1);
+  } else {
+    shoppingCart.push({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      img: product.img,
+      size: product.size || null,
+      color: product.color || null,
+      custs: product.custs || [],
+      qty: product.qty || 1
+    });
+  }
+  saveCart();
+  toggleCartDrawer(true);
+}
+
+function removeFromCart(index) {
+  shoppingCart.splice(index, 1);
+  saveCart();
+}
+
+function changeQty(index, delta) {
+  if (shoppingCart[index]) {
+    shoppingCart[index].qty += delta;
+    if (shoppingCart[index].qty <= 0) {
+      removeFromCart(index);
+    } else {
+      saveCart();
+    }
+  }
 }
 
 // Delivery preview updater (called on pincode input)
@@ -1285,13 +1381,43 @@ function updateDeliveryPreview() {
     couponRow.style.display = 'none';
   }
 
-  const grandTotal = Math.max(0, itemsTotal - discountAmount) + info.charge;
+  // Free delivery above ₹1999 calculation
+  const isFreeDelivery = itemsTotal >= FREE_DELIVERY_THRESHOLD;
+  const actualDeliveryCharge = isFreeDelivery ? 0 : info.charge;
+  const grandTotal = Math.max(0, itemsTotal - discountAmount) + actualDeliveryCharge;
   
   document.getElementById('foDeliveryZone').textContent = info.label;
   document.getElementById('foDeliveryDays').textContent = `${info.days} days`;
   const itemsSubEl = document.getElementById('foItemsSubtotal');
   if (itemsSubEl) itemsSubEl.textContent = itemsTotal;
-  document.getElementById('foDeliveryCharge').textContent = info.charge;
+
+  const chargeWrap = document.getElementById('foDeliveryChargeWrap');
+  const freeNudge = document.getElementById('foDeliveryFreeNudge');
+
+  if (isFreeDelivery) {
+    if (chargeWrap) {
+      chargeWrap.innerHTML = `<s style="color:#888;font-weight:normal;font-size:0.85rem;margin-right:6px;">₹${info.charge}</s><span style="color:#25D366;font-weight:700;">FREE</span>`;
+    }
+    if (freeNudge) {
+      freeNudge.style.display = 'block';
+      freeNudge.style.background = 'rgba(37,211,102,0.1)';
+      freeNudge.style.border = '1px solid rgba(37,211,102,0.3)';
+      freeNudge.style.color = '#25D366';
+      freeNudge.innerHTML = `🎉 <b>FREE Delivery Applied!</b> (Order above ₹${FREE_DELIVERY_THRESHOLD} — You saved ₹${info.charge})`;
+    }
+  } else {
+    if (chargeWrap) {
+      chargeWrap.innerHTML = `₹<span id="foDeliveryCharge">${info.charge}</span>`;
+    }
+    if (freeNudge) {
+      freeNudge.style.display = 'block';
+      freeNudge.style.background = 'rgba(212,175,55,0.08)';
+      freeNudge.style.border = '1px dashed rgba(212,175,55,0.3)';
+      freeNudge.style.color = 'var(--gold)';
+      freeNudge.innerHTML = `🚚 <b>Tip:</b> Add ₹${FREE_DELIVERY_THRESHOLD - itemsTotal} more items to get <b>FREE Delivery</b>!`;
+    }
+  }
+
   document.getElementById('foGrandTotal').textContent = grandTotal;
   preview.style.display = 'block';
 }
@@ -1330,8 +1456,6 @@ function openCheckoutFromCart() {
 }
 
 async function submitCartCheckout() {
-  if (shoppingCart.length === 0) return;
-  
   const name = document.getElementById('foName').value.trim();
   const phone = document.getElementById('foPhone').value.trim();
   const email = document.getElementById('foEmail').value.trim();
@@ -1341,8 +1465,16 @@ async function submitCartCheckout() {
   const err = document.getElementById('foError');
   const btn = document.getElementById('foSubmitBtn');
   
+  err.style.display = 'none';
+  
   if (!name || !phone || !email || !address || !pincode) {
-    err.textContent = 'Please fill in all the required details (Name, Phone, Email, Address, Pincode).';
+    err.textContent = 'Please fill in all required fields.';
+    err.style.display = 'block';
+    return;
+  }
+  
+  if (!/^\d{10}$/.test(phone.replace(/\D/g, ''))) {
+    err.textContent = 'Please enter a valid 10-digit WhatsApp number.';
     err.style.display = 'block';
     return;
   }
@@ -1364,12 +1496,15 @@ async function submitCartCheckout() {
     couponInfo = window._appliedCoupon;
   }
   const deliveryInfo = getDeliveryInfo(pincode) || DEFAULT_DELIVERY;
-  const grandTotal = Math.max(0, itemsTotal - discountAmount) + deliveryInfo.charge;
+  const isFreeDelivery = itemsTotal >= FREE_DELIVERY_THRESHOLD;
+  const actualDeliveryCharge = isFreeDelivery ? 0 : deliveryInfo.charge;
+  const grandTotal = Math.max(0, itemsTotal - discountAmount) + actualDeliveryCharge;
   const combinedProductName = shoppingCart.map(item => `${item.name} (x${item.qty})`).join(', ');
   
   // Combine all details into the DB notes field
   let couponNote = couponInfo ? `\nCoupon Applied: ${couponInfo.code} (${couponInfo.discount_percent}% OFF, Saved ₹${discountAmount})` : '';
-  const dbNotes = `Email: ${email}\nPincode: ${pincode}\nAddress: ${address}\nDelivery Zone: ${deliveryInfo.label}\nDelivery Charge: ₹${deliveryInfo.charge}\nEstimated: ${deliveryInfo.days} days${couponNote}\nNotes: ${notes}`;
+  let deliveryNote = isFreeDelivery ? `FREE (₹0 - Promo over ₹${FREE_DELIVERY_THRESHOLD}, Saved ₹${deliveryInfo.charge})` : `₹${deliveryInfo.charge}`;
+  const dbNotes = `Email: ${email}\nPincode: ${pincode}\nAddress: ${address}\nDelivery Zone: ${deliveryInfo.label}\nDelivery Charge: ${deliveryNote}\nEstimated: ${deliveryInfo.days} days${couponNote}\nNotes: ${notes}`;
   
   try {
     // Save order as DRAFT — will become 'pending' only after WhatsApp confirmation
@@ -1424,7 +1559,7 @@ async function submitCartCheckout() {
     msg += `${E_PIN} *DELIVERY ADDRESS*\n${address}\nPincode: ${pincode}\n`;
     msg += `\n${E_TRUCK} *DELIVERY*\n`;
     msg += `Zone: ${deliveryInfo.label}\n`;
-    msg += `Charge: ₹${deliveryInfo.charge}\n`;
+    msg += `Charge: ${isFreeDelivery ? 'FREE (Orders above ₹' + FREE_DELIVERY_THRESHOLD + ' 🎉)' : '₹' + deliveryInfo.charge}\n`;
     msg += `Estimated: ${deliveryInfo.days} days\n`;
     
     if (notes) msg += `\n${E_NOTE} *Notes:* ${notes}\n`;
@@ -1438,7 +1573,7 @@ async function submitCartCheckout() {
     if (couponInfo) {
       msg += `Coupon (${couponInfo.code}): -₹${discountAmount} (${couponInfo.discount_percent}% OFF)\n`;
     }
-    msg += `Delivery: ₹${deliveryInfo.charge}\n`;
+    msg += `Delivery: ${isFreeDelivery ? 'FREE (Order above ₹' + FREE_DELIVERY_THRESHOLD + ' 🎉)' : '₹' + actualDeliveryCharge}\n`;
     msg += `*GRAND TOTAL: ₹${grandTotal}*\n`;
     msg += `\n━━━━━━━━━━━━━━━━━━\n${E_CAM} Payment screenshot attached.\n${E_CHECK} Please review and process.`;
     
@@ -1446,7 +1581,7 @@ async function submitCartCheckout() {
     
     // Close checkout modal, open UPI payment modal
     document.getElementById('frontOrderModal').style.display = 'none';
-    openUpiPayModal(orderId, itemsTotal, deliveryInfo.charge, grandTotal, discountAmount, couponInfo ? couponInfo.code : '');
+    openUpiPayModal(orderId, itemsTotal, actualDeliveryCharge, grandTotal, discountAmount, couponInfo ? couponInfo.code : '', isFreeDelivery);
     
     btn.disabled = false;
     btn.textContent = '💳 Proceed to Payment';
@@ -1460,14 +1595,18 @@ async function submitCartCheckout() {
 }
 
 // Open UPI Payment Modal with dynamic amount
-function openUpiPayModal(orderId, itemsTotal, deliveryCharge, grandTotal, discountAmount, couponCode) {
+function openUpiPayModal(orderId, itemsTotal, deliveryCharge, grandTotal, discountAmount, couponCode, isFreeDelivery) {
   document.getElementById('upiOrderId').textContent = '#' + orderId;
   document.getElementById('upiAmount').textContent = grandTotal;
   let breakdown = `Items: ₹${itemsTotal}`;
   if (discountAmount && discountAmount > 0) {
     breakdown += ` - Discount (${couponCode}): ₹${discountAmount}`;
   }
-  breakdown += ` + Delivery: ₹${deliveryCharge}`;
+  if (isFreeDelivery) {
+    breakdown += ` + Delivery: <span style="color:#25D366;font-weight:700;">FREE</span>`;
+  } else {
+    breakdown += ` + Delivery: ₹${deliveryCharge}`;
+  }
   document.getElementById('upiAmountBreakdown').innerHTML = breakdown;
   
   // UPI deep link
@@ -1489,6 +1628,7 @@ function closeUpiModal() {
 }
 
 // Confirm order via WhatsApp — updates draft to pending
+window.confirmOrderWhatsApp = confirmOrderViaWhatsApp;
 async function confirmOrderViaWhatsApp() {
   const targetUrl = currentDraftWaMsg;
   try {
