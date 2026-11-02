@@ -1,4 +1,4 @@
-// CraftedCore — js/db.js v4
+﻿// CraftedCore — js/db.js v4
 // ============================================================
 
 const DB_CONFIG = {
@@ -131,6 +131,14 @@ const Coupons = {
       const d = await dbFetch('coupons?select=*&order=created_at.desc');
       return d || [];
     } catch(e) { return []; }
+  },
+  async findByCode(code) {
+    try {
+      const clean = (code || '').trim();
+      if (!clean) return null;
+      const d = await dbFetch(`coupons?code=ilike.${encodeURIComponent(clean)}&limit=1`);
+      return (d && d.length > 0) ? d[0] : null;
+    } catch(e) { return null; }
   },
   async create(c)     { return dbFetch('coupons', { method: 'POST', body: JSON.stringify(c) }); },
   async update(id, u) { return dbFetch(`coupons?id=eq.${id}`, { method: 'PATCH', body: JSON.stringify(u) }); },

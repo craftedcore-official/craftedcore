@@ -1,4 +1,4 @@
-// ===== CraftedCore - Main JavaScript =====
+﻿// ===== CraftedCore - Main JavaScript =====
 
 // ===== Image Protection (Anti-Download) =====
 (function() {
@@ -868,6 +868,117 @@ function toggleCartDrawer(show) {
   }
 }
 
+// ===== Coupon & Promo Code Logic =====
+window._appliedCoupon = null;
+
+function isCouponLocallyUsed(code) {
+  try {
+    const used = JSON.parse(localStorage.getItem('cc_used_coupons') || '[]');
+    return used.includes((code || '').toUpperCase().trim());
+  } catch(e) { return false; }
+}
+
+async function markCouponAsUsed(couponId, code) {
+  const cleanCode = (code || '').toUpperCase().trim();
+  try {
+    const used = JSON.parse(localStorage.getItem('cc_used_coupons') || '[]');
+    if (!used.includes(cleanCode)) {
+      used.push(cleanCode);
+      localStorage.setItem('cc_used_coupons', JSON.stringify(used));
+    }
+  } catch(e) {}
+  
+  try {
+    if (couponId && typeof Coupons !== 'undefined') {
+      await Coupons.update(couponId, { is_active: false });
+    }
+  } catch(e) {
+    console.warn('Coupon deactivation error:', e);
+  }
+}
+
+async function applyCouponCode(codeParam) {
+  const inputEl = document.getElementById('cartCouponInput');
+  const msgEl = document.getElementById('cartCouponFeedback');
+  const foMsg = document.getElementById('foCouponMsg');
+  const code = (codeParam || (inputEl ? inputEl.value : '')).trim().toUpperCase();
+  
+  const showFeedback = (text, isError) => {
+    const color = isError ? '#ff5555' : '#25D366';
+    if (msgEl) {
+      msgEl.innerHTML = `<span style="color:${color};font-weight:600;">${text}</span>`;
+      msgEl.style.display = 'block';
+    }
+    if (foMsg) {
+      foMsg.innerHTML = `<span style="color:${color};font-weight:600;">${text}</span>`;
+      foMsg.style.display = 'block';
+    }
+  };
+  
+  if (!code) {
+    showFeedback('Please enter a coupon code.', true);
+    return;
+  }
+  
+  if (isCouponLocallyUsed(code)) {
+    showFeedback('⚠️ Yeh coupon code aap pehle hi use kar chuke hain (1 time limit).', true);
+    showToast('⚠️ Coupon already used once!');
+    return;
+  }
+  
+  showFeedback('Checking coupon...', false);
+  
+  try {
+    const coupon = await Coupons.findByCode(code);
+    if (!coupon) {
+      showFeedback('❌ Invalid coupon code.', true);
+      return;
+    }
+    
+    if (!coupon.is_active) {
+      showFeedback('⚠️ Yeh coupon code pehle hi use ho chuka hai (Already Used / Inactive).', true);
+      showToast('⚠️ Coupon is no longer active!');
+      return;
+    }
+    
+    window._appliedCoupon = coupon;
+    if (inputEl) inputEl.value = coupon.code;
+    const foInput = document.getElementById('foCouponInput');
+    if (foInput) foInput.value = coupon.code;
+    
+    showFeedback(`🎉 Coupon ${coupon.code} applied! (${coupon.discount_percent}% OFF)`, false);
+    showToast(`🎉 Coupon ${coupon.code} Applied!`);
+    
+    updateCartUI();
+    if (typeof updateDeliveryPreview === 'function') updateDeliveryPreview();
+    
+  } catch(e) {
+    showFeedback('Error checking coupon. Please try again.', true);
+  }
+}
+
+function removeAppliedCoupon() {
+  window._appliedCoupon = null;
+  const inputEl = document.getElementById('cartCouponInput');
+  if (inputEl) inputEl.value = '';
+  const foInput = document.getElementById('foCouponInput');
+  if (foInput) foInput.value = '';
+  const msgEl = document.getElementById('cartCouponFeedback');
+  if (msgEl) msgEl.style.display = 'none';
+  const foMsg = document.getElementById('foCouponMsg');
+  if (foMsg) foMsg.style.display = 'none';
+  
+  showToast('Coupon removed');
+  updateCartUI();
+  if (typeof updateDeliveryPreview === 'function') updateDeliveryPreview();
+}
+
+function applyCheckoutCoupon() {
+  const foInput = document.getElementById('foCouponInput');
+  const code = foInput ? foInput.value.trim() : '';
+  applyCouponCode(code);
+}
+
 function updateCartUI() {
   if (typeof updateNavCartBadge === 'function') updateNavCartBadge();
   const badge = document.getElementById('cartBadge');
@@ -882,6 +993,7 @@ function updateCartUI() {
   badge.style.display = totalItems > 0 ? 'flex' : 'none';
   
   if (shoppingCart.length === 0) {
+    window._appliedCoupon = null;
     body.innerHTML = `
       <div class="cart-empty">
         <div class="cart-empty-icon">🛒</div>
@@ -890,17 +1002,23 @@ function updateCartUI() {
       </div>`;
     if (totalEl) totalEl.textContent = '₹0';
     if (checkoutBtn) checkoutBtn.disabled = true;
+    const subRow = document.getElementById('cartSubtotalRow');
+    const discRow = document.getElementById('cartDiscountRow');
+    const cBox = document.getElementById('cartCouponBox');
+    if (subRow) subRow.style.display = 'none';
+    if (discRow) discRow.style.display = 'none';
+    if (cBox) cBox.style.display = 'none';
     return;
   }
   
   if (checkoutBtn) checkoutBtn.disabled = false;
   
   let html = '';
-  let total = 0;
+  let subtotal = 0;
   
   shoppingCart.forEach((item, index) => {
     const itemTotal = item.price * item.qty;
-    total += itemTotal;
+    subtotal += itemTotal;
     
     let optionsHtml = '';
     if (item.size) optionsHtml += `<div style="font-size:0.8rem;color:var(--copper-light);">Size: ${item.size}</div>`;
@@ -928,7 +1046,53 @@ function updateCartUI() {
   });
   
   body.innerHTML = html;
-  if (totalEl) totalEl.textContent = '₹' + total;
+
+  // Coupon & Discount Calculation
+  let discountAmount = 0;
+  if (window._appliedCoupon && subtotal > 0) {
+    discountAmount = Math.round(subtotal * (window._appliedCoupon.discount_percent / 100));
+  }
+  const finalTotal = Math.max(0, subtotal - discountAmount);
+
+  const subtotalRow = document.getElementById('cartSubtotalRow');
+  const subtotalVal = document.getElementById('cartSubtotal');
+  const discountRow = document.getElementById('cartDiscountRow');
+  const discountVal = document.getElementById('cartDiscountVal');
+  const discountLabel = document.getElementById('cartDiscountLabel');
+  const cBox = document.getElementById('cartCouponBox');
+
+  if (cBox) {
+    cBox.style.display = 'block';
+    if (window._appliedCoupon && discountAmount > 0) {
+      cBox.innerHTML = `
+        <div class="coupon-applied-pill">
+          <span>🎟️ <b>${window._appliedCoupon.code}</b> (${window._appliedCoupon.discount_percent}% OFF: -₹${discountAmount})</span>
+          <button type="button" class="coupon-remove-btn" onclick="removeAppliedCoupon()">✕ Remove</button>
+        </div>
+      `;
+    } else {
+      cBox.innerHTML = `
+        <div class="coupon-input-group">
+          <input type="text" id="cartCouponInput" placeholder="Enter coupon code" autocomplete="off" onkeydown="if(event.key==='Enter')applyCouponCode()" />
+          <button type="button" onclick="applyCouponCode()">Apply</button>
+        </div>
+        <div id="cartCouponFeedback" class="coupon-feedback" style="display:none;"></div>
+      `;
+    }
+  }
+
+  if (window._appliedCoupon && discountAmount > 0) {
+    if (subtotalRow) subtotalRow.style.display = 'flex';
+    if (subtotalVal) subtotalVal.textContent = '₹' + subtotal;
+    if (discountRow) discountRow.style.display = 'flex';
+    if (discountVal) discountVal.textContent = '-₹' + discountAmount;
+    if (discountLabel) discountLabel.textContent = `Discount (${window._appliedCoupon.code}):`;
+  } else {
+    if (subtotalRow) subtotalRow.style.display = 'none';
+    if (discountRow) discountRow.style.display = 'none';
+  }
+
+  if (totalEl) totalEl.textContent = '₹' + finalTotal;
 }
 
 function showToast(msg) {
@@ -959,11 +1123,20 @@ function injectCartUI() {
     </div>
     <div class="cart-body" id="cartBody"></div>
     <div class="cart-footer">
+      <div id="cartCouponBox" class="cart-coupon-wrap" style="display:none;"></div>
+      <div class="cart-subtotal-row" id="cartSubtotalRow" style="display:none;">
+        <span>Subtotal:</span>
+        <span id="cartSubtotal">₹0</span>
+      </div>
+      <div class="cart-discount-row" id="cartDiscountRow" style="display:none; color:#25D366;">
+        <span id="cartDiscountLabel">Discount:</span>
+        <span id="cartDiscountVal">-₹0</span>
+      </div>
       <div class="cart-total-row">
         <span>Total:</span>
         <span id="cartTotal" style="color:var(--gold);">₹0</span>
       </div>
-      <div style="display: flex; gap: 8px; margin-top: 1.5rem;">
+      <div style="display: flex; gap: 8px; margin-top: 1.2rem;">
         <button class="btn" style="flex: 1; background: #333; color: white; padding: 0.5rem; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; height: 38px; line-height: 1;" onclick="toggleCartDrawer(false)">Add More</button>
         <button class="btn btn-primary checkout-btn" id="cartCheckoutBtn" style="flex: 1; margin-top: 0; padding: 0.5rem; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; height: 38px; line-height: 1;" onclick="openCheckoutFromCart()">Checkout</button>
       </div>
@@ -1002,11 +1175,29 @@ function injectCartUI() {
         <input type="text" id="foPincode" maxlength="6" style="width:100%; padding:0.8rem; background:rgba(0,0,0,0.4); border:1px solid #444; border-radius:6px; color:white; font-size:0.95rem; outline:none; transition:border 0.2s;" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='#444'" placeholder="e.g. 380001" oninput="updateDeliveryPreview()" />
       </div>
 
+      <!-- Checkout Coupon Box -->
+      <div style="margin-bottom:1.2rem; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:0.9rem;">
+        <label style="display:block; font-size:0.85rem; margin-bottom:0.4rem; color:var(--gold); font-weight:600;">🎟️ Have a Coupon Code?</label>
+        <div style="display:flex; gap:0.5rem;" id="foCouponInputGroup">
+          <input type="text" id="foCouponInput" style="flex:1; padding:0.65rem 0.8rem; background:rgba(0,0,0,0.5); border:1px solid var(--border); border-radius:6px; color:white; font-size:0.9rem; text-transform:uppercase; outline:none; font-weight:600;" placeholder="Enter coupon code" onkeydown="if(event.key==='Enter')applyCheckoutCoupon()" />
+          <button type="button" onclick="applyCheckoutCoupon()" class="btn btn-primary" style="padding:0.6rem 1rem; font-size:0.85rem; border-radius:6px; min-width:80px; justify-content:center;">Apply</button>
+        </div>
+        <div id="foCouponMsg" style="font-size:0.82rem; margin-top:0.4rem; display:none;"></div>
+      </div>
+
       <!-- Delivery Info Preview -->
       <div id="foDeliveryPreview" style="display:none; margin-bottom:1.5rem; background:rgba(212,175,55,0.08); border:1px solid rgba(212,175,55,0.25); border-radius:10px; padding:1rem 1.2rem;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
           <span style="color:var(--text2); font-size:0.9rem;">📍 <span id="foDeliveryZone">—</span></span>
           <span style="color:var(--gold); font-weight:700; font-size:0.95rem;">🚚 <span id="foDeliveryDays">—</span></span>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
+          <span style="color:var(--text2); font-size:0.9rem;">Items Subtotal:</span>
+          <span style="color:white; font-weight:700;">₹<span id="foItemsSubtotal">0</span></span>
+        </div>
+        <div id="foCouponRow" style="display:none; justify-content:space-between; align-items:center; margin-bottom:0.4rem; color:#25D366;">
+          <span style="font-size:0.9rem;">🎟️ Discount (<span id="foCouponCodeLabel"></span>):</span>
+          <span style="font-weight:700;">-₹<span id="foDiscountVal">0</span></span>
         </div>
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <span style="color:var(--text2); font-size:0.9rem;">Delivery Charge:</span>
@@ -1079,10 +1270,27 @@ function updateDeliveryPreview() {
   }
   
   const itemsTotal = shoppingCart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-  const grandTotal = itemsTotal + info.charge;
+  let discountAmount = 0;
+  const couponRow = document.getElementById('foCouponRow');
+  if (window._appliedCoupon && itemsTotal > 0) {
+    discountAmount = Math.round(itemsTotal * (window._appliedCoupon.discount_percent / 100));
+    if (couponRow) {
+      couponRow.style.display = 'flex';
+      const lbl = document.getElementById('foCouponCodeLabel');
+      if (lbl) lbl.textContent = `${window._appliedCoupon.code} (${window._appliedCoupon.discount_percent}% OFF)`;
+      const dVal = document.getElementById('foDiscountVal');
+      if (dVal) dVal.textContent = discountAmount;
+    }
+  } else if (couponRow) {
+    couponRow.style.display = 'none';
+  }
+
+  const grandTotal = Math.max(0, itemsTotal - discountAmount) + info.charge;
   
   document.getElementById('foDeliveryZone').textContent = info.label;
   document.getElementById('foDeliveryDays').textContent = `${info.days} days`;
+  const itemsSubEl = document.getElementById('foItemsSubtotal');
+  if (itemsSubEl) itemsSubEl.textContent = itemsTotal;
   document.getElementById('foDeliveryCharge').textContent = info.charge;
   document.getElementById('foGrandTotal').textContent = grandTotal;
   preview.style.display = 'block';
@@ -1099,11 +1307,26 @@ function openCheckoutFromCart() {
   document.getElementById('foPincode').value = '';
   document.getElementById('foNotes').value = '';
   document.getElementById('foError').style.display = 'none';
+
+  const foInput = document.getElementById('foCouponInput');
+  const foMsg = document.getElementById('foCouponMsg');
+  if (foInput) {
+    foInput.value = window._appliedCoupon ? window._appliedCoupon.code : '';
+  }
+  if (foMsg) {
+    if (window._appliedCoupon) {
+      foMsg.innerHTML = `<span style="color:#25D366;font-weight:600;">✅ Coupon ${window._appliedCoupon.code} applied (${window._appliedCoupon.discount_percent}% OFF)</span>`;
+      foMsg.style.display = 'block';
+    } else {
+      foMsg.style.display = 'none';
+    }
+  }
   
   const m = document.getElementById('frontOrderModal');
   m.style.display = 'flex';
   m.style.opacity = '0';
   setTimeout(() => { m.style.transition='opacity 0.2s'; m.style.opacity='1'; }, 10);
+  if (typeof updateDeliveryPreview === 'function') updateDeliveryPreview();
 }
 
 async function submitCartCheckout() {
@@ -1134,12 +1357,19 @@ async function submitCartCheckout() {
   btn.textContent = 'Processing...';
   
   const itemsTotal = shoppingCart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+  let discountAmount = 0;
+  let couponInfo = null;
+  if (window._appliedCoupon && itemsTotal > 0) {
+    discountAmount = Math.round(itemsTotal * (window._appliedCoupon.discount_percent / 100));
+    couponInfo = window._appliedCoupon;
+  }
   const deliveryInfo = getDeliveryInfo(pincode) || DEFAULT_DELIVERY;
-  const grandTotal = itemsTotal + deliveryInfo.charge;
+  const grandTotal = Math.max(0, itemsTotal - discountAmount) + deliveryInfo.charge;
   const combinedProductName = shoppingCart.map(item => `${item.name} (x${item.qty})`).join(', ');
   
   // Combine all details into the DB notes field
-  const dbNotes = `Email: ${email}\nPincode: ${pincode}\nAddress: ${address}\nDelivery Zone: ${deliveryInfo.label}\nDelivery Charge: ₹${deliveryInfo.charge}\nEstimated: ${deliveryInfo.days} days\nNotes: ${notes}`;
+  let couponNote = couponInfo ? `\nCoupon Applied: ${couponInfo.code} (${couponInfo.discount_percent}% OFF, Saved ₹${discountAmount})` : '';
+  const dbNotes = `Email: ${email}\nPincode: ${pincode}\nAddress: ${address}\nDelivery Zone: ${deliveryInfo.label}\nDelivery Charge: ₹${deliveryInfo.charge}\nEstimated: ${deliveryInfo.days} days${couponNote}\nNotes: ${notes}`;
   
   try {
     // Save order as DRAFT — will become 'pending' only after WhatsApp confirmation
@@ -1155,6 +1385,12 @@ async function submitCartCheckout() {
     const orderId = (res && res.length > 0) ? res[0].id : 'NEW';
     currentDraftOrderId = orderId;
     currentDraftDelivery = deliveryInfo;
+
+    // 1-TIME USE ENFORCEMENT: Deactivate the coupon in DB & mark locally so it can never be used again
+    if (couponInfo) {
+      await markCouponAsUsed(couponInfo.id, couponInfo.code);
+      window._appliedCoupon = null; // reset state
+    }
     
     // Build WhatsApp message (stored for later when user confirms)
     const E_WAVE = decodeURIComponent("%F0%9F%91%8B");
@@ -1198,7 +1434,10 @@ async function submitCartCheckout() {
     const E_CHECK = decodeURIComponent("%E2%9C%85");
     
     msg += `\n${E_MONEY} *BILL SUMMARY*\n`;
-    msg += `Items Total: ₹${itemsTotal}\n`;
+    msg += `Items Subtotal: ₹${itemsTotal}\n`;
+    if (couponInfo) {
+      msg += `Coupon (${couponInfo.code}): -₹${discountAmount} (${couponInfo.discount_percent}% OFF)\n`;
+    }
     msg += `Delivery: ₹${deliveryInfo.charge}\n`;
     msg += `*GRAND TOTAL: ₹${grandTotal}*\n`;
     msg += `\n━━━━━━━━━━━━━━━━━━\n${E_CAM} Payment screenshot attached.\n${E_CHECK} Please review and process.`;
@@ -1207,7 +1446,7 @@ async function submitCartCheckout() {
     
     // Close checkout modal, open UPI payment modal
     document.getElementById('frontOrderModal').style.display = 'none';
-    openUpiPayModal(orderId, itemsTotal, deliveryInfo.charge, grandTotal);
+    openUpiPayModal(orderId, itemsTotal, deliveryInfo.charge, grandTotal, discountAmount, couponInfo ? couponInfo.code : '');
     
     btn.disabled = false;
     btn.textContent = '💳 Proceed to Payment';
@@ -1221,10 +1460,15 @@ async function submitCartCheckout() {
 }
 
 // Open UPI Payment Modal with dynamic amount
-function openUpiPayModal(orderId, itemsTotal, deliveryCharge, grandTotal) {
+function openUpiPayModal(orderId, itemsTotal, deliveryCharge, grandTotal, discountAmount, couponCode) {
   document.getElementById('upiOrderId').textContent = '#' + orderId;
   document.getElementById('upiAmount').textContent = grandTotal;
-  document.getElementById('upiAmountBreakdown').innerHTML = `Items: ₹${itemsTotal} + Delivery: ₹${deliveryCharge}`;
+  let breakdown = `Items: ₹${itemsTotal}`;
+  if (discountAmount && discountAmount > 0) {
+    breakdown += ` - Discount (${couponCode}): ₹${discountAmount}`;
+  }
+  breakdown += ` + Delivery: ₹${deliveryCharge}`;
+  document.getElementById('upiAmountBreakdown').innerHTML = breakdown;
   
   // UPI deep link
   const upiUrl = `upi://pay?pa=${UPI_ID}&pn=${encodeURIComponent(UPI_NAME)}&am=${grandTotal}&cu=INR&tn=${encodeURIComponent('Order #' + orderId)}`;
