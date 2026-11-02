@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -23,7 +23,7 @@
   <link rel="icon" type="image/png" sizes="96x96" href="/images/favicon-96.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="/images/favicon-192.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png" />
-  <link rel="stylesheet" href="css/style.css?v=73" />
+  <link rel="stylesheet" href="css/style.css?v=74" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <style>
@@ -235,6 +235,24 @@
 
       .prod-title {
         font-size: 1.8rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .prod-page {
+        padding-top: 4.2rem;
+        padding-left: 0.8rem;
+        padding-right: 0.8rem;
+      }
+      .prod-title {
+        font-size: 1.45rem;
+        line-height: 1.25;
+      }
+      .prod-price {
+        font-size: 1.3rem;
+      }
+      .prod-opts {
+        padding: 0.8rem;
       }
     }
   </style>
@@ -631,7 +649,7 @@
 
     <script src="js/analytics.js?v=2" defer></script>
 <script src="js/db.js?v=55"></script>
-  <script src="js/main_v3.js?v=73"></script>
+  <script src="js/main_v3.js?v=74"></script>
   <script>
     document.addEventListener("DOMContentLoaded", async () => {
       const urlParams = new URLSearchParams(window.location.search);
