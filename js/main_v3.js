@@ -1,4 +1,4 @@
-﻿// ===== CraftedCore - Main JavaScript =====
+// ===== CraftedCore - Main JavaScript =====
 
 // ===== Image Protection (Anti-Download) =====
 (function() {
@@ -1828,11 +1828,7 @@ function injectNavbarModals() {
       <div class="account-modal" id="accountModal">
         <div class="account-modal-header">
           <div class="account-avatar">
-            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"></circle>
-              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
-              <line x1="12" y1="17" x2="12.01" y2="17"></line>
-            </svg>
+            <img src="images/help-support-icon.png" alt="Help &amp; Support" width="22" height="22" style="filter: brightness(0) invert(1); opacity: 0.9;" />
           </div>
           <div style="flex:1;">
             <div class="account-modal-title">Help & Support</div>
