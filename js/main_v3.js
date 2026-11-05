@@ -2040,9 +2040,6 @@ function initFreeDeliveryPopup() {
             <h3 class="fd-popup-title">FREE DELIVERY</h3>
             <p class="fd-popup-subtitle">On All Orders Above <span class="fd-highlight">₹1,999</span></p>
             <p class="fd-popup-desc">Get 100% free doorstep delivery across India on all your custom & personalized gift orders!</p>
-            <div class="fd-popup-actions">
-              <a href="products.html" class="btn btn-primary fd-popup-btn" onclick="closeFreeDeliveryPopup()">🛍️ Shop & Save Now</a>
-            </div>
           </div>
         </div>
       `;

@@ -77,3 +77,10 @@ main_part1.txt
 main_part2.txt
 contact_js.txt
 qo_js.txt
+
+# Build & Dev Tooling
+node_modules/
+bun.lock
+dist/
+.dev.pid
+public/assets/
