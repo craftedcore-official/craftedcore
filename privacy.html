@@ -22,7 +22,7 @@
   <link rel="icon" type="image/png" sizes="96x96" href="/images/favicon-96.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="/images/favicon-192.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png" />
-  <link rel="stylesheet" href="css/style.css?v=79" />
+  <link rel="stylesheet" href="css/style.css?v=81" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   
@@ -167,8 +167,22 @@
     }
     
     @media (max-width: 768px) {
-      .legal-title { font-size: 2.5rem; }
+      .legal-hero { padding: 120px 1.5rem 3rem; }
+      .legal-title { font-size: 2.4rem; }
+      .legal-container { padding: 1.5rem 1rem 4rem; }
       .legal-content { padding: 1.5rem; font-size: 1rem; }
+    }
+    @media (max-width: 480px) {
+      .legal-hero { padding: 5.5rem 1rem 1.8rem; min-height: 28vh; }
+      .legal-title { font-size: 1.65rem; line-height: 1.2; margin-bottom: 1rem; }
+      .legal-eyebrow { font-size: 0.72rem; letter-spacing: 2px; padding: 0.35rem 0.8rem; margin-bottom: 1rem; }
+      .legal-container { padding: 1rem 0.5rem 3rem; }
+      .legal-content { padding: 1.15rem 0.95rem; font-size: 0.9rem; line-height: 1.65; border-radius: 14px; }
+      .legal-content h2 { font-size: 1.25rem; margin-top: 1.8rem; margin-bottom: 0.8rem; }
+      .legal-content h3 { font-size: 1.05rem; }
+      .legal-content p, .legal-content li { font-size: 0.88rem; }
+      .legal-content ul { padding-left: 1.2rem; }
+      .legal-content .policy-entity-info { font-size: 0.8rem; padding: 8px 10px; }
     }
   </style>
 
@@ -363,8 +377,8 @@
 
   <!-- SCRIPTS -->
     <script src="js/analytics.js?v=2" defer></script>
-<script src="js/db.js?v=79"></script>
-  <script src="js/main_v3.js?v=79"></script>
+<script src="js/db.js?v=81"></script>
+  <script src="js/main_v3.js?v=81"></script>
 </body>
 </html>
 

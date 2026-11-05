@@ -22,7 +22,7 @@
   <link rel="icon" type="image/png" sizes="96x96" href="/images/favicon-96.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="/images/favicon-192.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png" />
-  <link rel="stylesheet" href="css/style.css?v=79" />
+  <link rel="stylesheet" href="css/style.css?v=81" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <style>
@@ -138,6 +138,8 @@
       animation: slideUpFade 1s ease-out forwards;
       display: flex;
       justify-content: center;
+      max-width: 100%;
+      overflow: hidden;
     }
     .cat-hero-image-wrap {
       position: relative;
@@ -276,8 +278,8 @@
     @media (max-width: 480px) {
       .cat-hero-premium { padding: 90px 1rem 1rem; }
       .cat-hero-container { gap: 1.5rem; }
-      .cat-hero-title { font-size: 2.2rem; }
-      .cat-hero-subtitle { font-size: 1rem; }
+      .cat-hero-title { font-size: clamp(1.6rem, 6.5vw, 2rem); line-height: 1.15; }
+      .cat-hero-subtitle { font-size: 0.95rem; line-height: 1.45; }
       .cat-hero-stats { gap: 1.5rem; }
     }
   </style>
@@ -532,8 +534,8 @@
   </div>
 
     <script src="js/analytics.js?v=2" defer></script>
-<script src="js/db.js?v=79"></script>
-  <script src="js/main_v3.js?v=79"></script>
+<script src="js/db.js?v=81"></script>
+  <script src="js/main_v3.js?v=81"></script>
   <script>
     // ═══ CATEGORY PAGE LOGIC ═══
     (async function() {

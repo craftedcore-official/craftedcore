@@ -22,7 +22,7 @@
   <link rel="icon" type="image/png" sizes="96x96" href="/images/favicon-96.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="/images/favicon-192.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png" />
-  <link rel="stylesheet" href="css/style.css?v=79" />
+  <link rel="stylesheet" href="css/style.css?v=81" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
@@ -94,17 +94,103 @@
     .wa-cta-desc { color: var(--text-secondary); margin-bottom: 2rem; font-size: 1.05rem; line-height: 1.8; }
     .wa-cta-btn { font-size: 1.2rem !important; padding: 1.2rem 3rem !important; }
     
+    .wa-fd-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(212,175,55,0.08);
+      border: 1px solid rgba(212,175,55,0.25);
+      border-radius: 30px;
+      padding: 0.4rem 1.1rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.85rem;
+      color: var(--gold);
+      max-width: 100%;
+      box-sizing: border-box;
+      line-height: 1.4;
+    }
+    
+    @media (max-width: 860px) {
+      .contact-grid {
+        grid-template-columns: 1fr !important;
+        gap: 2rem !important;
+      }
+      .order-flow {
+        padding: 1.8rem 1.4rem !important;
+        border-radius: 20px !important;
+      }
+      .contact-info-card {
+        padding: 1.2rem 1.3rem !important;
+        margin-bottom: 0.85rem !important;
+      }
+    }
+
     @media (max-width: 768px) {
       .page-header-sec { padding: 7rem 1.5rem 2.5rem; }
     }
 
     @media (max-width: 480px) {
-      .page-header-sec { padding: 6rem 1rem 1.5rem; }
-      .wa-cta-box { padding: 2.5rem 1.2rem; border-radius: 20px; }
-      .wa-cta-emoji { font-size: 3.5rem; margin-bottom: 1rem; }
-      .wa-cta-title { font-size: 1.6rem; }
-      .wa-cta-desc { font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.5rem; padding: 0 0.5rem; }
-      .wa-cta-btn { font-size: 1rem !important; padding: 1rem 1.5rem !important; width: 100%; display: flex; justify-content: center; }
+      .page-header-sec { padding: 5.5rem 1rem 1.5rem; }
+      .wa-cta-box { padding: 2.2rem 1rem; border-radius: 18px; margin-bottom: 2rem; }
+      .wa-cta-emoji { font-size: 3.2rem; margin-bottom: 0.8rem; }
+      .wa-cta-title { font-size: 1.55rem; }
+      .wa-cta-desc { font-size: 0.88rem; line-height: 1.55; margin-bottom: 1.2rem; padding: 0; }
+      .wa-fd-badge {
+        font-size: 0.76rem;
+        padding: 0.4rem 0.75rem;
+        border-radius: 16px;
+        margin-bottom: 1.2rem;
+        display: flex;
+        justify-content: center;
+        text-align: center;
+      }
+      .wa-cta-btn {
+        font-size: 0.95rem !important;
+        padding: 0.95rem 1.2rem !important;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        border-radius: 50px;
+      }
+      .order-flow {
+        padding: 1.4rem 1rem !important;
+        border-radius: 16px !important;
+      }
+      .order-step {
+        gap: 0.8rem !important;
+        margin-bottom: 1.25rem !important;
+      }
+      .step-number {
+        width: 32px !important;
+        height: 32px !important;
+        min-width: 32px !important;
+        font-size: 0.8rem !important;
+      }
+      .step-title {
+        font-size: 0.92rem !important;
+        line-height: 1.35 !important;
+      }
+      .step-desc {
+        font-size: 0.8rem !important;
+        line-height: 1.5 !important;
+      }
+      .contact-info-card {
+        padding: 1rem 1.1rem !important;
+        gap: 0.85rem !important;
+        border-radius: 14px !important;
+        margin-bottom: 0.75rem !important;
+      }
+      .contact-icon {
+        font-size: 1.4rem !important;
+      }
+      .contact-label {
+        font-size: 0.68rem !important;
+        margin-bottom: 0.15rem !important;
+      }
+      .contact-value {
+        font-size: 0.92rem !important;
+        word-break: break-word !important;
+      }
     }
 
     /* ===== QUICK ORDER SECTION & CARDS ===== */
@@ -252,35 +338,51 @@
     @media (max-width: 580px) {
       .quick-order-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 0.85rem;
+        gap: 0.75rem;
       }
       .quick-order-grid.has-single,
       .quick-order-grid:has(.qo-card:only-child) {
-        grid-template-columns: minmax(260px, 340px);
+        grid-template-columns: minmax(240px, 320px);
         justify-content: center;
       }
       .qo-card {
         border-radius: 14px;
       }
       .qo-body {
-        padding: 0.75rem 0.8rem 0.85rem;
+        padding: 0.7rem 0.65rem 0.75rem;
       }
       .qo-title {
-        font-size: 0.92rem;
-        margin-bottom: 0.25rem;
+        font-size: 0.88rem;
+        margin-bottom: 0.2rem;
+        line-height: 1.25;
+      }
+      .qo-desc {
+        display: none;
+      }
+      .qo-bottom {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.4rem;
+        margin-top: 0.3rem;
+        padding-top: 0.45rem;
       }
       .qo-price {
-        font-size: 1.05rem;
+        font-size: 0.95rem;
+        font-weight: 800;
+        text-align: left;
       }
       .qo-btn {
-        padding: 0.4rem 0.75rem;
-        font-size: 0.72rem;
+        width: 100%;
+        justify-content: center;
+        padding: 0.4rem 0.5rem;
+        font-size: 0.74rem;
+        border-radius: 20px;
       }
       .qo-badge {
         font-size: 0.55rem;
-        padding: 0.2rem 0.5rem;
-        top: 0.5rem;
-        left: 0.5rem;
+        padding: 0.2rem 0.45rem;
+        top: 0.4rem;
+        left: 0.4rem;
       }
     }
     @media (max-width: 340px) {
@@ -308,7 +410,7 @@
         <p class="wa-cta-desc">
           Simply click the button below, send us your product details & design idea — we'll confirm your order and get it crafted just for you!
         </p>
-        <div style="display:inline-flex; align-items:center; gap:0.5rem; background:rgba(212,175,55,0.08); border:1px solid rgba(212,175,55,0.25); border-radius:30px; padding:0.4rem 1.1rem; margin-bottom:1.5rem; font-size:0.85rem; color:var(--gold);">
+        <div class="wa-fd-badge">
           <span>🚚</span> <b>FREE Delivery</b> across India on orders above ₹1,999!
         </div>
         <a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20%F0%9F%91%8B%0A%0AI%20want%20to%20place%20a%20custom%20order.%0A%0AProduct%3A%20%5Be.g.%20T-Shirt%2C%20Mug%2C%20Bottle%5D%0ADesign%20Idea%3A%20%5BTell%20us%20your%20idea%5D%0AQuantity%3A%20%5BHow%20many%5D%0A%0APlease%20guide%20me%20further%20%F0%9F%99%8F" target="_blank" class="btn btn-whatsapp wa-cta-btn" id="main-wa-btn">
@@ -494,9 +596,9 @@
   <a href="https://wa.me/+918320979383?text=Hi%20CraftedCore!%20I%20want%20to%20place%20a%20custom%20order." target="_blank" class="wa-float" id="wa-float-btn" title="Order on WhatsApp">
     <svg class="social-svg" viewBox="0 0 24 24" width="28" height="28" fill="#fff"><path d="M12.012 2c-5.506 0-9.989 4.478-9.989 9.984 0 1.758.459 3.474 1.33 4.982L2 22l5.176-1.348a9.982 9.982 0 004.836 1.251h.004c5.506 0 9.989-4.478 9.989-9.984 0-2.668-1.039-5.176-2.927-7.063C17.189 3.039 14.68 2 12.012 2zm.004 16.326h-.003a8.31 8.31 0 01-4.238-1.163l-.304-.18-3.149.821.838-3.067-.198-.314a8.275 8.275 0 01-1.272-4.437c0-4.577 3.724-8.301 8.306-8.301 2.217 0 4.301.865 5.869 2.434a8.261 8.261 0 012.43 5.867c0 4.578-3.725 8.302-8.279 8.302zm4.551-6.216c-.249-.125-1.477-.729-1.706-.812-.228-.083-.395-.125-.561.125-.166.249-.644.812-.789.978-.145.166-.291.187-.54.062a6.837 6.837 0 01-2.008-1.238 7.55 7.55 0 01-1.39-1.73c-.145-.249-.016-.384.109-.508.113-.112.249-.291.374-.436.125-.145.166-.249.249-.415.083-.166.042-.312-.021-.436-.062-.125-.561-1.352-.769-1.85-.202-.486-.407-.42-.561-.428l-.478-.009c-.166 0-.436.062-.664.312-.228.249-.873.852-.873 2.079 0 1.226.893 2.41 1.018 2.577.125.166 1.757 2.684 4.257 3.764.595.257 1.06.41 1.422.525.597.19 1.14.163 1.57.099.479-.071 1.477-.603 1.684-1.184.208-.582.208-1.08.145-1.184-.063-.104-.229-.166-.478-.291z"/></svg>
   </a>
-  <script src="js/main_v3.js?v=79"></script>
+  <script src="js/main_v3.js?v=81"></script>
     <script src="js/analytics.js?v=2" defer></script>
-<script src="js/db.js?v=79"></script>
+<script src="js/db.js?v=81"></script>
     <script>
     function escapeHtml(str) {
       if (!str) return '';
