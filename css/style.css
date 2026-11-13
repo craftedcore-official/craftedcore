@@ -1560,8 +1560,21 @@ footer {
     min-height: 2.2em;
     white-space: normal;
   }
-  /* Hide verbose description on phones for clean Shopify-style cards */
-  .product-desc { display: none !important; }
+  /* 1-2 line clamped description with ellipsis on mobile */
+  .product-desc {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    font-size: 0.76rem;
+    line-height: 1.4;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+    min-height: 2.8em;
+    max-height: 2.8em;
+  }
   .product-footer {
     display: flex;
     flex-direction: column;
