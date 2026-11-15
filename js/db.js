@@ -1,4 +1,4 @@
-﻿// CraftedCore — js/db.js v4
+// CraftedCore — js/db.js v4
 // ============================================================
 
 const DB_CONFIG = {
