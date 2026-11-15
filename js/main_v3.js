@@ -1532,6 +1532,7 @@ async function submitCartCheckout() {
     const E_BOX = decodeURIComponent("%F0%9F%93%A6");
     const E_ID = decodeURIComponent("%F0%9F%86%94");
     const E_BAG = decodeURIComponent("%F0%9F%9B%8D%EF%B8%8F");
+    const E_TADA = decodeURIComponent("%F0%9F%8E%89");
     let waNum = ((window._siteSettings || {}).whatsapp_number || '918320979383').toString().replace(/\D/g, '');
     if (waNum.startsWith('0')) waNum = waNum.substring(1);
     if (waNum.length === 10) waNum = '91' + waNum;
@@ -1559,7 +1560,7 @@ async function submitCartCheckout() {
     msg += `${E_PIN} *DELIVERY ADDRESS*\n${address}\nPincode: ${pincode}\n`;
     msg += `\n${E_TRUCK} *DELIVERY*\n`;
     msg += `Zone: ${deliveryInfo.label}\n`;
-    msg += `Charge: ${isFreeDelivery ? 'FREE (Orders above ₹' + FREE_DELIVERY_THRESHOLD + ' 🎉)' : '₹' + deliveryInfo.charge}\n`;
+    msg += `Charge: ${isFreeDelivery ? 'FREE (Orders above ₹' + FREE_DELIVERY_THRESHOLD + ' ' + E_TADA + ')' : '₹' + deliveryInfo.charge}\n`;
     msg += `Estimated: ${deliveryInfo.days} days\n`;
     
     if (notes) msg += `\n${E_NOTE} *Notes:* ${notes}\n`;
@@ -1573,11 +1574,11 @@ async function submitCartCheckout() {
     if (couponInfo) {
       msg += `Coupon (${couponInfo.code}): -₹${discountAmount} (${couponInfo.discount_percent}% OFF)\n`;
     }
-    msg += `Delivery: ${isFreeDelivery ? 'FREE (Order above ₹' + FREE_DELIVERY_THRESHOLD + ' 🎉)' : '₹' + actualDeliveryCharge}\n`;
+    msg += `Delivery: ${isFreeDelivery ? 'FREE (Order above ₹' + FREE_DELIVERY_THRESHOLD + ' ' + E_TADA + ')' : '₹' + actualDeliveryCharge}\n`;
     msg += `*GRAND TOTAL: ₹${grandTotal}*\n`;
     msg += `\n━━━━━━━━━━━━━━━━━━\n${E_CAM} Payment screenshot attached.\n${E_CHECK} Please review and process.`;
     
-    currentDraftWaMsg = `https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`;
+    currentDraftWaMsg = `https://api.whatsapp.com/send?phone=${waNum}&text=${encodeURIComponent(msg)}`;
     
     // Close checkout modal, open UPI payment modal
     document.getElementById('frontOrderModal').style.display = 'none';
@@ -1680,7 +1681,7 @@ document.addEventListener('click', (e) => {
       let waNum = ((window._siteSettings || {}).whatsapp_number || '918320979383').toString().replace(/\D/g, '');
       if (waNum.startsWith('0')) waNum = waNum.substring(1);
       if (waNum.length === 10) waNum = '91' + waNum;
-      openQR(`https://wa.me/${waNum}?text=${encodeURIComponent(text)}`);
+      openQR(`https://api.whatsapp.com/send?phone=${waNum}&text=${encodeURIComponent(text)}`);
     }
   }
 });

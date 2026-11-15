@@ -262,6 +262,9 @@ async function applyDynamicSettings() {
       document.querySelectorAll('a[href*="wa.me"]').forEach(a => {
         a.href = a.href.replace(/wa\.me\/[+0-9]+/, `wa.me/${n}`);
       });
+      document.querySelectorAll('a[href*="api.whatsapp.com"]').forEach(a => {
+        a.href = a.href.replace(/phone=[+0-9]+/, `phone=${n}`);
+      });
     }
     // 5. SEO Data Application
     if (s.seo_data) {
