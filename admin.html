@@ -1468,7 +1468,7 @@ create policy "Public Analytics Live" on analytics_live for all using (true) wit
             <p style="color:var(--text2);font-size:.85rem;margin-bottom:1rem;">Add your free Gemini API Key to enable 1-click automatic product description and WhatsApp message generation.</p>
             <div class="fg">
               <label>Gemini API Key</label>
-              <input type="text" class="fctl" id="geminiKey" placeholder="AIzaSy..." />
+              <input type="text" class="fctl" id="geminiKey" placeholder="AQ... or AIzaSy..." />
               <div style="font-size:0.75rem;color:var(--text3);margin-top:0.4rem;">Get your free key from <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--gold);">Google AI Studio</a>. (Saved securely in your browser)</div>
             </div>
             <div class="card-acts">
@@ -3260,7 +3260,14 @@ async function loadSettings() {
   document.getElementById('cfgKey').value   = getSupabaseKey();
   document.getElementById('cfgCloud').value  = getCloudName();
   document.getElementById('cfgPreset').value = getUploadPreset();
-  document.getElementById('geminiKey').value = localStorage.getItem('cc_gemini_key') || '';
+  let gKey = localStorage.getItem('cc_gemini_key');
+  if (!gKey) {
+    try {
+      gKey = await SiteSettings.get('gemini_api_key');
+      if (gKey) localStorage.setItem('cc_gemini_key', gKey);
+    } catch(e) {}
+  }
+  document.getElementById('geminiKey').value = gKey || '';
   testConn();
 }
 
@@ -3300,10 +3307,15 @@ async function saveBiz() {
   } catch(e) { toast('❌ Error', 'error'); }
 }
 
-function saveAIKey() {
+async function saveAIKey() {
   const k = document.getElementById('geminiKey').value.trim();
-  if (k) localStorage.setItem('cc_gemini_key', k);
-  else localStorage.removeItem('cc_gemini_key');
+  if (k) {
+    localStorage.setItem('cc_gemini_key', k);
+    try { await SiteSettings.set('gemini_api_key', k); } catch(e) {}
+  } else {
+    localStorage.removeItem('cc_gemini_key');
+    try { await SiteSettings.set('gemini_api_key', ''); } catch(e) {}
+  }
   toast('✅ AI Key Saved!', 'success');
 }
 
@@ -3568,7 +3580,13 @@ function toast(msg, type = 'info') {
 }
 
 async function autoGenerateAI(btn) {
-  const key = localStorage.getItem('cc_gemini_key');
+  let key = (localStorage.getItem('cc_gemini_key') || '').trim();
+  if (!key) {
+    try {
+      key = (await SiteSettings.get('gemini_api_key') || '').trim();
+      if (key) localStorage.setItem('cc_gemini_key', key);
+    } catch(e) {}
+  }
   if (!key) {
     toast('❌ Please add your Gemini API Key in AI Settings first!', 'error');
     const aiBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.textContent.includes('AI Settings'));
@@ -3587,40 +3605,75 @@ async function autoGenerateAI(btn) {
   try {
     const prompt = `You are an expert e-commerce copywriter and SEO specialist. Write a highly engaging, SEO-optimized product description (2-3 sentences max) for a product named "${name}". Use relevant search keywords naturally (like custom, personalized, buy online, etc.). Also generate a polite, engaging predefined WhatsApp order message for this product. Also generate a catchy, short emoji-filled badge for this product (like "💎 Premium Pick" or "🔥 Hot Trend"). Also generate SEO Meta Title (max 60 chars), SEO Meta Description (max 160 chars), and SEO Keywords (comma separated).
 Return ONLY a valid JSON object in this exact format:
-{"description": "...", "wa_message": "...", "badge": "...", "seo_title": "...", "seo_desc": "...", "seo_kw": "..."}.
-Do not wrap in markdown blocks, just the raw JSON text.`;
+{"description": "...", "wa_message": "...", "badge": "...", "seo_title": "...", "seo_desc": "...", "seo_kw": "..."}.`;
     
-    let modelName = 'gemini-1.5-flash';
-    try {
-      const modelsRes = await fetch('https://generativelanguage.googleapis.com/v1beta/models?key=' + key);
-      const modelsData = await modelsRes.json();
-      if(modelsData.models) {
-        const validModel = modelsData.models.find(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes('generateContent') && (m.name.includes('flash') || m.name.includes('pro')));
-        if(validModel) modelName = validModel.name.replace('models/', '');
-      }
-    } catch(e) {}
+    // Stable models in order of speed and current availability
+    const modelsToTry = [
+      'gemini-3.5-flash-lite',
+      'gemini-flash-lite-latest',
+      'gemini-3.5-flash',
+      'gemini-3.6-flash',
+      'gemini-3.1-flash-lite',
+      'gemini-3.8-flash'
+    ];
 
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=` + key, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-    });
+    let data = null;
+    let lastError = null;
+
+    for (const model of modelsToTry) {
+      try {
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=` + encodeURIComponent(key), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: {
+              responseMimeType: 'application/json'
+            }
+          })
+        });
+
+        if (res.ok) {
+          data = await res.json();
+          if (data && data.candidates && data.candidates.length > 0) {
+            break;
+          }
+        } else {
+          const errBody = await res.json().catch(() => null);
+          lastError = errBody?.error?.message || `HTTP ${res.status}`;
+          console.warn(`Model ${model} returned error:`, lastError);
+        }
+      } catch(err) {
+        lastError = err.message;
+        console.warn(`Fetch error for model ${model}:`, err);
+      }
+    }
+
+    if (!data || !data.candidates || !data.candidates[0]) {
+      throw new Error(lastError || 'No response from AI models');
+    }
+
+    const candidate = data.candidates[0];
+    const part = candidate.content?.parts?.find(p => p.text && !p.thought) || candidate.content?.parts?.[0];
+    const rawText = part ? part.text : '';
+
+    let cleaned = rawText.replace(/```json/gi, '').replace(/```/g, '').trim();
+    const startIdx = cleaned.indexOf('{');
+    const endIdx = cleaned.lastIndexOf('}');
+    if (startIdx !== -1 && endIdx !== -1 && endIdx > startIdx) {
+      cleaned = cleaned.substring(startIdx, endIdx + 1);
+    }
+    const result = JSON.parse(cleaned);
     
-    if (!res.ok) throw new Error('API Error: ' + res.status);
-    const data = await res.json();
-    const rawText = data.candidates[0].content.parts[0].text;
-    const jsonStr = rawText.replace(/^```json/i, '').replace(/```$/i, '').trim();
-    const result = JSON.parse(jsonStr);
-    
-    if (result.description) document.getElementById('pDesc').value = result.description;
-    if (result.wa_message) document.getElementById('pWA').value = result.wa_message;
-    if (result.badge) document.getElementById('pBadge').value = result.badge;
+    if (result.description && document.getElementById('pDesc')) document.getElementById('pDesc').value = result.description;
+    if (result.wa_message && document.getElementById('pWA')) document.getElementById('pWA').value = result.wa_message;
+    if (result.badge && document.getElementById('pBadge')) document.getElementById('pBadge').value = result.badge;
     if (result.seo_title && document.getElementById('pSeoTitle')) document.getElementById('pSeoTitle').value = result.seo_title;
     if (result.seo_desc && document.getElementById('pSeoDesc')) document.getElementById('pSeoDesc').value = result.seo_desc;
     if (result.seo_kw && document.getElementById('pSeoKw')) document.getElementById('pSeoKw').value = result.seo_kw;
     toast('✨ AI Generation Complete!', 'success');
   } catch (e) {
-    console.error(e);
+    console.error('AI Generation Error:', e);
     toast('❌ AI Generation failed: ' + (e.message || 'Check API Key'), 'error');
   } finally {
     btn.innerHTML = originalTxt;
